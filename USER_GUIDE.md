@@ -8,6 +8,19 @@ Basic settings of the extension including the module activation.
 
 TODO: Will follow soon
 
+## Initial Product Import (into Queue)
+
+1. Log into your OXID eShop database interface (e.g. [phpMyAdmin](https://www.phpmyadmin.net/))
+2. Select OXID eShop database
+3. Open the following SQL file: [`modules/wmdk/wmdkffexportqueue/sql/initialize.sql`](modules/wmdk/wmdkffexportqueue/sql/initialize.sql)
+4. Set the following variables in lines 2-4:
+   - `@ffchannel` - FACT Finder Channel ID
+   - `@store` - OXID eShop Store ID (Default: 1)
+   - `@lang` - OXID eShop Language ID (Default: 0)
+5. Execute the SQL file
+
+**NOTE:** You can execute the initial import as often as you like it will always remove all previous data.
+
 ## Bash Commands (Modes)
 
 ### Queue (default)

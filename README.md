@@ -44,6 +44,16 @@ To install the module, please execute the following commands in OXID eShop root 
 **NOTE:** If you are using VCS like GIT for your project, you should add the following path to your `.gitignore` file:
 `/source/modules/wmdk/`
 
+#### Step 3: Export Directories
+
+1. Connect to your OXID eShop server via SSH or FTP
+2. Upload the directory [`export/`](export/) to `/path/to/oxid/source/`.
+3. Set the permissions to `755` for the directory `/path/to/oxid/source/export/`
+
+#### Step 4: Cronjob
+
+TODO: Will follow soon
+
 ## User Guide
 
 [User Guide](USER_GUIDE.md)
