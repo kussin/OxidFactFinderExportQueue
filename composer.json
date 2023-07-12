@@ -1,0 +1,49 @@
+{
+    "name":        "wmdk/wmdkffexportqueue",
+    "version":     "1.7.1",
+    "description": "Kussin | OXID 6 FACT Finder Export Queue",
+    "type":        "oxideshop-module",
+    "keywords":    [
+        "wmdk",
+        "kussin",
+        "oxid",
+        "modules",
+        "factfinder",
+        "omikron"
+    ],
+    "homepage":    "https://www.kussin.de/",
+    "license":     [
+        "EULA"
+    ],
+    "authors":     [
+        {
+            "name": "Daniel Kussin",
+            "email": "daniel.kussin@kussin.de",
+            "homepage": "https://www.kussin.de/",
+            "role": "Project Owner"
+        }
+    ],
+    "support": {
+        "email": "info@kussin.eu",
+        "issues": "https://github.com/kussin/magento2-akeneo-connector-addon-assets/issues"
+    },
+    "extra":       {
+        "oxideshop": {
+            "target-directory": "wmdk/wmdkffexportqueue",
+            "source-directory": "modules/wmdk/wmdkffexportqueue",
+            "blacklist-filter": [
+                "build/**/*.*",
+                "grunt/**/*.*",
+                "node_modules/**/*.*"
+            ]
+        }
+    },
+    "require":     {
+        "php": ">=7.4"
+    },
+    "autoload":    {
+        "psr-4": {
+            "Wmdk\\WmdkFFExportQueue\\": "../../../source/modules/wmdk/wmdkffexportqueue"
+        }
+    }
+}

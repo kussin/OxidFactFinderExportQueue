@@ -9,4 +9,7 @@ PATCHES.txt
 mysqldumper
 phpMyAdmin-*
 adminer*
-/*.rej
+*.rej
+*.csv
+*.xls
+*.xlx
