@@ -179,7 +179,7 @@ class wmdkffexport_export extends oxubase
                 fwrite($rCsvFile, $sRow . PHP_EOL);
             }
 
-            fclose($sExportFile);
+            fclose($rCsvFile);
             
         } catch (Exception $oException) {
             // ERROR

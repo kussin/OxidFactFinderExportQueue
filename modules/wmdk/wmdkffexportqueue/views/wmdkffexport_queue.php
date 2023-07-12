@@ -231,12 +231,6 @@ class wmdkffexport_queue extends oxubase
             $this->_aUpdateData['HasSaleFlag'] = ($sSaleAmount != '') ? 1 : '';
             $this->_aUpdateData['SaleAmount'] = $sSaleAmount;
             
-            $sSaleOfTheDayDate = $this->_getSaleOfTheDayDate();
-            $this->_aUpdateData['HasSaleOfTheDayFlag'] = ($sSaleOfTheDayDate == date('Y-m-d')) ? 1 : '';
-            $this->_aUpdateData['SaleOfTheDayDate'] = $sSaleOfTheDayDate;
-            
-            $this->_aUpdateData['HasKidsFlag'] = $this->_hasHasKidsFlag('');
-            
             $sVariantsSizelistMarkup = $this->_getVariantsSizelistMarkup();
             $this->_aUpdateData['HasVariantsSizelist'] = ($sVariantsSizelistMarkup != '') ? 1 : '';
             $this->_aUpdateData['VariantsSizelistMarkup'] = $sVariantsSizelistMarkup;
@@ -553,22 +547,6 @@ class wmdkffexport_queue extends oxubase
         }
         
         return '';
-    }
-    
-    
-    private function _getSaleOfTheDayDate() {
-        $oArticle = ($this->_bIsVariant) ? $this->_oParent : $this->_oProduct;
-        
-        $sDate = trim($oArticle->oxarticles__wmdksotd->value);
-        
-        return ($sDate != '0000-00-00') ? $sDate : '';
-    }
-    
-    
-    private function _hasHasKidsFlag($bFalse = 0) {
-        $sAttributes = strtolower($this->_getSearchAttributes());
-        
-        return (strpos($sAttributes, '|kids|') !== FALSE) ? 1 : $bFalse;
     }
     
     

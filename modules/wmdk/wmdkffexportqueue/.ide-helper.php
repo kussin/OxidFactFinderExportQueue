@@ -1,6 +1,6 @@
 <?php
-namespace Kussin\WmdkFFExportQueue\Controllers\Admin;
+namespace Kussin\FactFinderQueue\Controllers\Admin;
 
-namespace Kussin\WmdkFFExportQueue\Core;
+namespace Kussin\FactFinderQueue\Core;
 
-namespace Kussin\WmdkFFExportQueue\Traits;
+namespace Kussin\FactFinderQueue\Traits;
