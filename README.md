@@ -20,6 +20,16 @@ TODO: Will follow soon
 
 ### Configuration
 
+#### Step 1: Database
+
+1. Log into your OXID eShop database interface (e.g. [phpMyAdmin](https://www.phpmyadmin.net/))
+2. Select OXID eShop database
+3. Execute the following SQL file: [`modules/wmdk/wmdkffexportqueue/sql/install.sql`](modules/wmdk/wmdkffexportqueue/sql/install.sql)
+4. Refresh [OXID eShop database views](https://docs.oxid-esales.com/eshop/en/6.2/installation/update/standard-update.html#schritt-optional-generating-views)
+5. Clear [OXID eShop eShop cache](https://docs.oxid-esales.com/eshop/en/6.2/configuration/caching/caching.html)
+
+#### Step 2: Module
+
 TODO: Will follow soon 
 
 ## User Guide
