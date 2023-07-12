@@ -30,7 +30,19 @@ TODO: Will follow soon
 
 #### Step 2: Module
 
-TODO: Will follow soon 
+To install the module, please execute the following commands in OXID eShop root directory:
+
+   ```bash
+   composer config repositories.kussin_ffqueue vcs https://github.com/kussin/OxidFactFinderExportQueue.git
+   composer require wmdk/wmdkffexportqueue --no-update
+   composer clearcache
+   composer update --no-interaction
+   vendor/bin/oe-console oe:module:install-configuration source/modules/wmdk/wmdkffexportqueue/
+   vendor/bin/oe-console oe:module:apply-configuration
+   ```
+
+**NOTE:** If you are using VCS like GIT for your project, you should add the following path to your `.gitignore` file:
+`/source/modules/wmdk/`
 
 ## User Guide
 
