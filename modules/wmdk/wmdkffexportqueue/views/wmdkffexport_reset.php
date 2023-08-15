@@ -1,5 +1,7 @@
 <?php
 
+use OxidEsales\Eshop\Core\Registry;
+
 /**
  * Class wmdkffexport_reset
  */
@@ -28,8 +30,8 @@ class wmdkffexport_reset extends oxubase
     
     public function render() {
         // SET LIMITS
-        ini_set('max_execution_time', (int) oxRegistry::getConfig()->getConfigParam('sWmdkFFQueuePhpLimitTimeout'));
-        ini_set('memory_limit', oxRegistry::getConfig()->getConfigParam('sWmdkFFQueuePhpLimitMemory'));
+        ini_set('max_execution_time', (int) Registry::getConfig()->getConfigParam('sWmdkFFQueuePhpLimitTimeout'));
+        ini_set('memory_limit', Registry::getConfig()->getConfigParam('sWmdkFFQueuePhpLimitMemory'));
         
         $this->_cleanErrors();
         
@@ -132,7 +134,7 @@ class wmdkffexport_reset extends oxubase
             oxarticles
         WHERE
             WMDK_FFQUEUE = "0"
-        LIMIT ' . (int) oxRegistry::getConfig()->getConfigParam('sWmdkFFQueueResetLimit');
+        LIMIT ' . (int) Registry::getConfig()->getConfigParam('sWmdkFFQueueResetLimit');
         
         $oResult = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(FALSE)->select($sQuery);
 
@@ -342,14 +344,14 @@ class wmdkffexport_reset extends oxubase
     
     
     private function _isCron() {
-        $sIsCronjobOrg = in_array( $this->_getProcessIp(), explode(',', oxRegistry::getConfig()->getConfigParam('sWmdkFFDebugCronjobIpList') ) );
+        $sIsCronjobOrg = in_array( $this->_getProcessIp(), explode(',', Registry::getConfig()->getConfigParam('sWmdkFFDebugCronjobIpList') ) );
         
         return ( (php_sapi_name() == 'cli') || $sIsCronjobOrg);
     }
     
     
     private function _log() {
-        $sFilename  = str_replace('//', '/', $_SERVER['DOCUMENT_ROOT'] . oxRegistry::getConfig()->getConfigParam('sWmdkFFDebugLogFileQueue'));
+        $sFilename  = str_replace('//', '/', $_SERVER['DOCUMENT_ROOT'] . Registry::getConfig()->getConfigParam('sWmdkFFDebugLogFileQueue'));
         
         // SET ADDITIONAL DATA
         $this->_aResponse['template'] = $this->_sTemplate;

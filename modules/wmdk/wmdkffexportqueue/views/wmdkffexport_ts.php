@@ -1,5 +1,7 @@
 <?php
 
+use OxidEsales\Eshop\Core\Registry;
+
 /**
  * Class wmdkffexport_ts
  */
@@ -34,11 +36,11 @@ class wmdkffexport_ts extends oxubase
     
     public function render() {
         // SET LIMITS
-        ini_set('max_execution_time', (int) oxRegistry::getConfig()->getConfigParam('sWmdkFFQueuePhpLimitTimeout'));
-        ini_set('memory_limit', oxRegistry::getConfig()->getConfigParam('sWmdkFFQueuePhpLimitMemory'));
+        ini_set('max_execution_time', (int) Registry::getConfig()->getConfigParam('sWmdkFFQueuePhpLimitTimeout'));
+        ini_set('memory_limit', Registry::getConfig()->getConfigParam('sWmdkFFQueuePhpLimitMemory'));
         
         // GET DATA
-        $this->_sChannel = oxRegistry::getConfig()->getRequestParameter('channel');
+        $this->_sChannel = Registry::getConfig()->getRequestParameter('channel');
         
         $this->_startImport();
         
@@ -64,7 +66,7 @@ class wmdkffexport_ts extends oxubase
     
     
     private function _loadReviews() {
-        $this->_sApiUrl = oxRegistry::getConfig()->getConfigParam('sWmdkFFImportTSApiUrl');
+        $this->_sApiUrl = Registry::getConfig()->getConfigParam('sWmdkFFImportTSApiUrl');
         
         $oJson = json_decode( file_get_contents($this->_sApiUrl) );
         
@@ -307,14 +309,14 @@ class wmdkffexport_ts extends oxubase
     
     
     private function _isCron() {
-        $sIsCronjobOrg = in_array( $this->_getProcessIp(), explode(',', oxRegistry::getConfig()->getConfigParam('sWmdkFFDebugCronjobIpList') ) );
+        $sIsCronjobOrg = in_array( $this->_getProcessIp(), explode(',', Registry::getConfig()->getConfigParam('sWmdkFFDebugCronjobIpList') ) );
         
         return ( (php_sapi_name() == 'cli') || $sIsCronjobOrg);
     }
     
     
     private function _log() {
-        $sFilename  = str_replace('//', '/', $_SERVER['DOCUMENT_ROOT'] . oxRegistry::getConfig()->getConfigParam('sWmdkFFDebugLogFileQueue'));
+        $sFilename  = str_replace('//', '/', $_SERVER['DOCUMENT_ROOT'] . Registry::getConfig()->getConfigParam('sWmdkFFDebugLogFileQueue'));
         
         // SET ADDITIONAL DATA
         $this->_aResponse['template'] = $this->_sTemplate;

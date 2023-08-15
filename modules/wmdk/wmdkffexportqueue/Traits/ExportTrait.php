@@ -2,6 +2,8 @@
 
 namespace Wmdk\FactFinderQueue\Traits;
 
+use OxidEsales\Eshop\Core\Registry;
+
 trait ExportTrait
 {
     protected $_sChannel = NULL;
@@ -50,6 +52,101 @@ trait ExportTrait
         return $this->_sTemplate;
     }
 
+    private function _getCSVDataRow($aFields) {
+        $aTmpCsvData = array();
+
+        foreach ($aFields as $iKey => $sValue) {
+            /* CategoryPath (Ticket: #35896) */
+            if (
+                ($this->_aExportFields[$iKey] == 'CategoryPath')
+                && ($sValue != 'CategoryPath')
+            ) {
+                $sValue = $this->_checkAllowedCategoies($sValue);
+            }
+
+            $sExportData = in_array($this->_aExportFields[$iKey], $this->_aExportHtmlFields) ? $sValue : $this->_removeHtmlAndBlankLines($sValue);
+
+            $aTmpCsvData[] = self::EXPORT_ADDITIONAL_ESCAPING . $this->_excapeString( $sExportData ) . self::EXPORT_ADDITIONAL_ESCAPING;
+        }
+        return implode(self::EXPORT_DELIMITER, $aTmpCsvData);
+    }
+
+    private function _loadData() {
+        // CONFIG
+        $this->_bActive = (bool) Registry::getConfig()->getConfigParam('sWmdkFFExportOnlyActive');
+        $this->_bHidden = (bool) Registry::getConfig()->getConfigParam('sWmdkFFExportHidden');
+        $this->_iStockMin = (int) Registry::getConfig()->getConfigParam('sWmdkFFExportStockMin');
+
+        $iCsvLengthMax = (int) Registry::getConfig()->getConfigParam('sWmdkFFExportDataLengthMax');
+        $iCsvLengthMin = (int) Registry::getConfig()->getConfigParam('sWmdkFFExportDataLengthMin');
+
+        $this->_aExportFields = explode(',', 'OXID,' . Registry::getConfig()->getConfigParam('sWmdkFFExportFields'));
+        $this->_aExportHtmlFields = explode(',', Registry::getConfig()->getConfigParam('sWmdkFFExportHtmlFields'));
+
+        // GET DATA
+        $this->_sChannel = Registry::getConfig()->getRequestParameter('channel');
+        $this->_iShopId = Registry::getConfig()->getRequestParameter('shop_id');
+        $this->_iLang = Registry::getConfig()->getRequestParameter('lang');
+
+        // LOAD PRODUCTS
+        $sQuery = 'SELECT 
+                        `' . implode('`, `', $this->_aExportFields) . '`
+                    FROM 
+                        `wmdk_ff_export_queue`
+                    WHERE
+                        (`Channel` = "' . $this->_sChannel . '")
+                        AND (`OXSHOPID` = "' . $this->_iShopId . '")
+                        AND (`LANG` = "' . $this->_iLang . '")
+                        AND (`OXACTIVE` = "' . (($this->_bActive) ? '1' : '0') . '")
+                        AND (`OXHIDDEN` = "' . (($this->_bHidden) ? '1' : '0') . '")
+                        AND (`Stock` >= ' . $this->_iStockMin . ');';
+
+        $oResult = \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->select($sQuery);
+
+        if ($oResult != FALSE && $oResult->count() > 0) {
+
+            // ADD CSV Header
+            array_shift($this->_aExportFields);
+            $this->_aCsvData[] = $this->_getCSVDataRow($this->_aExportFields);
+
+            while (!$oResult->EOF) {
+                $aData = $oResult->getFields();
+
+                // PREPARE DATA
+                $sOxid = array_shift($aData);
+
+                // CLEAN DATA
+                $sCSVDataRow = $this->_getCSVDataRow($aData);
+
+                if (!$this->_bSkipCSVDataRow) {
+                    $sCsvData = $sCSVDataRow;
+
+                    if (
+                        ($iCsvLengthMin <= strlen($sCsvData))
+                        && (strlen($sCsvData) <= $iCsvLengthMax)
+                    ) {
+                        $this->_aCsvData[] = $sCsvData;
+
+                    } else {
+                        // ERROR
+                        $this->_aResponse['validation_errors'][] = 'OXID ' . $sOxid . ' has wrong limits.';
+                    }
+
+                } else {
+                    // SKIPPED
+                    $this->_bSkipCSVDataRow = FALSE;
+
+                    // LOG
+                    $this->_aResponse['skipped'] += 1;
+                }
+
+
+                // NEXT
+                $oResult->fetchRow();
+            }
+        }
+    }
+
 
     private function _excapeString($sString) {
         return str_replace(array(
@@ -63,12 +160,12 @@ trait ExportTrait
     private function _removeHtmlAndBlankLines($sHtmlText) {
         $sHtmlText = str_replace(array("\n\r", "\n", "\r"), array(' ', ' ', ' '), $sHtmlText);
 
-        return strip_tags($sHtmlText, oxRegistry::getConfig()->getConfigParam('sWmdkFFQueueAllowableTags'));
+        return strip_tags($sHtmlText, Registry::getConfig()->getConfigParam('sWmdkFFQueueAllowableTags'));
     }
 
     private function _checkAllowedCategoies($sCategoryPath, $sDelimiter = ',') {
         // HACK
-        $aCategoryPath = explode('|', $sCategoryPath);
+        $aCategoryPath = explode(self::EXPORT_CATEGORY_DELIMITER, $sCategoryPath);
         $aCleanedPath = array();
         $aSkipKeys = array(
             'Sale',
@@ -88,7 +185,7 @@ trait ExportTrait
             }
         }
 
-        $sCategoryPath = implode('|', $aCleanedPath);
+        $sCategoryPath = implode(self::EXPORT_CATEGORY_DELIMITER, $aCleanedPath);
         // HACK
 
         $aSearch = array('&amp;',);
@@ -96,7 +193,7 @@ trait ExportTrait
 
         $sCleanedCategoryPath = str_replace($aSearch, $aReplace, $sCategoryPath);
 
-        $aSkipCategories = explode($sDelimiter, oxRegistry::getConfig()->getConfigParam('sWmdkFFExportRemoveCategoriesByName'));
+        $aSkipCategories = explode($sDelimiter, Registry::getConfig()->getConfigParam('sWmdkFFExportRemoveCategoriesByName'));
 
         foreach ($aSkipCategories as $iKey => $sCategoryName) {
             $sFindIn = strtolower( trim($sCleanedCategoryPath) );

@@ -37,7 +37,7 @@ $aModule = array(
         // EXPORT
 		array('group' => 'sWmdkFFExportSettings', 'name' => 'sWmdkFFExportDirectory', 'type' => 'str', 'value' => 'export/factfinder/productData/'),
         
-		array('group' => 'sWmdkFFExportSettings', 'name' => 'sWmdkFFExportFields', 'type' => 'str', 'value' => 'ProductNumber,MasterProductNumber,Title,Short,HasProductImage,ImageURL,SuggestPictureURL,HasFromPrice,Price,MSRP,BasePrice,Stock,Description,Deeplink,Marke,CategoryPath,HasCustomAsnRestrictions,Attributes,NumericalAttributes,SearchAttributes,SearchKeywords,EAN,MPN,DISTEAN,Weight,Rating,RatingCnt,HasNewFlag,HasTopFlag,HasSaleFlag,SaleAmount,HasSaleOfTheDayFlag,SaleOfTheDayDate,HasKidsFlag,HasVariantsSizelist,VariantsSizelistMarkup,SoldAmount,DateInsert,DateModified,TrustedShopsRating,TrustedShopsRatingCnt,TrustedShopsRatingPercentage'),
+		array('group' => 'sWmdkFFExportSettings', 'name' => 'sWmdkFFExportFields', 'type' => 'str', 'value' => 'ProductNumber,MasterProductNumber,Title,Short,HasProductImage,ImageURL,SuggestPictureURL,HasFromPrice,Price,MSRP,BasePrice,Stock,Description,Deeplink,Marke,CategoryPath,HasCustomAsnRestrictions,Attributes,NumericalAttributes,SearchAttributes,SearchKeywords,EAN,MPN,DISTEAN,Weight,Rating,RatingCnt,HasNewFlag,HasTopFlag,HasSaleFlag,SaleAmount,HasVariantsSizelist,VariantsSizelistMarkup,SoldAmount,DateInsert,DateModified,TrustedShopsRating,TrustedShopsRatingCnt,TrustedShopsRatingPercentage'),
 		array('group' => 'sWmdkFFExportSettings', 'name' => 'sWmdkFFExportHtmlFields', 'type' => 'str', 'value' => 'VariantsSizelistMarkup'),
 		
 		array('group' => 'sWmdkFFExportSettings', 'name' => 'sWmdkFFExportOnlyActive', 'type' => 'bool', 'value' => 1),
@@ -91,6 +91,7 @@ $aModule = array(
     'templates' => array(
         'wmdkffexport_queue.tpl' => 'wmdk/wmdkffexportqueue/views/tpl/wmdkffexport_queue.tpl',
         'wmdkffexport_export.tpl' => 'wmdk/wmdkffexportqueue/views/tpl/wmdkffexport_export.tpl',
+        'wmdkffexport_sooqr.tpl' => 'wmdk/wmdkffexportqueue/views/tpl/wmdkffexport_sooqr.tpl',
         'wmdkffexport_reset.tpl' => 'wmdk/wmdkffexportqueue/views/tpl/wmdkffexport_reset.tpl',
         'wmdkffexport_ts.tpl' => 'wmdk/wmdkffexportqueue/views/tpl/wmdkffexport_ts.tpl',
     ),

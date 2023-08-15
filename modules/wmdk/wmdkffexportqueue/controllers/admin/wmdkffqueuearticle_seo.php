@@ -1,6 +1,8 @@
 <?php
 
 
+use OxidEsales\Eshop\Core\Registry;
+
 class wmdkFfQueueArticle_Seo extends wmdkFfQueueArticle_Seo_parent
 {
     /**
@@ -11,6 +13,6 @@ class wmdkFfQueueArticle_Seo extends wmdkFfQueueArticle_Seo_parent
         parent::save();
         
         // ACTIVE OXID
-        wmdkffexport_helper::saveArticle(oxRegistry::getConfig()->getRequestParameter('oxid'));
+        wmdkffexport_helper::saveArticle(Registry::getConfig()->getRequestParameter('oxid'));
     }
 }

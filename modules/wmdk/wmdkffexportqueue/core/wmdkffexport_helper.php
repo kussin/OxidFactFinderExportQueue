@@ -61,7 +61,7 @@ class wmdkffexport_helper
     {
         $aChannelList = array();
 
-        $aChannels = explode(',', oxRegistry::getConfig()->getConfigParam('sWmdkFFGeneralChannelList'));
+        $aChannels = explode(',', \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('sWmdkFFGeneralChannelList'));
 
         foreach ($aChannels as $sChannel) {
             $aParams = explode('::', $sChannel);

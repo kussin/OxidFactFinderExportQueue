@@ -1,5 +1,6 @@
 <?php
 
+use OxidEsales\Eshop\Core\Registry;
 use Wmdk\FactFinderQueue\Traits\ConverterTrait;
 
 /**
@@ -64,9 +65,9 @@ class wmdkffexport_queue extends oxubase
             $this->_setCronjobFlag();
 
             // Settings
-            $iQueueLimit = (int) oxRegistry::getConfig()->getConfigParam('sWmdkFFQueueLimit');
-            $iArticleStatus = oxRegistry::getConfig()->getConfigParam('iArticleStatus');
-            $iArticleMinStock = (int) oxRegistry::getConfig()->getConfigParam('iArticleMinStock');
+            $iQueueLimit = (int) Registry::getConfig()->getConfigParam('sWmdkFFQueueLimit');
+            $iArticleStatus = Registry::getConfig()->getConfigParam('iArticleStatus');
+            $iArticleMinStock = (int) Registry::getConfig()->getConfigParam('iArticleMinStock');
 
             // LOAD PRODUCTS
             $sQuery = 'SELECT 
@@ -326,7 +327,7 @@ class wmdkffexport_queue extends oxubase
     
     private function _getBaseUrl() {
 //        if ($this->_sBaseUrl == NULL) {
-//            $aBaseUrl = explode('?', oxRegistry::getConfig()->getConfigParam('sShopURL'));
+//            $aBaseUrl = explode('?', \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('sShopURL'));
 //            $this->_sBaseUrl = trim($aBaseUrl[0]);
 //        }
 //
@@ -384,7 +385,7 @@ class wmdkffexport_queue extends oxubase
 
             $aCategoryPath .= str_replace('/', '%2f', $this->_translateString($oCategory, 'oxcategories__oxtitle'));            
             
-            $bSkip = strpos($aCategoryPath, trim(oxRegistry::getConfig()->getConfigParam('sWmdkFFExportRemovePrefixCategories')));
+            $bSkip = strpos($aCategoryPath, trim(Registry::getConfig()->getConfigParam('sWmdkFFExportRemovePrefixCategories')));
             
             if (
                 ($bSkip == FALSE) 
@@ -395,7 +396,7 @@ class wmdkffexport_queue extends oxubase
             }
         }
         
-        return implode(oxRegistry::getConfig()->getConfigParam('sWmdkFFQueueAttributeGlue'), $aCategoryPathes);
+        return implode(Registry::getConfig()->getConfigParam('sWmdkFFQueueAttributeGlue'), $aCategoryPathes);
     }
     
     
@@ -408,7 +409,7 @@ class wmdkffexport_queue extends oxubase
         }
         
         // ATTRIBUTES
-        $aCsvAttributes = explode(',', oxRegistry::getConfig()->getConfigParam('sWmdkFFExportCsvAttributes'));
+        $aCsvAttributes = explode(',', Registry::getConfig()->getConfigParam('sWmdkFFExportCsvAttributes'));
 
         foreach($this->_oProduct->getAttributes() as $oAttribute) {
             $sCleanAttributeName = $this->_cleanAttributeTitle($this->_translateString($oAttribute, 'oxattribute__oxtitle'));
@@ -433,7 +434,7 @@ class wmdkffexport_queue extends oxubase
 
         // SALE
         if (($this->_getSaleAmount() != '')) {
-            $oLang = oxRegistry::getLang();
+            $oLang = Registry::getLang();
 
             $sSaleLabel = $oLang->translateString( 'SALE', $this->_iLang);
             $sSaleValue = $oLang->translateString( 'REDUCED_ARTICLES', $this->_iLang);
@@ -441,7 +442,7 @@ class wmdkffexport_queue extends oxubase
             $aAttributes[] = $sSaleLabel . '=' . $sSaleValue;
         }
         
-        return implode(oxRegistry::getConfig()->getConfigParam('sWmdkFFQueueAttributeGlue'), $aAttributes);
+        return implode(Registry::getConfig()->getConfigParam('sWmdkFFQueueAttributeGlue'), $aAttributes);
     }
 
 
@@ -458,7 +459,7 @@ class wmdkffexport_queue extends oxubase
             $aAttributes[] = $sAttributeName . '=' . $this->_converter($sAttributeName, $sAttributeValue);
         }
 
-        return implode(oxRegistry::getConfig()->getConfigParam('sWmdkFFQueueAttributeGlue'), $aAttributes);
+        return implode(Registry::getConfig()->getConfigParam('sWmdkFFQueueAttributeGlue'), $aAttributes);
     }
     
     
@@ -495,7 +496,7 @@ class wmdkffexport_queue extends oxubase
         }
         /* END wmdk_dkussin (Ticket: #48108) */
         
-        return implode(oxRegistry::getConfig()->getConfigParam('sWmdkFFQueueAttributeGlue'), $aAttributes);
+        return implode(Registry::getConfig()->getConfigParam('sWmdkFFQueueAttributeGlue'), $aAttributes);
     }
     
     
@@ -528,7 +529,7 @@ class wmdkffexport_queue extends oxubase
     private function _hasHasTopFlag($bFalse = 0) {
         $oArticle = ($this->_bIsVariant) ? $this->_oParent : $this->_oProduct;
         
-        $iMinSoldAmount = (int) oxRegistry::getConfig()->getConfigParam('sWmdkFFQueueFlagTopseller');
+        $iMinSoldAmount = (int) Registry::getConfig()->getConfigParam('sWmdkFFQueueFlagTopseller');
         
         $iSoldAmount = (int) $oArticle->oxarticles__oxsoldamount->value;
         
@@ -632,7 +633,7 @@ class wmdkffexport_queue extends oxubase
             ($this->_aCleanAttributeTitleSearchKeys == NULL)
             || ($this->_aCleanAttributeTitleReplaceKeys == NULL)
         ) {
-            $this->_aCleanAttributeTitleSearchKeys = explode(',', oxRegistry::getConfig()->getConfigParam('sWmdkFFExportRemovePrefixAttributes'));
+            $this->_aCleanAttributeTitleSearchKeys = explode(',', Registry::getConfig()->getConfigParam('sWmdkFFExportRemovePrefixAttributes'));
             $this->_aCleanAttributeTitleReplaceKeys = array_fill(0, count($this->_aCleanAttributeTitleSearchKeys), '');
         }        
         
@@ -695,7 +696,7 @@ class wmdkffexport_queue extends oxubase
     
     
     private function _removeHtml($sHtmlText) {
-        return strip_tags($sHtmlText, oxRegistry::getConfig()->getConfigParam('sWmdkFFQueueAllowableTags'));
+        return strip_tags($sHtmlText, Registry::getConfig()->getConfigParam('sWmdkFFQueueAllowableTags'));
     }
     
     
@@ -781,14 +782,14 @@ class wmdkffexport_queue extends oxubase
     
     
     private function _isCron() {
-        $sIsCronjobOrg = in_array( $this->_getProcessIp(), explode(',', oxRegistry::getConfig()->getConfigParam('sWmdkFFDebugCronjobIpList') ) );
+        $sIsCronjobOrg = in_array( $this->_getProcessIp(), explode(',', Registry::getConfig()->getConfigParam('sWmdkFFDebugCronjobIpList') ) );
         
         return ( (php_sapi_name() == 'cli') || $sIsCronjobOrg);
     }
     
     
     private function _log() {
-        $sFilename  = str_replace('//', '/', $_SERVER['DOCUMENT_ROOT'] . oxRegistry::getConfig()->getConfigParam('sWmdkFFDebugLogFileQueue'));
+        $sFilename  = str_replace('//', '/', $_SERVER['DOCUMENT_ROOT'] . Registry::getConfig()->getConfigParam('sWmdkFFDebugLogFileQueue'));
         
         // SET ADDITIONAL DATA
         $this->_aResponse['template'] = $this->_sTemplate;
@@ -806,8 +807,8 @@ class wmdkffexport_queue extends oxubase
         $bIsVariant = FALSE;
         
         // PARAMS
-        $sOxid = oxRegistry::getConfig()->getRequestParameter('oxid');
-        $iLang = oxRegistry::getConfig()->getRequestParameter('lang');
+        $sOxid = Registry::getConfig()->getRequestParameter('oxid');
+        $iLang = Registry::getConfig()->getRequestParameter('lang');
         
         // LOAD Product
         $oProduct = oxNew(\OxidEsales\Eshop\Application\Model\Article::class);
@@ -824,9 +825,9 @@ class wmdkffexport_queue extends oxubase
         
         /* --------------------- START TEST --------------------- */
                 
-        $oUtilsUrl = \OxidEsales\Eshop\Core\Registry::getUtilsUrl();
+        $oUtilsUrl = Registry::getUtilsUrl();
         
-        if (\OxidEsales\Eshop\Core\Registry::getUtils()->seoIsActive()) {
+        if (Registry::getUtils()->seoIsActive()) {
             $sDeeplink = $oUtilsUrl->prepareCanonicalUrl($oArticle->getBaseSeoLink($iLang, TRUE));
         } else {
             $sDeeplink = $oUtilsUrl->prepareCanonicalUrl($oArticle->getBaseStdLink($iLang));
