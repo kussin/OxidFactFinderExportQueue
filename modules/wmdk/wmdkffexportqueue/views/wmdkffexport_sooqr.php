@@ -49,7 +49,7 @@ class wmdkffexport_sooqr extends oxubase
             // EXPORT
             $rXmlFile = fopen($sExportFile, 'w');
 
-            fwrite($rXmlFile, $oXML->prettify()->toXml());
+            fwrite($rXmlFile, $this->_fixCDataWrapper($oXML->prettify()->toXml()));
 
             fclose($rXmlFile);
             

@@ -72,6 +72,17 @@ trait ThirdPartyConverterTrait
         return "<![CDATA['" . $sValue . "']]>";
     }
 
+    // TODO: Remove FIX #631380
+    private function _fixCDataWrapper($sExportData) {
+        return str_replace(array(
+            '&lt;![CDATA[',
+            ']]&gt;'
+        ), array(
+            '<![CDATA[',
+            ']]>'
+        ), $sExportData);
+    }
+
     public function _convertToDate($sValue)
     {
         $iTimestamp = strtotime($sValue);
