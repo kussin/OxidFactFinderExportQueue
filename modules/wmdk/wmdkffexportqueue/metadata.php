@@ -77,12 +77,16 @@ $aModule = array(
 
         // Sooqr
         array('group' => 'sWmdkFFSooqrSettings', 'name' => 'sWmdkFFSooqrMapping', 'type' => 'aarr', 'value' => array(
-            'ProductNumber' => 'ID',
-            'MasterProductNumber' => 'Parent',
+            'ProductNumber' => 'id',
+            'MasterProductNumber' => 'parent',
             'Title' => 'title',
-            'Deeplink' => 'URL',
+            'Deeplink' => 'link',
+            'ImageURL' => 'image_link',
+            'Description' => 'description',
+            'Price' => 'price',
+            'MSRP' => 'normal_price',
         )),
-        array('group' => 'sWmdkFFSooqrSettings', 'name' => 'sWmdkFFSooqrCDataFields', 'type' => 'str', 'value' => 'Title,Short,Description,Deeplink,Marke,CategoryPath,Attributes,NumericalAttributes,SearchAttributes,SearchKeywords,VariantsSizelistMarkup'),
+        array('group' => 'sWmdkFFSooqrSettings', 'name' => 'sWmdkFFSooqrCDataFields', 'type' => 'str', 'value' => 'Title,ImageURL,SuggestPictureURL,Short,Description,Deeplink,Marke,CategoryPath,Attributes,NumericalAttributes,SearchAttributes,SearchKeywords,VariantsSizelistMarkup'),
         array('group' => 'sWmdkFFSooqrSettings', 'name' => 'sWmdkFFSooqrNumberFields', 'type' => 'str', 'value' => 'Price,MSRP,BasePrice,Stock,Weight,Rating,RatingCnt,SaleAmount,SoldAmount,TrustedShopsRating,TrustedShopsRatingCnt,TrustedShopsRatingPercentage'),
         array('group' => 'sWmdkFFSooqrSettings', 'name' => 'sWmdkFFSooqrBooleanFields', 'type' => 'str', 'value' => 'HasProductImage,HasCustomAsnRestrictions,HasNewFlag,HasTopFlag,HasSaleFlag,HasVariantsSizelist'),
         array('group' => 'sWmdkFFSooqrSettings', 'name' => 'sWmdkFFSooqrDateFields', 'type' => 'str', 'value' => 'DateInsert,DateModified,Speed'),

@@ -69,7 +69,7 @@ trait ThirdPartyConverterTrait
 
     public function _convertToCData($sValue)
     {
-        return "<![CDATA['" . $sValue . "']]>";
+        return "<![CDATA[" . $sValue . "]]>";
     }
 
     // TODO: Remove FIX #631380
