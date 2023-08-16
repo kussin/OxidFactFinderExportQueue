@@ -6,6 +6,7 @@ $aLang = array(
     'SHOP_MODULE_GROUP_sWmdkFFExportSettings'	        => 'Export settings',
     'SHOP_MODULE_GROUP_sWmdkFFQueueSettings'	        => 'Queue settings',
     'SHOP_MODULE_GROUP_sWmdkFFConverterSettings'	    => 'Queue Data Converter',
+    'SHOP_MODULE_GROUP_sWmdkFFSooqrSettings'	        => 'Sooqr Settings',
     'SHOP_MODULE_GROUP_sWmdkFFImportTSSettings'	        => 'Trusted Shops settings',
     'SHOP_MODULE_GROUP_sWmdkFFDebugSettings'	        => 'Debug settings',
 
@@ -42,6 +43,13 @@ $aLang = array(
 
     // CONVERTER
     'SHOP_MODULE_sWmdkFFConverterFieldlistDouble'       => 'Attributes whose values are to be converted to decimals (double).',
+
+    // SOOQR
+    'SHOP_MODULE_sWmdkFFSooqrMapping'	                => 'Mapping',
+    'SHOP_MODULE_sWmdkFFSooqrCDataFields'	            => 'CDATA values',
+    'SHOP_MODULE_sWmdkFFSooqrNumberFields'	            => 'Numeric values',
+    'SHOP_MODULE_sWmdkFFSooqrBooleanFields'	            => 'Boolean values',
+    'SHOP_MODULE_sWmdkFFSooqrDateFields'	            => 'Date values',
     
     // TRUSTED SHOPS
     'SHOP_MODULE_sWmdkFFImportTSApiUrl'	                => 'JSON api url',

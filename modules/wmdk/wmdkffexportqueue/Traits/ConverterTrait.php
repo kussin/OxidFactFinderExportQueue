@@ -38,4 +38,23 @@ trait ConverterTrait
 
         return ( ($aNumbers != FALSE) && (count($aNumbers[0]) > 0) ) ? (float) $aNumbers[0][$iPosition] : FALSE;
     }
+
+    private function _convertToBoolean($sValue, $bBoolean = FALSE)
+    {
+        $bConvertedValue = (bool) $sValue;
+
+        if (is_numeric($sValue)) {
+            $bConvertedValue = $sValue > 0;
+        }
+
+        if (!is_bool($sValue)) {
+            $bConvertedValue = $sValue == 'true';
+        }
+
+        if ($bBoolean) {
+            return $bConvertedValue;
+        }
+
+        return $bConvertedValue ? 1 : 0;
+    }
 }

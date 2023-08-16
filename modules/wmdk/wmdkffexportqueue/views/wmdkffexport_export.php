@@ -10,6 +10,8 @@ class wmdkffexport_export extends oxubase
 {
     use ExportTrait;
 
+    const PROCESS_CODE = 'FACTFINDER';
+
     const EXPORT_ADDITIONAL_ESCAPING = '"';
     const EXPORT_DELIMITER = '|';
     const EXPORT_CATEGORY_DELIMITER = '|';

@@ -74,6 +74,18 @@ $aModule = array(
 
         // CONVERTER
         array('group' => 'sWmdkFFConverterSettings', 'name' => 'sWmdkFFConverterFieldlistDouble', 'type' => 'str', 'value' => 'Terrain,Schwung,Speed'),
+
+        // Sooqr
+        array('group' => 'sWmdkFFSooqrSettings', 'name' => 'sWmdkFFSooqrMapping', 'type' => 'aarr', 'value' => array(
+            'ProductNumber' => 'ID',
+            'MasterProductNumber' => 'Parent',
+            'Title' => 'title',
+            'Deeplink' => 'URL',
+        )),
+        array('group' => 'sWmdkFFSooqrSettings', 'name' => 'sWmdkFFSooqrCDataFields', 'type' => 'str', 'value' => 'Title,Short,Description,Deeplink,Marke,CategoryPath,Attributes,NumericalAttributes,SearchAttributes,SearchKeywords,VariantsSizelistMarkup'),
+        array('group' => 'sWmdkFFSooqrSettings', 'name' => 'sWmdkFFSooqrNumberFields', 'type' => 'str', 'value' => 'Price,MSRP,BasePrice,Stock,Weight,Rating,RatingCnt,SaleAmount,SoldAmount,TrustedShopsRating,TrustedShopsRatingCnt,TrustedShopsRatingPercentage'),
+        array('group' => 'sWmdkFFSooqrSettings', 'name' => 'sWmdkFFSooqrBooleanFields', 'type' => 'str', 'value' => 'HasProductImage,HasCustomAsnRestrictions,HasNewFlag,HasTopFlag,HasSaleFlag,HasVariantsSizelist'),
+        array('group' => 'sWmdkFFSooqrSettings', 'name' => 'sWmdkFFSooqrDateFields', 'type' => 'str', 'value' => 'DateInsert,DateModified,Speed'),
         
         // TRUSTED SHOPS
 		array('group' => 'sWmdkFFImportTSSettings', 'name' => 'sWmdkFFImportTSApiUrl', 'type' => 'str', 'value' => 'https://cdn1.api.trustedshops.com/shops/XEB1234567898D431456F97193879F/products/public/v1/feed.json'),
