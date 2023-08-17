@@ -7,6 +7,7 @@ $aLang = array(
     'SHOP_MODULE_GROUP_sWmdkFFQueueSettings'	        => 'Queue-Einstellungen',
     'SHOP_MODULE_GROUP_sWmdkFFConverterSettings'	    => 'Queue Data Converter',
     'SHOP_MODULE_GROUP_sWmdkFFSooqrSettings'	        => 'Sooqr-Einstellungen',
+    'SHOP_MODULE_GROUP_sWmdkFFDoofinderSettings'	    => 'Doofinder-Einstellungen',
     'SHOP_MODULE_GROUP_sWmdkFFImportTSSettings'	        => 'Trusted Shops Einstellungen',
     'SHOP_MODULE_GROUP_sWmdkFFDebugSettings'    	    => 'Debug-Einstellungen',
 
@@ -50,6 +51,13 @@ $aLang = array(
     'SHOP_MODULE_sWmdkFFSooqrNumberFields'	            => 'Numerische Werte',
     'SHOP_MODULE_sWmdkFFSooqrBooleanFields'	            => 'Boolische Werte',
     'SHOP_MODULE_sWmdkFFSooqrDateFields'	            => 'Datumswerte',
+
+    // DOOFINDER
+    'SHOP_MODULE_sWmdkFFDoofinderMapping'	            => 'Mapping',
+    'SHOP_MODULE_sWmdkFFDoofinderCDataFields'	        => 'CDATA Werte',
+    'SHOP_MODULE_sWmdkFFDoofinderNumberFields'	        => 'Numerische Werte',
+    'SHOP_MODULE_sWmdkFFDoofinderBooleanFields'	        => 'Boolische Werte',
+    'SHOP_MODULE_sWmdkFFDoofinderDateFields'	        => 'Datumswerte',
 
     // TRUSTED SHOPS
     'SHOP_MODULE_sWmdkFFImportTSApiUrl'	                => 'JSON Webservice URL',

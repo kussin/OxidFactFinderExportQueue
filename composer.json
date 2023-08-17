@@ -41,7 +41,8 @@
     "require":     {
         "php": ">=7.4",
         "oxid-esales/oxideshop-ce": "^6.0",
-        "spatie/array-to-xml": "^3.2"
+        "spatie/array-to-xml": "^3.2",
+        "ext-zlib": "*"
     },
     "autoload":    {
         "psr-4": {
