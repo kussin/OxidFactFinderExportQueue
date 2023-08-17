@@ -43,6 +43,24 @@ To execute the CSV export, you can use the following command:
 
 **NOTE:** The exported files can be fetched from https://www.domain.tld/export/factfinder/productData/[CHANNEL_ID].csv.
 
+#### Sooqr XML Export
+
+   ```bash
+   curl -i -X GET \
+ 'https://www.domain.tld/index.php?cl=wmdkffexport_sooqr&channel=[CHANNEL_ID]&shop_id=[STORE_ID]&lang=[LANG_ID]'
+   ```
+
+**NOTE:** The exported files can be fetched from https://www.domain.tld/export/factfinder/productData/[CHANNEL_ID].sooqr.xml.
+
+#### Doofinder XML Export
+
+   ```bash
+   curl -i -X GET \
+ 'https://www.domain.tld/index.php?cl=wmdkffexport_doofinder&channel=[CHANNEL_ID]&shop_id=[STORE_ID]&lang=[LANG_ID]'
+   ```
+
+**NOTE:** The exported files can be fetched from https://www.domain.tld/export/factfinder/productData/[CHANNEL_ID].doofinder.xml.gz.
+
 ### Reset
 
 To execute the queue reset, you can use the following command:
