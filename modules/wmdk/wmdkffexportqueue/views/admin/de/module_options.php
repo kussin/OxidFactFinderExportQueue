@@ -44,6 +44,7 @@ $aLang = array(
 
     // CONVERTER
     'SHOP_MODULE_sWmdkFFConverterFieldlistDouble'       => 'Attribute deren Werte in Fließkommazahlen (Double) umgewandelt werden sollen.',
+    'SHOP_MODULE_aWmdkFFConverterRenameAttributes'      => 'Umbenennung von Attributnamen und -werten',
 
     // SOOQR
     'SHOP_MODULE_sWmdkFFSooqrMapping'	                => 'Mapping',

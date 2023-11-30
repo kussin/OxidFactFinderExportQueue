@@ -6,6 +6,8 @@ use OxidEsales\Eshop\Core\Registry;
 
 trait ExportTrait
 {
+    use ConverterTrait;
+
     protected $_sChannel = NULL;
     protected $_iShopId = 1;
     protected $_iLang = 0;
@@ -62,6 +64,11 @@ trait ExportTrait
                 && ($sValue != 'CategoryPath')
             ) {
                 $sValue = $this->_checkAllowedCategoies($sValue);
+            }
+
+            /* Attributes (Ticket: #62637) */
+            if ($this->_aExportFields[$iKey] == 'Attributes') {
+                $sValue = $this->_convertAttributes($sValue);
             }
 
             $sExportData = in_array($this->_aExportFields[$iKey], $this->_aExportHtmlFields) ? $sValue : $this->_removeHtmlAndBlankLines($sValue);
@@ -167,6 +174,7 @@ trait ExportTrait
         // HACK
         $aCategoryPath = explode(self::EXPORT_CATEGORY_DELIMITER, $sCategoryPath);
         $aCleanedPath = array();
+        // TODO: Move to Settings
         $aSkipKeys = array(
             'Sale',
             '2nd-Artikel',

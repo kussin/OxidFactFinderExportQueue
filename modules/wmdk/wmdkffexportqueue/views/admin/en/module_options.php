@@ -44,6 +44,7 @@ $aLang = array(
 
     // CONVERTER
     'SHOP_MODULE_sWmdkFFConverterFieldlistDouble'       => 'Attributes whose values are to be converted to decimals (double).',
+    'SHOP_MODULE_aWmdkFFConverterRenameAttributes'      => 'Rename attribute names and values.',
 
     // SOOQR
     'SHOP_MODULE_sWmdkFFSooqrMapping'	                => 'Mapping',

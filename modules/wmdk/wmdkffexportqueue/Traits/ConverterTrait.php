@@ -57,4 +57,15 @@ trait ConverterTrait
 
         return $bConvertedValue ? 1 : 0;
     }
+
+    private function _convertAttributes($sAttributes)
+    {
+        $aAttributeList = Registry::getConfig()->getConfigParam('aWmdkFFConverterRenameAttributes');
+
+        foreach ($aAttributeList as $sSearch => $sReplace) {
+            $sAttributes = str_replace($sSearch, $sReplace, $sAttributes);
+        }
+
+        return $sAttributes;
+    }
 }
