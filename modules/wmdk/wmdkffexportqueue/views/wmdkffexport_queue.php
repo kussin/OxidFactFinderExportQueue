@@ -570,22 +570,34 @@ class wmdkffexport_queue extends oxubase
 
                 $aDuplicateCheck = array();
 
+                $aOptionsWithStock = array();
+
                 while (!$oResult->EOF) {
                     $aData = $oResult->getFields();
 
                     // MULTI-OPTIONS TO ARRAY
                     $aOption = explode('|', $aData['OXVARSELECT']);
-                    $sOption = isset($aOption[0]) ? trim($aOption[0]) : $aData['OXVARSELECT'];
+                    $sOption = (string) isset($aOption[0]) ? trim($aOption[0]) : $aData['OXVARSELECT'];
+                    $dStock = (float) $aData['OXSTOCK'];
 
-                    if (!in_array($sOption, $aDuplicateCheck)) {
-                        $aDesktopMarkup[] = '<li' . (((float)$aData['OXSTOCK'] > 0) ? '' : ' class="sold-out"') . '><span>' . $sOption . '</span></li>';
-                        $aMobileMarkup[] = '<option>' . $sOption . '</option>';
-
-                        $aDuplicateCheck[] = $sOption;
+                    if (
+                        isset($aOptionsWithStock[$sOption])
+                        && ($aOptionsWithStock[$sOption] < $dStock)
+                    ) {
+                        $aOptionsWithStock[$sOption] = $dStock;
+                        
+                    } elseif (!isset($aOptionsWithStock[$sOption])) {
+                        // DEFAULT
+                        $aOptionsWithStock[$sOption] = $dStock;
                     }
 
                     // NEXT
                     $oResult->fetchRow();
+                }
+
+                foreach ($aOptionsWithStock as $sOption => $dStock) {
+                    $aDesktopMarkup[] = '<li' . (($dStock > 0) ? '' : ' class="sold-out"') . '><span>' . $sOption . '</span></li>';
+                    $aMobileMarkup[] = '<option>' . $sOption . '</option>';
                 }
 
                 $aDesktopMarkup[] = '</ul>';

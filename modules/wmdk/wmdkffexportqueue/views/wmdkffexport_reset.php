@@ -12,7 +12,8 @@ class wmdkffexport_reset extends oxubase
 
         'template' => NULL,
         
-        'reseted_products' => 0, 
+        'reseted_products' => 0,
+        'reseted_variants' => 0,
         'reseted_varname' => 0,        
         'missing_products' => 0,       
         'added_products' => 0,
@@ -27,11 +28,18 @@ class wmdkffexport_reset extends oxubase
     
     protected $_sTemplate = 'wmdkffexport_reset.tpl';
 
+    private $_iCurrentHour = NULL;
+    private $_iCurrentMinute = NULL;
+
     
     public function render() {
         // SET LIMITS
         ini_set('max_execution_time', (int) Registry::getConfig()->getConfigParam('sWmdkFFQueuePhpLimitTimeout'));
         ini_set('memory_limit', Registry::getConfig()->getConfigParam('sWmdkFFQueuePhpLimitMemory'));
+
+        // Time Vars
+        $this->_iCurrentHour = (int) date('H');
+        $this->_iCurrentMinute = (int) date('i');
         
         $this->_cleanErrors();
         
@@ -60,9 +68,15 @@ class wmdkffexport_reset extends oxubase
         /* wmdk_dkussin (Ticket: 36784) */
         $this->_updateStatus();
         $this->_updateStock();
+
+        /* wmdk_dkussin (Ticket: 62853) */
+        $this->_resetExistingVariants();
         
         /* wmdk_dkussin (Ticket: 41008) */
         $this->_resetVariantsWithParentsModifiedWithinTheLastHour();
+
+        /* wmdk_dkussin (Ticket: 61736) */
+        $this->_resetArticlesWithNoPic();
     }
     
     
@@ -84,6 +98,27 @@ class wmdkffexport_reset extends oxubase
         
         // LOG
         $this->_aResponse['reseted_products'] = $iReseted;
+    }
+
+    private function _resetExistingVariants() {
+        $sQuery = 'UPDATE
+            oxarticles a,
+            wmdk_ff_export_queue b
+        SET
+            b.LASTSYNC = "0000-00-00 00:00:00",
+            b.ProcessIp = "' . $this->_getProcessIp() . '",
+            b.OXTIMESTAMP = "0000-00-00 00:00:00"
+        WHERE
+            (a.OXARTNUM = b.MasterProductNumber)
+            AND (b.ProductNumber != b.MasterProductNumber)
+            AND (a.OXTIMESTAMP > b.OXTIMESTAMP)
+            AND (a.OXTIMESTAMP > "' . date('Y-m-d H:i:s', strtotime('-2 days')) . '")
+            AND (b.OXTIMESTAMP != "0000-00-00 00:00:00");';
+
+        $iReseted = \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->execute($sQuery);
+
+        // LOG
+        $this->_aResponse['reseted_variants'] = $iReseted;
     }
     
     
@@ -322,6 +357,46 @@ class wmdkffexport_reset extends oxubase
             $this->_aResponse['reset_variants'] = FALSE;
         }
     }
+
+
+    private function _resetArticlesWithNoPic($sFrom = '02:05:00', $sTo = '03:15:00') {
+
+        if (
+            (
+                ($this->_iCurrentHour >= $this->_getTimePart($sFrom, 'hour'))
+                && ($this->_iCurrentHour <= $this->_getTimePart($sTo, 'hour'))
+            )
+            && (
+                ($this->_iCurrentHour >= $this->_getTimePart($sFrom, 'hour'))
+                && ($this->_iCurrentHour <= $this->_getTimePart($sTo, 'hour'))
+            )
+        ) {
+            $sArticles = 'UPDATE
+                wmdk_ff_export_queue b
+            SET
+                b.LASTSYNC = "0000-00-00 00:00:00",
+                b.ProcessIp = "' . $this->_getProcessIp() . '",
+                b.OXTIMESTAMP = "0000-00-00 00:00:00"
+            WHERE
+                (b.ImageURL LIKE "%nopic.jpg%")
+                AND (b.OXACTIVE = 1) 
+                AND (b.Stock > 0)';
+
+            try {
+                \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->execute($sArticles);
+
+                // LOG
+                $this->_aResponse['fixed_nopic'] = TRUE;
+
+            } catch (Exception $oException) {
+                // ERROR
+
+                // LOG
+                $this->_aResponse['fixed_nopic'] = FALSE;
+            }
+
+        }
+    }
     
     
     private function _getProcessIp($sIp = FALSE) {
@@ -362,6 +437,31 @@ class wmdkffexport_reset extends oxubase
 		$rFile = fopen($sFilename, 'a');
 		fputs($rFile, json_encode($this->_aResponse) . PHP_EOL);			
 		return fclose($rFile);
+    }
+
+    private function _getTimePart($sTime, $sPart = 'hour') {
+        $aTime = explode(':', $sTime);
+
+        switch (trim(strtolower($sPart))) {
+            case 1:
+            case 'minute':
+            case 'm':
+                return (int) $aTime[1];
+                break;
+
+            case 2:
+            case 'second':
+            case 's':
+                return (int) $aTime[2];
+                break;
+
+            default:
+            case 0:
+            case 'hour':
+            case 'h':
+                return (int) $aTime[0];
+                break;
+        }
     }
 
 }
