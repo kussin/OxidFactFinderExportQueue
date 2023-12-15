@@ -8,6 +8,7 @@ $aLang = array(
     'SHOP_MODULE_GROUP_sWmdkFFConverterSettings'	    => 'Queue Data Converter',
     'SHOP_MODULE_GROUP_sWmdkFFSooqrSettings'	        => 'Sooqr Settings',
     'SHOP_MODULE_GROUP_sWmdkFFDoofinderSettings'	    => 'Doofinder Settings',
+    'SHOP_MODULE_GROUP_sWmdkFFCronSettings'	            => 'Cron settings',
     'SHOP_MODULE_GROUP_sWmdkFFImportTSSettings'	        => 'Trusted Shops settings',
     'SHOP_MODULE_GROUP_sWmdkFFDebugSettings'	        => 'Debug settings',
 
@@ -59,6 +60,12 @@ $aLang = array(
     'SHOP_MODULE_sWmdkFFDoofinderNumberFields'	        => 'Numeric values',
     'SHOP_MODULE_sWmdkFFDoofinderBooleanFields'	        => 'Boolean values',
     'SHOP_MODULE_sWmdkFFDoofinderDateFields'	        => 'Date values',
+
+    // CRON TIMINGS
+    'SHOP_MODULE_sWmdkFFCronResetExistingArticlesSinceDays'   => 'How many days should be considered for the reset?',
+    'SHOP_MODULE_sWmdkFFCronResetExistingVariantsDays'        => 'On which week days should the variants be reset?',
+    'SHOP_MODULE_sWmdkFFCronResetArticlesWithNoPicFrom'       => 'What time should the article image reset start?',
+    'SHOP_MODULE_sWmdkFFCronResetArticlesWithNoPicTo'         => 'What time should the article image reset stop?',
     
     // TRUSTED SHOPS
     'SHOP_MODULE_sWmdkFFImportTSApiUrl'	                => 'JSON api url',

@@ -12,7 +12,7 @@ $aModule = array(
     'title'        => 'Kussin | OXID 6 FACT Finder Export Queue',
     'description'  => 'Bereitet die Produkte für den Export vor und führt den Export aus. (Es wird auch Sooqr (XML) und Doofinder (CSV) unterstützt.)',
     'thumbnail'    => 'module.png',
-    'version'      => '1.9.2',
+    'version'      => '1.10.0',
     'author'       => 'Daniel Kussin',
     'url'          => 'https://www.kussin.de',
     'email'        => 'daniel.kussin@kussin.de',
@@ -118,8 +118,14 @@ $aModule = array(
         array('group' => 'sWmdkFFDoofinderSettings', 'name' => 'sWmdkFFDoofinderBooleanFields', 'type' => 'str', 'value' => 'HasProductImage,HasCustomAsnRestrictions,HasNewFlag,HasTopFlag,HasSaleFlag,HasVariantsSizelist'),
         array('group' => 'sWmdkFFDoofinderSettings', 'name' => 'sWmdkFFDoofinderDateFields', 'type' => 'str', 'value' => 'DateInsert,DateModified'),
         
+        // CRON TIMINGS
+        array('group' => 'sWmdkFFCronSettings', 'name' => 'sWmdkFFCronResetExistingArticlesSinceDays', 'type' => 'str', 'value' => '-2 days'),
+        array('group' => 'sWmdkFFCronSettings', 'name' => 'sWmdkFFCronResetExistingVariantsDays', 'type' => 'str', 'value' => '3,6'),
+		array('group' => 'sWmdkFFCronSettings', 'name' => 'sWmdkFFCronResetArticlesWithNoPicFrom', 'type' => 'str', 'value' => '02:05:00'),
+        array('group' => 'sWmdkFFCronSettings', 'name' => 'sWmdkFFCronResetArticlesWithNoPicTo', 'type' => 'str', 'value' => '03:15:00'),
+
         // TRUSTED SHOPS
-		array('group' => 'sWmdkFFImportTSSettings', 'name' => 'sWmdkFFImportTSApiUrl', 'type' => 'str', 'value' => 'https://cdn1.api.trustedshops.com/shops/XEB1234567898D431456F97193879F/products/public/v1/feed.json'),
+        array('group' => 'sWmdkFFImportTSSettings', 'name' => 'sWmdkFFImportTSApiUrl', 'type' => 'str', 'value' => 'https://cdn1.api.trustedshops.com/shops/XEB1234567898D431456F97193879F/products/public/v1/feed.json'),
         
         // DEBUG
 		array('group' => 'sWmdkFFDebugSettings', 'name' => 'sWmdkFFDebugMode', 'type' => 'bool', 'value' => '0'),

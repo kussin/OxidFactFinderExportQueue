@@ -1,5 +1,6 @@
 <?php
 
+use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\Registry;
 
 /**
@@ -81,6 +82,8 @@ class wmdkffexport_reset extends oxubase
     
     
     private function _resetExistingProducts() {
+        $sResetExistingArticlesSinceDays = Registry::getConfig()->getConfigParam('sWmdkFFCronResetExistingArticlesSinceDays');
+
         $sQuery = 'UPDATE
             oxarticles a,
             wmdk_ff_export_queue b
@@ -91,34 +94,51 @@ class wmdkffexport_reset extends oxubase
         WHERE
             (a.OXID = b.OXID)
             AND (a.OXTIMESTAMP > b.OXTIMESTAMP)
-            AND (a.OXTIMESTAMP > "' . date('Y-m-d H:i:s', strtotime('-2 days')) . '")
+            AND (a.OXTIMESTAMP > "' . date('Y-m-d H:i:s', strtotime($sResetExistingArticlesSinceDays)) . '")
             AND (b.OXTIMESTAMP != "0000-00-00 00:00:00");';
         
-        $iReseted = \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->execute($sQuery);
+        $iReseted = DatabaseProvider::getDb()->execute($sQuery);
         
         // LOG
         $this->_aResponse['reseted_products'] = $iReseted;
     }
 
-    private function _resetExistingVariants() {
-        $sQuery = 'UPDATE
-            oxarticles a,
-            wmdk_ff_export_queue b
-        SET
-            b.LASTSYNC = "0000-00-00 00:00:00",
-            b.ProcessIp = "' . $this->_getProcessIp() . '",
-            b.OXTIMESTAMP = "0000-00-00 00:00:00"
-        WHERE
-            (a.OXARTNUM = b.MasterProductNumber)
-            AND (b.ProductNumber != b.MasterProductNumber)
-            AND (a.OXTIMESTAMP > b.OXTIMESTAMP)
-            AND (a.OXTIMESTAMP > "' . date('Y-m-d H:i:s', strtotime('-2 days')) . '")
-            AND (b.OXTIMESTAMP != "0000-00-00 00:00:00");';
+    private function _resetExistingVariants($sFrom = '02:05:00', $sTo = '03:15:00') {
+        $sResetExistingArticlesSinceDays = Registry::getConfig()->getConfigParam('sWmdkFFCronResetExistingArticlesSinceDays');
+        $aResetExistingVariantsDays = explode(',', Registry::getConfig()->getConfigParam('sWmdkFFCronResetExistingVariantsDays'));
 
-        $iReseted = \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->execute($sQuery);
+        if (
+            (in_array(date('N'), $aResetExistingVariantsDays))
+            && (
+                (
+                    ($this->_iCurrentHour >= $this->_getTimePart($sFrom, 'hour'))
+                    && ($this->_iCurrentHour <= $this->_getTimePart($sTo, 'hour'))
+                )
+                && (
+                    ($this->_iCurrentHour >= $this->_getTimePart($sFrom, 'hour'))
+                    && ($this->_iCurrentHour <= $this->_getTimePart($sTo, 'hour'))
+                )
+            )
+        ) {
+            $sQuery = 'UPDATE
+                oxarticles a,
+                wmdk_ff_export_queue b
+            SET
+                b.LASTSYNC = "0000-00-00 00:00:00",
+                b.ProcessIp = "' . $this->_getProcessIp() . '",
+                b.OXTIMESTAMP = "0000-00-00 00:00:00"
+            WHERE
+                (a.OXARTNUM = b.MasterProductNumber)
+                AND (b.ProductNumber != b.MasterProductNumber)
+                AND (a.OXTIMESTAMP > b.OXTIMESTAMP)
+                AND (a.OXTIMESTAMP > "' . date('Y-m-d H:i:s', strtotime($sResetExistingArticlesSinceDays)) . '")
+                AND (b.OXTIMESTAMP != "0000-00-00 00:00:00");';
 
-        // LOG
-        $this->_aResponse['reseted_variants'] = $iReseted;
+            $iReseted = DatabaseProvider::getDb()->execute($sQuery);
+
+            // LOG
+            $this->_aResponse['reseted_variants'] = $iReseted;
+        }
     }
     
     
@@ -132,7 +152,7 @@ class wmdkffexport_reset extends oxubase
         WHERE
             (Attributes LIKE "=%");';
         
-        $iVarname = \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->execute($sQuery);
+        $iVarname = DatabaseProvider::getDb()->execute($sQuery);
         
         // LOG
         $this->_aResponse['reseted_varname'] = $iVarname;
@@ -150,7 +170,7 @@ class wmdkffexport_reset extends oxubase
         WHERE 
             OXID NOT IN (SELECT OXID FROM wmdk_ff_export_queue WHERE Channel LIKE "' . $aChannelList[0]['code'] . '");';
         
-        $iMissing = \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->execute($sQuery);
+        $iMissing = DatabaseProvider::getDb()->execute($sQuery);
         
         // LOG
         $this->_aResponse['missing_products'] = $iMissing;
@@ -171,7 +191,7 @@ class wmdkffexport_reset extends oxubase
             WMDK_FFQUEUE = "0"
         LIMIT ' . (int) Registry::getConfig()->getConfigParam('sWmdkFFQueueResetLimit');
         
-        $oResult = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(FALSE)->select($sQuery);
+        $oResult = DatabaseProvider::getDb(FALSE)->select($sQuery);
 
         if ($oResult != FALSE && $oResult->count() > 0) {
             while (!$oResult->EOF) {
@@ -213,7 +233,7 @@ class wmdkffexport_reset extends oxubase
         }
         
         if (count($aSqlQueries) > 0) {
-            $iReseted = \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->execute( implode(PHP_EOL, $aSqlQueries) );
+            $iReseted = DatabaseProvider::getDb()->execute( implode(PHP_EOL, $aSqlQueries) );
         
             // LOG
             $this->_aResponse['added_products'] = floor( count($aSqlQueries) / 3 * 2 );
@@ -245,7 +265,7 @@ class wmdkffexport_reset extends oxubase
             AND (oxarticles.OXVARSTOCK != VARIANTS.STOCK)';
         
         try {
-            \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->execute($sQuery);
+            DatabaseProvider::getDb()->execute($sQuery);
             
             // LOG
             $this->_aResponse['correct_parent_stock'] = TRUE;
@@ -274,7 +294,7 @@ class wmdkffexport_reset extends oxubase
             AND (a.OXACTIVE != b.OXACTIVE)';
         
         try {
-            \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->execute($sQuery);
+            DatabaseProvider::getDb()->execute($sQuery);
             
             // LOG
             $this->_aResponse['update_status'] = TRUE;
@@ -316,8 +336,8 @@ class wmdkffexport_reset extends oxubase
             AND (a.OXVARSTOCK != b.Stock)';
         
         try {
-            \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->execute($sArticles);
-            \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->execute($sParents);
+            DatabaseProvider::getDb()->execute($sArticles);
+            DatabaseProvider::getDb()->execute($sParents);
             
             // LOG
             $this->_aResponse['update_stock'] = TRUE;
@@ -345,7 +365,7 @@ class wmdkffexport_reset extends oxubase
             AND (a.OXVARSTOCK > 0)';
         
         try {
-            \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->execute($sArticles);
+            DatabaseProvider::getDb()->execute($sArticles);
             
             // LOG
             $this->_aResponse['reset_variants'] = TRUE;
@@ -359,7 +379,9 @@ class wmdkffexport_reset extends oxubase
     }
 
 
-    private function _resetArticlesWithNoPic($sFrom = '02:05:00', $sTo = '03:15:00') {
+    private function _resetArticlesWithNoPic() {
+        $sFrom = Registry::getConfig()->getConfigParam('sWmdkFFCronResetArticlesWithNoPicFrom');
+        $sTo = Registry::getConfig()->getConfigParam('sWmdkFFCronResetArticlesWithNoPicTo');
 
         if (
             (
@@ -383,7 +405,7 @@ class wmdkffexport_reset extends oxubase
                 AND (b.Stock > 0)';
 
             try {
-                \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->execute($sArticles);
+                DatabaseProvider::getDb()->execute($sArticles);
 
                 // LOG
                 $this->_aResponse['fixed_nopic'] = TRUE;
