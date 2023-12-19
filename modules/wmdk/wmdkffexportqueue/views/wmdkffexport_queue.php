@@ -201,7 +201,7 @@ class wmdkffexport_queue extends oxubase
             $this->_aUpdateData['BasePrice'] = $this->_getBasePrice();
             
             $this->_aUpdateData['Stock'] = $this->_getStock();
-            
+
             $this->_aUpdateData['Description'] = $this->_getDescription();
             
             $this->_aUpdateData['Deeplink'] = $this->_getDeeplink();
@@ -519,7 +519,8 @@ class wmdkffexport_queue extends oxubase
     
     private function _hasHasNewFlag($bFalse = 0) {
         $oArticle = ($this->_bIsVariant) ? $this->_oParent : $this->_oProduct;
-        
+
+        // TODO: Replace with general Setting
         $iNewUntill = strtotime($oArticle->oxarticles__wmdknewlabel->value);
         
         return ($iNewUntill >= time()) ? 1 : $bFalse;
