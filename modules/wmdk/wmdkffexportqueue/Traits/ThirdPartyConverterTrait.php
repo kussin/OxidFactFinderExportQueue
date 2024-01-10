@@ -77,18 +77,14 @@ trait ThirdPartyConverterTrait
 
     private function _convertToCData($sValue)
     {
-        return "<![CDATA[" . $sValue . "]]>";
+        return array(
+            '_cdata' => $sValue,
+        );
     }
 
     private function _revertFromCData($sValue)
     {
-        return str_replace(array(
-            '<![CDATA[',
-            ']]>',
-        ), array(
-            '',
-            '',
-        ), $sValue);
+        return (is_array($sValue) && isset($sValue['_cdata'])) ? $sValue['_cdata'] : $sValue;
     }
 
     // TODO: Remove FIX #61380
@@ -171,7 +167,7 @@ trait ThirdPartyConverterTrait
                         ), $aData[0]);
 
                         // ADD ADDITIONAL NODE
-                        $aProductData[$sNodeName] = $this->_fixCDataWrapper($aData[1]);
+                        $aProductData[$sNodeName] = $this->_convertToCData($aData[1]);
                     }
                 }
             }

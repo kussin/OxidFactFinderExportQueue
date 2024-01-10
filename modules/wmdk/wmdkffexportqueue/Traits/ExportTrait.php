@@ -26,6 +26,7 @@ trait ExportTrait
         'success' => TRUE,
 
         'channel' => NULL,
+        'selected' => 0,
         'products' => 0,
         'skipped' => 0,
 
@@ -54,7 +55,7 @@ trait ExportTrait
         return $this->_sTemplate;
     }
 
-    private function _getCSVDataRow($aFields) {
+    private function _getCSVDataRow($aFields, $sDelimiter = self::EXPORT_DELIMITER) {
         $aTmpCsvData = array();
 
         foreach ($aFields as $iKey => $sValue) {
@@ -75,7 +76,7 @@ trait ExportTrait
 
             $aTmpCsvData[] = self::EXPORT_ADDITIONAL_ESCAPING . $this->_excapeString( $sExportData ) . self::EXPORT_ADDITIONAL_ESCAPING;
         }
-        return implode(self::EXPORT_DELIMITER, $aTmpCsvData);
+        return implode($sDelimiter, $aTmpCsvData);
     }
 
     private function _loadData() {
@@ -112,6 +113,9 @@ trait ExportTrait
 
         if ($oResult != FALSE && $oResult->count() > 0) {
 
+            // LOG
+            $this->_aResponse['selected'] = $oResult->count();
+
             // ADD CSV Header
             array_shift($this->_aExportFields);
             $this->_aCsvData[] = $this->_getCSVDataRow($this->_aExportFields);
@@ -123,7 +127,7 @@ trait ExportTrait
                 $sOxid = array_shift($aData);
 
                 // CLEAN DATA
-                $sCSVDataRow = $this->_getCSVDataRow($aData);
+                $sCSVDataRow = $this->_getCSVDataRow($aData, self::TMP_EXPORT_DELIMITER);
 
                 if (!$this->_bSkipCSVDataRow) {
                     $sCsvData = $sCSVDataRow;

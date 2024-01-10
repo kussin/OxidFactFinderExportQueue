@@ -17,6 +17,7 @@ class wmdkffexport_sooqr extends oxubase
 
     const EXPORT_ADDITIONAL_ESCAPING = '';
     const EXPORT_DELIMITER = '|';
+    const TMP_EXPORT_DELIMITER = '#%#%#';
     const EXPORT_CATEGORY_DELIMITER = '###';
 
     private $_aExportData = NULL;
@@ -74,7 +75,7 @@ class wmdkffexport_sooqr extends oxubase
                     continue;
                 }
 
-                $aValues = explode(self::EXPORT_DELIMITER, $sRow);
+                $aValues = explode(self::TMP_EXPORT_DELIMITER, $sRow);
 
                 if (count($aKeys) == count($aValues)) {
                     $aData[] = $this->_convertData(array_combine($aKeys, $aValues));
