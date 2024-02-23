@@ -173,6 +173,18 @@ trait ThirdPartyConverterTrait
             }
         }
 
+        // ADD DOOFINDER SALE PRICE
+        if (
+            (isset($aProductData['price']))
+            && (isset($aProductData['normal_price']))
+            && (self::PROCESS_CODE == 'DOOFINDER')
+        ) {
+            $dPrice = (double) $aProductData['price'];
+            $dNormalPrice = (double) $aProductData['normal_price'];
+
+            $aProductData['sale_price'] = ($dPrice < $dNormalPrice) ? $dPrice : '';
+        }
+
         return $aProductData;
     }
 }
