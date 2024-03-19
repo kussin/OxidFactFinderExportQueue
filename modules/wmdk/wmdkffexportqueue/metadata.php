@@ -27,6 +27,7 @@ $aModule = array(
         
         'wmdkffexport_helper' => 'wmdk/wmdkffexportqueue/core/wmdkffexport_helper.php',
         'wmdkffexport_compressor' => 'wmdk/wmdkffexportqueue/core/wmdkffexport_compressor.php',
+        'wmdkffexport_vendor' => 'wmdk/wmdkffexportqueue/core/wmdkffexport_vendor.php',
 	),
     
     'extend'       => array(
