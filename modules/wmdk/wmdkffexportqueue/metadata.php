@@ -12,7 +12,7 @@ $aModule = array(
     'title'        => 'Kussin | OXID 6 FACT Finder Export Queue',
     'description'  => 'Bereitet die Produkte für den Export vor und führt den Export aus. (Es wird auch Sooqr (XML) und Doofinder (CSV) unterstützt.)',
     'thumbnail'    => 'module.png',
-    'version'      => '1.10.2',
+    'version'      => '1.10.2.1',
     'author'       => 'Daniel Kussin',
     'url'          => 'https://www.kussin.de',
     'email'        => 'daniel.kussin@kussin.de',
@@ -30,6 +30,13 @@ $aModule = array(
 	),
     
     'extend'       => array(
+        'article_extend' => 'wmdk/wmdkffexportqueue/controllers/admin/wmdkffqueuearticle_extend',
+        'article_files' => 'wmdk/wmdkffexportqueue/controllers/admin/wmdkffqueuearticle_files',
+        'article_main' => 'wmdk/wmdkffexportqueue/controllers/admin/wmdkffqueuearticle_main',
+        'article_pictures' => 'wmdk/wmdkffexportqueue/controllers/admin/wmdkffqueuearticle_pictures',
+        'article_seo' => 'wmdk/wmdkffexportqueue/controllers/admin/wmdkffqueuearticle_seo',
+        'article_stock' => 'wmdk/wmdkffexportqueue/controllers/admin/wmdkffqueuearticle_stock',
+        'article_variant' => 'wmdk/wmdkffexportqueue/controllers/admin/wmdkffqueuearticle_variant',
     ),
 
 	'settings' => array(
