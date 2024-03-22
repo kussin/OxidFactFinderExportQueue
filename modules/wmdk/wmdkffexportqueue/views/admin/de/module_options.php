@@ -42,6 +42,7 @@ $aLang = array(
     'SHOP_MODULE_sWmdkFFQueuePhpLimitTimeout' 	        => 'PHP Timeout',
     'SHOP_MODULE_sWmdkFFQueuePhpLimitMemory' 	        => 'PHP Memory Limit',
     'SHOP_MODULE_sWmdkFFQueueResetLimit' 	            => 'Max. Produkt-Resets pro Run',
+    'SHOP_MODULE_bWmdkFFQueueUseCategoryPath' 	        => 'Benutze die Hauptkategorie-URL anstelle der Marken-URL',
 
     // CONVERTER
     'SHOP_MODULE_sWmdkFFConverterFieldlistDouble'       => 'Attribute deren Werte in Fließkommazahlen (Double) umgewandelt werden sollen.',
