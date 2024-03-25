@@ -4,6 +4,7 @@ use OxidEsales\Eshop\Core\Registry;
 use Spatie\ArrayToXml\ArrayToXml;
 use Wmdk\FactFinderQueue\Traits\ExportTrait;
 use Wmdk\FactFinderQueue\Traits\ThirdPartyConverterTrait;
+use Wmdk\FactFinderQueue\Traits\XmlValidatorTrait;
 
 /**
  * Class wmdkffexport_doofinder
@@ -12,6 +13,7 @@ class wmdkffexport_doofinder extends oxubase
 {
     use ExportTrait;
     use ThirdPartyConverterTrait;
+    use XmlValidatorTrait;
 
     const PROCESS_CODE = 'DOOFINDER';
 
@@ -59,7 +61,7 @@ class wmdkffexport_doofinder extends oxubase
             
         } catch (Exception $oException) {
             // ERROR
-            $this->_aResponse['validation_errors'][] = 'Exception ' . $oException->getMessage();
+            $this->_aResponse['validation_errors'][] = 'XML Creation Exception: ' . $oException->getMessage();
         }
         
         // LOG
@@ -81,7 +83,12 @@ class wmdkffexport_doofinder extends oxubase
                 $aValues = explode(self::TMP_EXPORT_DELIMITER, $sRow);
 
                 if (count($aKeys) == count($aValues)) {
-                    $aData[] = $this->_convertData(array_combine($aKeys, $aValues));
+                    $aNode = $this->_convertData(array_combine($aKeys, $aValues));
+
+                    if ($this->_validateXmlNode($aNode)) {
+                        $aData[] = $aNode;
+                    }
+
                 } else {
                     // ERROR
                     var_dump(array(

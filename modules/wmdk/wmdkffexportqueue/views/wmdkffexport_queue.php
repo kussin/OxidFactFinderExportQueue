@@ -1,5 +1,6 @@
 <?php
 
+use OxidEsales\Eshop\Application\Model\SeoEncoderArticle;
 use OxidEsales\Eshop\Core\Registry;
 use Wmdk\FactFinderQueue\Traits\ConverterTrait;
 
@@ -336,11 +337,25 @@ class wmdkffexport_queue extends oxubase
     }    
     
     private function _getDeeplink() {
-        $oSeoEncoderArticle = oxNew(\OxidEsales\Eshop\Application\Model\SeoEncoderArticle::class);
-        
+        $bUseCategoryPath = (bool) Registry::getConfig()->getConfigParam('bWmdkFFQueueUseCategoryPath');
+
+        return ($bUseCategoryPath) ? $this->_getMainCategoryLink() : $this->_getManufacturerLink();
+    }
+
+    private function _getManufacturerLink() {
+        $oSeoEncoderArticle = oxNew(SeoEncoderArticle::class);
+
         $sManufacturerLink = trim($oSeoEncoderArticle->getArticleManufacturerUri($this->_oProduct, $this->_iLang, TRUE));
-        
+
         return strtolower($this->_getBaseUrl() . $sManufacturerLink);
+    }
+
+    private function _getMainCategoryLink() {
+        $oSeoEncoderArticle = oxNew(SeoEncoderArticle::class);
+
+        $sMainCategoryLink = trim($oSeoEncoderArticle->getArticleMainUri($this->_oProduct, $this->_iLang));
+
+        return strtolower($this->_getBaseUrl() . $sMainCategoryLink);
     }
     
     

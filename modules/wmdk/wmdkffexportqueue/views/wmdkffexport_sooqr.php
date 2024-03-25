@@ -4,6 +4,7 @@ use OxidEsales\Eshop\Core\Registry;
 use Spatie\ArrayToXml\ArrayToXml;
 use Wmdk\FactFinderQueue\Traits\ExportTrait;
 use Wmdk\FactFinderQueue\Traits\ThirdPartyConverterTrait;
+use Wmdk\FactFinderQueue\Traits\XmlValidatorTrait;
 
 /**
  * Class wmdkffexport_sooqr
@@ -12,6 +13,7 @@ class wmdkffexport_sooqr extends oxubase
 {
     use ExportTrait;
     use ThirdPartyConverterTrait;
+    use XmlValidatorTrait;
 
     const PROCESS_CODE = 'SOOQR';
 
@@ -56,7 +58,7 @@ class wmdkffexport_sooqr extends oxubase
             
         } catch (Exception $oException) {
             // ERROR
-            $this->_aResponse['validation_errors'][] = 'Exception ' . $oException->getMessage();
+            $this->_aResponse['validation_errors'][] = 'XML Creation Exception: ' . $oException->getMessage();
         }
         
         // LOG
@@ -78,7 +80,11 @@ class wmdkffexport_sooqr extends oxubase
                 $aValues = explode(self::TMP_EXPORT_DELIMITER, $sRow);
 
                 if (count($aKeys) == count($aValues)) {
-                    $aData[] = $this->_convertData(array_combine($aKeys, $aValues));
+                    $aNode = $this->_convertData(array_combine($aKeys, $aValues));
+
+                    if ($this->_validateXmlNode($aNode)) {
+                        $aData[] = $aNode;
+                    }
                 }
             }
 
