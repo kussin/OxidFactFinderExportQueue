@@ -383,8 +383,46 @@ class wmdkffexport_reset extends oxubase
     }
 
 
-    private function _resetSiblings() {
-        // TODO: Add reset siblings logic
+    private function _resetSiblings($sTimeBack = '-90 minutes') {
+        $bUpdateSiblings = Registry::getConfig()->getConfigParam('bWmdkFFQueueUpdateSiblings');
+
+        if ($bUpdateSiblings) {
+            $sArticles = 'UPDATE 
+                wmdk_ff_export_queue AS a
+            SET
+                a.LASTSYNC = "0000-00-00 00:00:00",
+                a.ProcessIp = "' . $this->_getProcessIp() . '",
+                a.OXTIMESTAMP = "0000-00-00 00:00:00"
+            WHERE
+                (a.MasterProductNumber IN (
+                    SELECT MasterProductNumber FROM (
+                        SELECT DISTINCT
+                            c.MasterProductNumber
+                        FROM
+                            oxarticles AS b
+                        LEFT JOIN
+                            wmdk_ff_export_queue AS c
+                        ON
+                            (b.OXID = c.OXID)
+                        WHERE
+                            (b.OXPARENTID != "")
+                            AND (b.OXTIMESTAMP >= "' . date('Y-m-d H:i:s', strtotime($sTimeBack)) . '")
+                    ) AS valid_numbers
+                ))';
+
+            try {
+                DatabaseProvider::getDb()->execute($sArticles);
+
+                // LOG
+                $this->_aResponse['reseted_siblings'] = TRUE;
+
+            } catch (Exception $oException) {
+                // ERROR
+
+                // LOG
+                $this->_aResponse['reseted_siblings'] = FALSE;
+            }
+        }
     }
 
 
