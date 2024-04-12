@@ -15,6 +15,7 @@ class wmdkffexport_reset extends oxubase
         
         'reseted_products' => 0,
         'reseted_variants' => 0,
+        'reseted_siblings' => 0,
         'reseted_varname' => 0,        
         'missing_products' => 0,       
         'added_products' => 0,
@@ -75,6 +76,9 @@ class wmdkffexport_reset extends oxubase
         
         /* wmdk_dkussin (Ticket: 41008) */
         $this->_resetVariantsWithParentsModifiedWithinTheLastHour();
+
+        /* wmdk_dkussin (Ticket: 64094) */
+        $this->_resetSiblings();
 
         /* wmdk_dkussin (Ticket: 61736) */
         $this->_resetArticlesWithNoPic();
@@ -376,6 +380,11 @@ class wmdkffexport_reset extends oxubase
             // LOG
             $this->_aResponse['reset_variants'] = FALSE;
         }
+    }
+
+
+    private function _resetSiblings() {
+        // TODO: Add reset siblings logic
     }
 
 
