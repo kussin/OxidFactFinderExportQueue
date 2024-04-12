@@ -405,7 +405,8 @@ class wmdkffexport_reset extends oxubase
                         ON
                             (b.OXID = c.OXID)
                         WHERE
-                            (b.OXPARENTID != "")
+                            (c.MasterProductNumber != "")
+                            AND (b.OXPARENTID != "")
                             AND (b.OXTIMESTAMP >= "' . date('Y-m-d H:i:s', strtotime($sTimeBack)) . '")
                     ) AS valid_numbers
                 ))';
