@@ -59,21 +59,21 @@ class wmdkffexport_reset extends oxubase
     
     private function _cleanErrors() {
         $this->_resetExistingProducts();
-        
+
         $this->_resetMissingProducts();
         $this->_resetVariantsWithoutVarname();
         $this->_addMissingProducts();
-        
+
         /* wmdk_dkussin (Ticket: 43734) */
         $this->_parentStockCorrection();
-        
+
         /* wmdk_dkussin (Ticket: 36784) */
         $this->_updateStatus();
         $this->_updateStock();
 
         /* wmdk_dkussin (Ticket: 62853) */
         $this->_resetExistingVariants();
-        
+
         /* wmdk_dkussin (Ticket: 41008) */
         $this->_resetVariantsWithParentsModifiedWithinTheLastHour();
 
@@ -387,7 +387,7 @@ class wmdkffexport_reset extends oxubase
         $bUpdateSiblings = Registry::getConfig()->getConfigParam('bWmdkFFQueueUpdateSiblings');
 
         if ($bUpdateSiblings) {
-            $sArticles = 'UPDATE 
+            $sQuery = 'UPDATE 
                 wmdk_ff_export_queue AS a
             SET
                 a.LASTSYNC = "0000-00-00 00:00:00",
@@ -410,18 +410,10 @@ class wmdkffexport_reset extends oxubase
                     ) AS valid_numbers
                 ))';
 
-            try {
-                DatabaseProvider::getDb()->execute($sArticles);
+            $iMissing = DatabaseProvider::getDb()->execute($sQuery);
 
-                // LOG
-                $this->_aResponse['reseted_siblings'] = TRUE;
-
-            } catch (Exception $oException) {
-                // ERROR
-
-                // LOG
-                $this->_aResponse['reseted_siblings'] = FALSE;
-            }
+            // LOG
+            $this->_aResponse['reseted_siblings'] = $iMissing;
         }
     }
 
