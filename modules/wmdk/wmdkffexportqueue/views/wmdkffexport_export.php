@@ -14,7 +14,6 @@ class wmdkffexport_export extends oxubase
 
     const EXPORT_ADDITIONAL_ESCAPING = '"';
     const EXPORT_DELIMITER = '|';
-    const TMP_EXPORT_DELIMITER = '#%#%#';
     const EXPORT_CATEGORY_DELIMITER = '|';
     
     private $_sTemplate = 'wmdkffexport_export.tpl';

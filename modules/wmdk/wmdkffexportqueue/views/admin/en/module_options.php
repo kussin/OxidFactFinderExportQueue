@@ -24,6 +24,7 @@ $aLang = array(
     'SHOP_MODULE_sWmdkFFExportStockMin'                 => 'Min. stock for product export',
     'SHOP_MODULE_sWmdkFFExportDataLengthMax'	        => 'Max. dataset length incl. delimiter and enclosure',
     'SHOP_MODULE_sWmdkFFExportDataLengthMin'	        => 'Min. dataset length incl. delimiter and enclosure',
+    'SHOP_MODULE_sWmdkFFExportTmpDelimiter' 	        => 'Tmp. delimiter',
     'SHOP_MODULE_sWmdkFFExportCsvDelimiter' 	        => 'CSV delimiter',
     'SHOP_MODULE_sWmdkFFExportCsvEnclosure' 	        => 'CSV enclosure',
     'SHOP_MODULE_sWmdkFFExportParentDisableQuery'       => 'SQL query to disable parents without variants',

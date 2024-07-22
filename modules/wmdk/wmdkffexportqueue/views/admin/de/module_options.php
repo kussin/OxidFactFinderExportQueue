@@ -24,6 +24,7 @@ $aLang = array(
     'SHOP_MODULE_sWmdkFFExportStockMin'                 => 'Mindestbestand für den Produktexport',
     'SHOP_MODULE_sWmdkFFExportDataLengthMax'	        => 'Max. Datensatzlänge inkl. Trennzeichen und Text-Wrapper',
     'SHOP_MODULE_sWmdkFFExportDataLengthMin'	        => 'Min. Datensatzlänge inkl. Trennzeichen und Text-Wrapper',
+    'SHOP_MODULE_sWmdkFFExportTmpDelimiter' 	        => 'Tmp. Trennzeichen',
     'SHOP_MODULE_sWmdkFFExportCsvDelimiter' 	        => 'CSV Trennzeichen',
     'SHOP_MODULE_sWmdkFFExportCsvEnclosure' 	        => 'CSV Text-Wrapper',
     'SHOP_MODULE_sWmdkFFExportParentDisableQuery'       => 'SQL Query zur Deaktiverung von Elternprodukten ohne Varianten',

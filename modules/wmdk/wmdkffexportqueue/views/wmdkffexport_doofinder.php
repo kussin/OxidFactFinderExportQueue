@@ -19,7 +19,6 @@ class wmdkffexport_doofinder extends oxubase
 
     const EXPORT_ADDITIONAL_ESCAPING = '';
     const EXPORT_DELIMITER = ',';
-    const TMP_EXPORT_DELIMITER = '#%#%#';
     const EXPORT_CATEGORY_DELIMITER = '|';
 
     private $_aExportData = NULL;
@@ -80,7 +79,7 @@ class wmdkffexport_doofinder extends oxubase
                     continue;
                 }
 
-                $aValues = explode(self::TMP_EXPORT_DELIMITER, $sRow);
+                $aValues = explode($this->_getTmpExportDelimiter(), $sRow);
 
                 if (count($aKeys) == count($aValues)) {
                     $aNode = $this->_convertData(array_combine($aKeys, $aValues));
@@ -93,7 +92,7 @@ class wmdkffexport_doofinder extends oxubase
                     // ERROR
                     var_dump(array(
                         'delimiter' => self::EXPORT_DELIMITER,
-                        'tmp_delimiter' => self::TMP_EXPORT_DELIMITER,
+                        'tmp_delimiter' => $this->_getTmpExportDelimiter(),
                         'row' => $sRow,
                         'keys' => $aKeys,
                         'values' => $aValues,

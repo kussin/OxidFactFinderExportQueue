@@ -20,6 +20,9 @@ trait ExportTrait
 
     protected $_aCsvData = array();
 
+
+    protected $_sTmpExportDelimiter = '#%#%#';
+
     protected $_bSkipCSVDataRow = FALSE;
 
     protected $_aResponse = array(
@@ -127,7 +130,7 @@ trait ExportTrait
                 $sOxid = array_shift($aData);
 
                 // CLEAN DATA
-                $sCSVDataRow = $this->_getCSVDataRow($aData, self::TMP_EXPORT_DELIMITER);
+                $sCSVDataRow = $this->_getCSVDataRow($aData, $this->_getTmpExportDelimiter());
 
                 if (!$this->_bSkipCSVDataRow) {
                     $sCsvData = $sCSVDataRow;
@@ -217,5 +220,17 @@ trait ExportTrait
         }
 
         return $sCleanedCategoryPath;
+    }
+
+    protected function _getTmpExportDelimiter()
+    {
+        // LOAD DELIMITER
+        $sTmpExportDelimiter = trim(Registry::getConfig()->getConfigParam('sWmdkFFExportTmpDelimiter'));
+
+        if (empty($sTmpExportDelimiter)) {
+            return $this->_sTmpExportDelimiter;
+        }
+
+        return $sTmpExportDelimiter;
     }
 }
