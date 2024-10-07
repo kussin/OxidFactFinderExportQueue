@@ -8,6 +8,7 @@ $aLang = array(
     'SHOP_MODULE_GROUP_sWmdkFFConverterSettings'	    => 'Queue Data Converter',
     'SHOP_MODULE_GROUP_sWmdkFFSooqrSettings'	        => 'Sooqr-Einstellungen',
     'SHOP_MODULE_GROUP_sWmdkFFDoofinderSettings'	    => 'Doofinder-Einstellungen',
+    'SHOP_MODULE_GROUP_sWmdkFFFlourSettings'	        => 'flour POS-Einstellungen',
     'SHOP_MODULE_GROUP_sWmdkFFCronSettings'	            => 'Cronjob Einstellungen',
     'SHOP_MODULE_GROUP_sWmdkFFImportTSSettings'	        => 'Trusted Shops Einstellungen',
     'SHOP_MODULE_GROUP_sWmdkFFDebugSettings'    	    => 'Debug-Einstellungen',
@@ -63,6 +64,13 @@ $aLang = array(
     'SHOP_MODULE_sWmdkFFDoofinderNumberFields'	        => 'Numerische Werte',
     'SHOP_MODULE_sWmdkFFDoofinderBooleanFields'	        => 'Boolische Werte',
     'SHOP_MODULE_sWmdkFFDoofinderDateFields'	        => 'Datumswerte',
+
+    // FLOUR POS
+    'SHOP_MODULE_sWmdkFFFlourMapping'	                => 'Mapping',
+    'SHOP_MODULE_sWmdkFFFlourCDataFields'	            => 'CDATA Werte',
+    'SHOP_MODULE_sWmdkFFFlourNumberFields'	            => 'Numerische Werte',
+    'SHOP_MODULE_sWmdkFFFlourBooleanFields'	            => 'Boolische Werte',
+    'SHOP_MODULE_sWmdkFFFlourDateFields'	            => 'Datumswerte',
 
     // CRON TIMINGS
     'SHOP_MODULE_sWmdkFFCronResetExistingArticlesSinceDays'   => 'Wie viele Tage sollten für den Reset berücksichtigt werden?',

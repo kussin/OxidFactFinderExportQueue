@@ -8,6 +8,7 @@ $aLang = array(
     'SHOP_MODULE_GROUP_sWmdkFFConverterSettings'	    => 'Queue Data Converter',
     'SHOP_MODULE_GROUP_sWmdkFFSooqrSettings'	        => 'Sooqr Settings',
     'SHOP_MODULE_GROUP_sWmdkFFDoofinderSettings'	    => 'Doofinder Settings',
+    'SHOP_MODULE_GROUP_sWmdkFFFlourSettings'	        => 'flour POS Settings',
     'SHOP_MODULE_GROUP_sWmdkFFCronSettings'	            => 'Cron settings',
     'SHOP_MODULE_GROUP_sWmdkFFImportTSSettings'	        => 'Trusted Shops settings',
     'SHOP_MODULE_GROUP_sWmdkFFDebugSettings'	        => 'Debug settings',
@@ -63,6 +64,13 @@ $aLang = array(
     'SHOP_MODULE_sWmdkFFDoofinderNumberFields'	        => 'Numeric values',
     'SHOP_MODULE_sWmdkFFDoofinderBooleanFields'	        => 'Boolean values',
     'SHOP_MODULE_sWmdkFFDoofinderDateFields'	        => 'Date values',
+
+    // FLOUR POS
+    'SHOP_MODULE_sWmdkFFFlourMapping'	                => 'Mapping',
+    'SHOP_MODULE_sWmdkFFFlourCDataFields'	            => 'CDATA values',
+    'SHOP_MODULE_sWmdkFFFlourNumberFields'	            => 'Numeric values',
+    'SHOP_MODULE_sWmdkFFFlourBooleanFields'	            => 'Boolean values',
+    'SHOP_MODULE_sWmdkFFFlourDateFields'	            => 'Date values',
 
     // CRON TIMINGS
     'SHOP_MODULE_sWmdkFFCronResetExistingArticlesSinceDays'   => 'How many days should be considered for the reset?',

@@ -12,7 +12,7 @@ $aModule = array(
     'title'        => 'Kussin | OXID 6 FACT Finder Export Queue',
     'description'  => 'Bereitet die Produkte für den Export vor und führt den Export aus. (Es wird auch Sooqr (XML) und Doofinder (CSV) unterstützt.)',
     'thumbnail'    => 'module.png',
-    'version'      => '1.10.3.3',
+    'version'      => '1.10.4',
     'author'       => 'Daniel Kussin',
     'url'          => 'https://www.kussin.de',
     'email'        => 'daniel.kussin@kussin.de',
@@ -22,6 +22,7 @@ $aModule = array(
         'wmdkffexport_export' => 'wmdk/wmdkffexportqueue/views/wmdkffexport_export.php',
         'wmdkffexport_sooqr' => 'wmdk/wmdkffexportqueue/views/wmdkffexport_sooqr.php',
         'wmdkffexport_doofinder' => 'wmdk/wmdkffexportqueue/views/wmdkffexport_doofinder.php',
+        'wmdkffexport_flour' => 'wmdk/wmdkffexportqueue/views/wmdkffexport_flour.php',
         'wmdkffexport_reset' => 'wmdk/wmdkffexportqueue/views/wmdkffexport_reset.php',
         'wmdkffexport_ts' => 'wmdk/wmdkffexportqueue/views/wmdkffexport_ts.php',
         
@@ -129,6 +130,25 @@ $aModule = array(
         array('group' => 'sWmdkFFDoofinderSettings', 'name' => 'sWmdkFFDoofinderNumberFields', 'type' => 'str', 'value' => 'Price,MSRP,BasePrice,Stock,Weight,Rating,RatingCnt,SaleAmount,SoldAmount,TrustedShopsRating,TrustedShopsRatingCnt,TrustedShopsRatingPercentage'),
         array('group' => 'sWmdkFFDoofinderSettings', 'name' => 'sWmdkFFDoofinderBooleanFields', 'type' => 'str', 'value' => 'HasProductImage,HasCustomAsnRestrictions,HasNewFlag,HasTopFlag,HasSaleFlag,HasVariantsSizelist'),
         array('group' => 'sWmdkFFDoofinderSettings', 'name' => 'sWmdkFFDoofinderDateFields', 'type' => 'str', 'value' => 'DateInsert,DateModified'),
+
+        // flour POS
+        array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourMapping', 'type' => 'aarr', 'value' => array(
+            'ProductNumber' => 'id',
+            'MasterProductNumber' => 'parent',
+            'Title' => 'title',
+            'Marke' => 'brand',
+            'MPN' => 'mpn',
+            'Price' => 'price',
+            'Deeplink' => 'link',
+            'ImageURL' => 'image_link',
+            'Description' => 'description',
+            'MSRP' => 'normal_price',
+            'CategoryPath' => 'category',
+        )),
+        array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourCDataFields', 'type' => 'str', 'value' => 'Title,ImageURL,SuggestPictureURL,Short,Description,Deeplink,Marke,CategoryPath,Attributes,NumericalAttributes,SearchAttributes,SearchKeywords,VariantsSizelistMarkup'),
+        array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourNumberFields', 'type' => 'str', 'value' => 'Price,MSRP,BasePrice,Stock,Weight,Rating,RatingCnt,SaleAmount,SoldAmount,TrustedShopsRating,TrustedShopsRatingCnt,TrustedShopsRatingPercentage'),
+        array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourBooleanFields', 'type' => 'str', 'value' => 'HasProductImage,HasCustomAsnRestrictions,HasNewFlag,HasTopFlag,HasSaleFlag,HasVariantsSizelist'),
+        array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourDateFields', 'type' => 'str', 'value' => 'DateInsert,DateModified'),
         
         // CRON TIMINGS
         array('group' => 'sWmdkFFCronSettings', 'name' => 'sWmdkFFCronResetExistingArticlesSinceDays', 'type' => 'str', 'value' => '-2 days'),
@@ -154,6 +174,7 @@ $aModule = array(
         'wmdkffexport_export.tpl' => 'wmdk/wmdkffexportqueue/views/tpl/wmdkffexport_export.tpl',
         'wmdkffexport_sooqr.tpl' => 'wmdk/wmdkffexportqueue/views/tpl/wmdkffexport_sooqr.tpl',
         'wmdkffexport_doofinder.tpl' => 'wmdk/wmdkffexportqueue/views/tpl/wmdkffexport_doofinder.tpl',
+        'wmdkffexport_flour.tpl' => 'wmdk/wmdkffexportqueue/views/tpl/wmdkffexport_flour.tpl',
         'wmdkffexport_reset.tpl' => 'wmdk/wmdkffexportqueue/views/tpl/wmdkffexport_reset.tpl',
         'wmdkffexport_ts.tpl' => 'wmdk/wmdkffexportqueue/views/tpl/wmdkffexport_ts.tpl',
     ),
