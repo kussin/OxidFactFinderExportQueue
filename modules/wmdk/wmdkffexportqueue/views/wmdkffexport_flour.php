@@ -18,11 +18,11 @@ class wmdkffexport_flour extends oxubase
     const EXPORT_DELIMITER = '|';
     const EXPORT_CATEGORY_DELIMITER = '|';
 
-    private $_sTemplate = 'wmdkffexport_export.tpl';
+    private $_sTemplate = 'wmdkffexport_flour.tpl';
 
     private function _exportData() {
         // CONFIG
-        $sExportFile = Registry::getConfig()->getShopConfVar('sShopDir') . Registry::getConfig()->getConfigParam('sWmdkFFExportDirectory') . $this->_sChannel . '.flour.xml';
+        $sExportFile = Registry::getConfig()->getShopConfVar('sShopDir') . Registry::getConfig()->getConfigParam('sWmdkFFExportDirectory') . $this->_sChannel . '.flour.csv';
 
         // INIT
         $this->_initThirdPartyConverter(
