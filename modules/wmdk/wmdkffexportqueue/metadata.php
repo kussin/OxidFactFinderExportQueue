@@ -12,7 +12,7 @@ $aModule = array(
     'title'        => 'Kussin | OXID 6 FACT Finder Export Queue',
     'description'  => 'Bereitet die Produkte für den Export vor und führt den Export aus. (Es wird auch Sooqr (XML) und Doofinder (CSV) unterstützt.)',
     'thumbnail'    => 'module.png',
-    'version'      => '1.10.4',
+    'version'      => '1.10.4.1',
     'author'       => 'Daniel Kussin',
     'url'          => 'https://www.kussin.de',
     'email'        => 'daniel.kussin@kussin.de',
@@ -24,6 +24,7 @@ $aModule = array(
         'wmdkffexport_doofinder' => 'wmdk/wmdkffexportqueue/views/wmdkffexport_doofinder.php',
         'wmdkffexport_flour' => 'wmdk/wmdkffexportqueue/views/wmdkffexport_flour.php',
         'wmdkffexport_reset' => 'wmdk/wmdkffexportqueue/views/wmdkffexport_reset.php',
+        'wmdkffexport_ajax' => 'wmdk/wmdkffexportqueue/views/wmdkffexport_ajax.php',
         'wmdkffexport_ts' => 'wmdk/wmdkffexportqueue/views/wmdkffexport_ts.php',
         
         'wmdkffexport_helper' => 'wmdk/wmdkffexportqueue/core/wmdkffexport_helper.php',
@@ -176,6 +177,7 @@ $aModule = array(
         'wmdkffexport_doofinder.tpl' => 'wmdk/wmdkffexportqueue/views/tpl/wmdkffexport_doofinder.tpl',
         'wmdkffexport_flour.tpl' => 'wmdk/wmdkffexportqueue/views/tpl/wmdkffexport_flour.tpl',
         'wmdkffexport_reset.tpl' => 'wmdk/wmdkffexportqueue/views/tpl/wmdkffexport_reset.tpl',
+        'wmdkffexport_ajax.tpl' => 'wmdk/wmdkffexportqueue/views/tpl/wmdkffexport_ajax.tpl',
         'wmdkffexport_ts.tpl' => 'wmdk/wmdkffexportqueue/views/tpl/wmdkffexport_ts.tpl',
     ),
 );
