@@ -14,6 +14,7 @@ trait ExportTrait
     protected $_bActive = TRUE;
     protected $_bHidden = FALSE;
     protected $_iStockMin = 0;
+    protected $_bWithNoPics = FALSE;
 
     protected $_aExportFields = NULL;
     protected $_aExportHtmlFields = NULL;
@@ -87,6 +88,7 @@ trait ExportTrait
         $this->_bActive = (bool) Registry::getConfig()->getConfigParam('sWmdkFFExportOnlyActive');
         $this->_bHidden = (bool) Registry::getConfig()->getConfigParam('sWmdkFFExportHidden');
         $this->_iStockMin = (int) Registry::getConfig()->getConfigParam('sWmdkFFExportStockMin');
+        $this->_bWithNoPics = (bool) Registry::getConfig()->getConfigParam('bWmdkFFGpsrExportProductWithNoPic');
 
         $iCsvLengthMax = (int) Registry::getConfig()->getConfigParam('sWmdkFFExportDataLengthMax');
         $iCsvLengthMin = (int) Registry::getConfig()->getConfigParam('sWmdkFFExportDataLengthMin');
@@ -110,7 +112,8 @@ trait ExportTrait
                         AND (`LANG` = "' . $this->_iLang . '")
                         AND (`OXACTIVE` = "' . (($this->_bActive) ? '1' : '0') . '")
                         AND (`OXHIDDEN` = "' . (($this->_bHidden) ? '1' : '0') . '")
-                        AND (`Stock` >= ' . $this->_iStockMin . ');';
+                        AND (`Stock` >= ' . $this->_iStockMin . ')
+                        AND (`HasProductImage` LIKE "' . (($this->_bWithNoPics) ? '%' : '1') . '");';
 
         $oResult = \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->select($sQuery);
 

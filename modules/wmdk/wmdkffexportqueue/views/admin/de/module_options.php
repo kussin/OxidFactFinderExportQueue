@@ -6,6 +6,7 @@ $aLang = array(
     'SHOP_MODULE_GROUP_sWmdkFFExportSettings'   	    => 'Export-Einstellungen',
     'SHOP_MODULE_GROUP_sWmdkFFQueueSettings'	        => 'Queue-Einstellungen',
     'SHOP_MODULE_GROUP_sWmdkFFConverterSettings'	    => 'Queue Data Converter',
+    'SHOP_MODULE_GROUP_sWmdkFFsWmdkFFGpsrSettings'	    => 'EU GPSR Einstellungen',
     'SHOP_MODULE_GROUP_sWmdkFFSooqrSettings'	        => 'Sooqr-Einstellungen',
     'SHOP_MODULE_GROUP_sWmdkFFDoofinderSettings'	    => 'Doofinder-Einstellungen',
     'SHOP_MODULE_GROUP_sWmdkFFFlourSettings'	        => 'flour POS-Einstellungen',
@@ -50,6 +51,9 @@ $aLang = array(
     // CONVERTER
     'SHOP_MODULE_sWmdkFFConverterFieldlistDouble'       => 'Attribute deren Werte in Fließkommazahlen (Double) umgewandelt werden sollen.',
     'SHOP_MODULE_aWmdkFFConverterRenameAttributes'      => 'Umbenennung von Attributnamen und -werten',
+
+    // EU GPSR
+    'SHOP_MODULE_bWmdkFFGpsrExportProductWithNoPic'     => 'Export von Produkten ohne Bild aktivieren',
 
     // SOOQR
     'SHOP_MODULE_sWmdkFFSooqrMapping'	                => 'Mapping',
