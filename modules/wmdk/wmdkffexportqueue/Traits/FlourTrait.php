@@ -6,37 +6,43 @@ trait FlourTrait
 {
     private function _getFlourId()
     {
-        // TODO: Get data & return from OXARTICLES__WMDKFLOURID
-
-        return 'NULL';
+        return $this->_oProduct->oxarticles__wmdkflourid->value;
     }
 
     private function _getFlourActive()
     {
-        // TODO: Get data & return from OXARTICLES__WMDKFLOURACTIVE
-
-        return 0;
+        return $this->_oProduct->oxarticles__wmdkflouractive->value;
     }
 
     private function _getFlourPrice()
     {
-        // TODO: Get data & return from OXARTICLES__WMDKFLOURWAREHOUSEPRICE
+        if ($this->_bIsParent || $this->_bIsVariant) {
+            $oFirstActiveVariant = ($this->_bIsVariant) ? $this->_getFirstActiveVariant($this->_oProduct->oxarticles__oxparentid->value) : $this->_getFirstActiveVariant();
 
-        return 0;
+            if ($oFirstActiveVariant) {
+                return (double) $oFirstActiveVariant->oxarticles__wmdkflourwarehouseprice->value;
+            }
+        }
+
+        return (double) $this->_oProduct->oxarticles__wmdkflourwarehouseprice->value;
     }
 
-    private function _getFlourSaleAmount()
+    private function _getFlourSaleAmount($bSign = TRUE)
     {
-        // TODO: Prozentualer Rabatt Lagerverkauf, muss berechnet werden als gerundete Zahl, ohne Nachkommastelle und
-        // Sonerzeichen, wenn keine Preisgegenüberstellung bleibt das Feld leer
+        $dPrice = $this->_getFlourPrice();
+        $sMsrp = $this->_getMsrp();
+
+        if ( ($dPrice > 0) && ($sMsrp > 0) ){
+            $dSaleAmount = round(($dPrice / $sMsrp) * 100, 0);
+
+            return ($bSign) ? $dSaleAmount . '%' : $dSaleAmount;
+        }
 
         return '';
     }
 
     private function _getFlourShortUrl()
     {
-        // TODO: Get data & return from OXARTICLES__WMDKFLOURSHORTURL
-
-        return '';
+        return $this->_oProduct->oxarticles__wmdkflourshorturl->value;
     }
 }
