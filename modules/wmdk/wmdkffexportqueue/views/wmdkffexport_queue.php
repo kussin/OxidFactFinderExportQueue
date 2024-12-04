@@ -3,6 +3,7 @@
 use OxidEsales\Eshop\Application\Model\SeoEncoderArticle;
 use OxidEsales\Eshop\Core\Registry;
 use Wmdk\FactFinderQueue\Traits\ConverterTrait;
+use Wmdk\FactFinderQueue\Traits\FlourTrait;
 
 /**
  * Class wmdkffexport_queue
@@ -10,6 +11,9 @@ use Wmdk\FactFinderQueue\Traits\ConverterTrait;
 class wmdkffexport_queue extends oxubase
 {
     use ConverterTrait;
+    use FlourTrait;
+
+    CONST DEFAULT_TAX_RATE = 19;
 
     protected $_sOxid = NULL;
     protected $_sChannel = NULL;
@@ -200,6 +204,7 @@ class wmdkffexport_queue extends oxubase
             $this->_aUpdateData['Price'] = $this->_getPrice();
             $this->_aUpdateData['MSRP'] = $this->_getMsrp();
             $this->_aUpdateData['BasePrice'] = $this->_getBasePrice();
+            $this->_aUpdateData['Tax'] = $this->_getTaxRate();
             
             $this->_aUpdateData['Stock'] = $this->_getStock();
 
@@ -236,6 +241,13 @@ class wmdkffexport_queue extends oxubase
             $sVariantsSizelistMarkup = $this->_getVariantsSizelistMarkup();
             $this->_aUpdateData['HasVariantsSizelist'] = ($sVariantsSizelistMarkup != '') ? 1 : '';
             $this->_aUpdateData['VariantsSizelistMarkup'] = $sVariantsSizelistMarkup;
+
+            // flour POS
+            $this->_aUpdateData['FlourId'] = $this->_getFlourId();
+            $this->_aUpdateData['FlourActive'] = $this->_getFlourActive();
+            $this->_aUpdateData['FlourPrice'] = $this->_getFlourPrice();
+            $this->_aUpdateData['FlourSaleAmount'] = $this->_getFlourSaleAmount();
+            $this->_aUpdateData['FlourShortUrl'] = $this->_getFlourShortUrl();
             
             $this->_aUpdateData['SoldAmount'] = $this->_oProduct->oxarticles__oxsoldamount->value;
             
@@ -312,6 +324,13 @@ class wmdkffexport_queue extends oxubase
         }
         
 		return '';
+    }
+
+
+    private function _getTaxRate() {
+        $dTaxRate = (double) $this->_oProduct->oxarticles__oxvat->value;
+
+        return ($dTaxRate > 0) ? $dTaxRate : self::DEFAULT_TAX_RATE;
     }
 	
     
