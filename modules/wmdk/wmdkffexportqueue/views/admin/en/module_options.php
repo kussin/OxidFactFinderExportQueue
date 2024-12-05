@@ -6,7 +6,7 @@ $aLang = array(
     'SHOP_MODULE_GROUP_sWmdkFFExportSettings'	        => 'Export settings',
     'SHOP_MODULE_GROUP_sWmdkFFQueueSettings'	        => 'Queue settings',
     'SHOP_MODULE_GROUP_sWmdkFFConverterSettings'	    => 'Queue Data Converter',
-    'SHOP_MODULE_GROUP_sWmdkFFGpsrSettings'	    => 'EU GPSR Settings',
+    'SHOP_MODULE_GROUP_sWmdkFFsWmdkFFGpsrSettings'	    => 'EU GPSR Settings',
     'SHOP_MODULE_GROUP_sWmdkFFSooqrSettings'	        => 'Sooqr Settings',
     'SHOP_MODULE_GROUP_sWmdkFFDoofinderSettings'	    => 'Doofinder Settings',
     'SHOP_MODULE_GROUP_sWmdkFFFlourSettings'	        => 'flour POS Settings',
@@ -70,6 +70,7 @@ $aLang = array(
     'SHOP_MODULE_sWmdkFFDoofinderDateFields'	        => 'Date values',
 
     // FLOUR POS
+    'SHOP_MODULE_sWmdkFFFlourExportFields'              => 'Export attribute field list',
     'SHOP_MODULE_sWmdkFFFlourMapping'	                => 'Mapping',
     'SHOP_MODULE_sWmdkFFFlourCDataFields'	            => 'CDATA values',
     'SHOP_MODULE_sWmdkFFFlourNumberFields'	            => 'Numeric values',
