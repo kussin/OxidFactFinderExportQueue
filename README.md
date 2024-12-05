@@ -1,7 +1,7 @@
 # Kussin | OXID 6 FACT Finder Export Queue
 
 Kussin | OXID 6 FACT Finder Export Queue provides real-time CSV Exports for FACT Finder NG. And since 08/2023 it also
-supports [Sooqr](https://www.sooqr.com/) and [Doofinder](https://www.doofinder.com/).
+supports [Spotler](https://spotler.com/sooqr-is-now-spotler) and [Doofinder](https://www.doofinder.com/).
 
 **The following configuration options are available:**
 
