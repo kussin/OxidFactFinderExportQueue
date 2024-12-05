@@ -6,7 +6,7 @@ trait FlourTrait
 {
     private function _getFlourId()
     {
-        return $this->_oProduct->oxarticles__wmdkflourid->value;
+        return ($this->_oProduct->oxarticles__wmdkflourid->value != '') ? $this->_oProduct->oxarticles__wmdkflourid->value : NULL;
     }
 
     private function _getFlourActive()

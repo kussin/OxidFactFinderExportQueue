@@ -3,8 +3,8 @@ SET FOREIGN_KEY_CHECKS = 0;
 
 -- Update data wmdk_ff_export_queue
 UPDATE
-    wmdk_ff_export_queue a
-    oxarticles b,
+    wmdk_ff_export_queue a,
+    oxarticles b
 SET    
     a.Tax = IF(b.OXVAT IS NOT NULL, b.OXVAT, 19),
         
