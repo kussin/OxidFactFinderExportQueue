@@ -93,7 +93,7 @@ trait ExportTrait
         $iCsvLengthMax = (int) Registry::getConfig()->getConfigParam('sWmdkFFExportDataLengthMax');
         $iCsvLengthMin = (int) Registry::getConfig()->getConfigParam('sWmdkFFExportDataLengthMin');
 
-        $this->_aExportFields = explode(',', 'OXID,' . Registry::getConfig()->getConfigParam('sWmdkFFExportFields'));
+        $this->_aExportFields = $this->_getExportFields();
         $this->_aExportHtmlFields = explode(',', Registry::getConfig()->getConfigParam('sWmdkFFExportHtmlFields'));
 
         // GET DATA
@@ -103,7 +103,7 @@ trait ExportTrait
 
         // LOAD PRODUCTS
         $sQuery = 'SELECT 
-                        `' . implode('`, `', $this->_aExportFields) . '`
+                        ' . $this->_getPreparedExportFields($this->_aExportFields) . '
                     FROM 
                         `wmdk_ff_export_queue`
                     WHERE
@@ -235,5 +235,31 @@ trait ExportTrait
         }
 
         return $sTmpExportDelimiter;
+    }
+
+    private function _getExportFields() {
+        // FLOUR POS
+        if (self::PROCESS_CODE == 'FLOUR') {
+            return explode(',', 'OXID,' . Registry::getConfig()->getConfigParam('sWmdkFFFlourExportFields'));
+        }
+
+        return explode(',', 'OXID,' . Registry::getConfig()->getConfigParam('sWmdkFFExportFields'));
+    }
+
+    private function _getPreparedExportFields($aFields = array()): string
+    {
+        if (empty($aFields)) {
+            $aFields = $this->_getExportFields();
+        }
+
+        // ESCAPE FIELDS
+        foreach ($aFields as $iKey => $sField) {
+
+            if (strpos($sField, '`') === false) {
+                $aFields[$iKey] = '`' . $sField . '`';
+            }
+        }
+
+        return implode(', ', $aFields);
     }
 }
