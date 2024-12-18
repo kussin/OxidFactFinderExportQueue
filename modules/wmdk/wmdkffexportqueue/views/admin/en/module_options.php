@@ -6,7 +6,7 @@ $aLang = array(
     'SHOP_MODULE_GROUP_sWmdkFFExportSettings'	        => 'Export settings',
     'SHOP_MODULE_GROUP_sWmdkFFQueueSettings'	        => 'Queue settings',
     'SHOP_MODULE_GROUP_sWmdkFFConverterSettings'	    => 'Queue Data Converter',
-    'SHOP_MODULE_GROUP_sWmdkFFsWmdkFFGpsrSettings'	    => 'EU GPSR Settings',
+    'SHOP_MODULE_GROUP_sWmdkFFGpsrSettings'	            => 'EU GPSR Settings',
     'SHOP_MODULE_GROUP_sWmdkFFSooqrSettings'	        => 'Sooqr Settings',
     'SHOP_MODULE_GROUP_sWmdkFFDoofinderSettings'	    => 'Doofinder Settings',
     'SHOP_MODULE_GROUP_sWmdkFFFlourSettings'	        => 'flour POS Settings',
@@ -76,6 +76,8 @@ $aLang = array(
     'SHOP_MODULE_sWmdkFFFlourNumberFields'	            => 'Numeric values',
     'SHOP_MODULE_sWmdkFFFlourBooleanFields'	            => 'Boolean values',
     'SHOP_MODULE_sWmdkFFFlourDateFields'	            => 'Date values',
+    'SHOP_MODULE_sWmdkFFFlourShortUrlDomain'	        => 'Short URL Domain',
+    'SHOP_MODULE_sWmdkFFFlourPhpMemoryLimit'	        => 'PHP Memory Limit (WARNING: This setting overwrites the general PHP memory limit!)',
 
     // CRON TIMINGS
     'SHOP_MODULE_sWmdkFFCronResetExistingArticlesSinceDays'   => 'How many days should be considered for the reset?',

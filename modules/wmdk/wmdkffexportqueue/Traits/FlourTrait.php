@@ -2,6 +2,8 @@
 
 namespace Wmdk\FactFinderQueue\Traits;
 
+use OxidEsales\Eshop\Core\Registry;
+
 trait FlourTrait
 {
     private function _getFlourId()
@@ -43,6 +45,13 @@ trait FlourTrait
 
     private function _getFlourShortUrl()
     {
-        return $this->_oProduct->oxarticles__wmdkflourshorturl->value;
+        $sShortUrl = trim($this->_oProduct->oxarticles__wmdkflourshorturl->value);
+        $sUrl = Registry::getConfig()->getConfigParam('sWmdkFFFlourShortUrlDomain');
+        $sEan = $this->_oProduct->oxarticles__oxean->value;
+
+        // Fallback
+        $sFallbackUrl = $sUrl . '/' . $sEan;
+
+        return (strlen($sShortUrl) > 10) ? $sShortUrl : $sFallbackUrl;
     }
 }

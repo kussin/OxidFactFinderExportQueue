@@ -102,18 +102,7 @@ trait ExportTrait
         $this->_iLang = Registry::getConfig()->getRequestParameter('lang');
 
         // LOAD PRODUCTS
-        $sQuery = 'SELECT 
-                        ' . $this->_getPreparedExportFields($this->_aExportFields) . '
-                    FROM 
-                        `wmdk_ff_export_queue`
-                    WHERE
-                        (`Channel` = "' . $this->_sChannel . '")
-                        AND (`OXSHOPID` = "' . $this->_iShopId . '")
-                        AND (`LANG` = "' . $this->_iLang . '")
-                        AND (`OXACTIVE` = "' . (($this->_bActive) ? '1' : '0') . '")
-                        AND (`OXHIDDEN` = "' . (($this->_bHidden) ? '1' : '0') . '")
-                        AND (`Stock` >= ' . $this->_iStockMin . ')
-                        AND (`HasProductImage` LIKE "' . (($this->_bWithNoPics) ? '%' : '1') . '");';
+        $sQuery = $this->_getExportSelection();
 
         $oResult = \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->select($sQuery);
 
@@ -235,6 +224,55 @@ trait ExportTrait
         }
 
         return $sTmpExportDelimiter;
+    }
+
+    private function _getExportSelection(): string
+    {
+
+        // FLOUR POS
+        if (self::PROCESS_CODE == 'FLOUR') {
+            $sPhpMemoryLimit = Registry::getConfig()->getConfigParam('sWmdkFFFlourPhpMemoryLimit');
+
+            $bFlourId = (bool) Registry::getConfig()->getRequestParameter('flour_id');
+
+            // WARNING: MEMORY LIMIT
+            ini_set('memory_limit', $sPhpMemoryLimit);
+
+            $sQuery = 'SELECT 
+                ' . $this->_getPreparedExportFields($this->_aExportFields) . '
+            FROM 
+                `wmdk_ff_export_queue`
+            WHERE
+                (`Channel` = "' . $this->_sChannel . '")
+                AND (`OXSHOPID` = "' . $this->_iShopId . '")
+                AND (`LANG` = "' . $this->_iLang . '")
+                AND (`OXACTIVE` = "1")
+                AND (`FlourActive` = "1")';
+
+            if ($bFlourId) {
+                $sQuery .= ' AND (
+                    (`FlourId` IS NOT NULL)
+                    AND (`FlourId` NOT LIKE "")
+                )';
+            }
+
+            $sQuery .= ';';
+
+            return $sQuery;
+        }
+
+        return 'SELECT 
+            ' . $this->_getPreparedExportFields($this->_aExportFields) . '
+        FROM 
+            `wmdk_ff_export_queue`
+        WHERE
+            (`Channel` = "' . $this->_sChannel . '")
+            AND (`OXSHOPID` = "' . $this->_iShopId . '")
+            AND (`LANG` = "' . $this->_iLang . '")
+            AND (`OXACTIVE` = "' . (($this->_bActive) ? '1' : '0') . '")
+            AND (`OXHIDDEN` = "' . (($this->_bHidden) ? '1' : '0') . '")
+            AND (`Stock` >= ' . $this->_iStockMin . ')
+            AND (`HasProductImage` LIKE "' . (($this->_bWithNoPics) ? '%' : '1') . '");';
     }
 
     private function _getExportFields() {

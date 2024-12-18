@@ -164,6 +164,8 @@ $aModule = array(
         array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourNumberFields', 'type' => 'str', 'value' => 'Price,MSRP,BasePrice,Stock,Weight,Rating,RatingCnt,SaleAmount,SoldAmount,TrustedShopsRating,TrustedShopsRatingCnt,TrustedShopsRatingPercentage'),
         array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourBooleanFields', 'type' => 'str', 'value' => 'HasProductImage,HasCustomAsnRestrictions,HasNewFlag,HasTopFlag,HasSaleFlag,HasVariantsSizelist'),
         array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourDateFields', 'type' => 'str', 'value' => 'DateInsert,DateModified'),
+        array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourShortUrlDomain', 'type' => 'str', 'value' => 'https://wh1.de/'),
+        array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourPhpMemoryLimit', 'type' => 'str', 'value' => '256M'),
         
         // CRON TIMINGS
         array('group' => 'sWmdkFFCronSettings', 'name' => 'sWmdkFFCronResetExistingArticlesSinceDays', 'type' => 'str', 'value' => '-2 days'),
