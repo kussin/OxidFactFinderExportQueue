@@ -238,8 +238,24 @@ trait ExportTrait
             // WARNING: MEMORY LIMIT
             ini_set('memory_limit', $sPhpMemoryLimit);
 
+            // GET FIELDS
+            $sPreparedExportFields = $this->_getPreparedExportFields($this->_aExportFields);
+
+            // ADD UTM TRACKING
+            $sUtmKey = '`Deeplink`';
+            $sUtmParams = 'showroom-customer=1&utm_source=Showroom+Item+QR&utm_medium=Flyer&utm_campaign=showroom_item_qr&utm_id=showroom-item-qr';
+
+            if ($sUtmKey != '' && $sUtmParams != '') {
+                // TODO: #65932 Add Deeplink UTM Tracking
+                $sPreparedExportFields = str_replace(
+                    $sUtmKey,
+                    'CONCAT(' . $sUtmKey . ', "?", "' . $sUtmParams . '") AS ' . $sUtmKey,
+                    $sPreparedExportFields
+                );
+            }
+
             $sQuery = 'SELECT 
-                ' . $this->_getPreparedExportFields($this->_aExportFields) . '
+                ' . $sPreparedExportFields . '
             FROM 
                 `wmdk_ff_export_queue`
             WHERE
