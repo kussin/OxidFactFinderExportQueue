@@ -77,6 +77,8 @@ $aLang = array(
     'SHOP_MODULE_sWmdkFFFlourBooleanFields'	            => 'Boolische Werte',
     'SHOP_MODULE_sWmdkFFFlourDateFields'	            => 'Datumswerte',
     'SHOP_MODULE_sWmdkFFFlourShortUrlDomain'	        => 'Short URL Domain',
+    'SHOP_MODULE_sWmdkFFFlourDeeplinkUtmKey'	        => 'Deeplink SQL Field',
+    'SHOP_MODULE_sWmdkFFFlourDeeplinkUtmParams'	        => 'UTM Parameters',
     'SHOP_MODULE_sWmdkFFFlourPhpMemoryLimit'	        => 'PHP Memory Limit (ACHTUNG: Dieser Wert wird in der PHP-Konfiguration überschrieben!)',
 
     // CRON TIMINGS

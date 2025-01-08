@@ -242,11 +242,10 @@ trait ExportTrait
             $sPreparedExportFields = $this->_getPreparedExportFields($this->_aExportFields);
 
             // ADD UTM TRACKING
-            $sUtmKey = '`Deeplink`';
-            $sUtmParams = 'showroom-customer=1&utm_source=Showroom+Item+QR&utm_medium=Flyer&utm_campaign=showroom_item_qr&utm_id=showroom-item-qr';
+            $sUtmKey = Registry::getConfig()->getConfigParam('sWmdkFFFlourDeeplinkUtmKey');
+            $sUtmParams = Registry::getConfig()->getConfigParam('sWmdkFFFlourDeeplinkUtmParams');
 
             if ($sUtmKey != '' && $sUtmParams != '') {
-                // TODO: #65932 Add Deeplink UTM Tracking
                 $sPreparedExportFields = str_replace(
                     $sUtmKey,
                     'CONCAT(' . $sUtmKey . ', "?", "' . $sUtmParams . '") AS ' . $sUtmKey,
