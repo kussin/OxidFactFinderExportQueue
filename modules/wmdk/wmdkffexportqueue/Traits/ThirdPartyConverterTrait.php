@@ -25,6 +25,28 @@ trait ThirdPartyConverterTrait
         $this->_aDateFields = explode(',', $sDateFields);
     }
 
+    private function _convertKeys($Keys, $bQuoted = false)
+    {
+        $aConvertedKeys = array();
+
+        foreach ($Keys as $sKey) {
+            $sCleanKey = $sKey;
+
+            if ($bQuoted) {
+                // CLEAN KEY
+                $sCleanKey = str_replace([
+                    '"',
+                ], '', $sKey);
+            }
+
+            // CONVERT KEY
+            $sConvertedKey = $this->_mapKey(trim($sCleanKey));
+
+            $aConvertedKeys[] = $bQuoted ? '"' . $sConvertedKey . '"' : $sConvertedKey;
+        }
+
+        return $aConvertedKeys;
+    }
     private function _convertData($aData)
     {
         $aConvertedData = array();

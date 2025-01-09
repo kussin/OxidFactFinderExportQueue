@@ -37,7 +37,7 @@ class wmdkffexport_flour extends oxubase
         try {
             $rCsvFile = fopen($sExportFile, 'w');
 
-            foreach ($this->_aCsvData as $sRow) {
+            foreach ($this->_getData() as $sRow) {
                 fwrite($rCsvFile, $sRow . PHP_EOL);
             }
 
@@ -55,6 +55,29 @@ class wmdkffexport_flour extends oxubase
 
         // DEBUG
 //        echo implode("\n", $this->_aCsvData);
+    }
+
+    protected function _getData() {
+        if ($this->_aExportData === NULL) {
+            $aKeys = NULL;
+            $aData = array();
+
+            foreach ($this->_aCsvData as $sRow) {
+                if ($aKeys === NULL) {
+                    $aKeys = explode(self::EXPORT_DELIMITER, $sRow);
+
+                    $aData[] = implode(self::EXPORT_DELIMITER, $this->_convertKeys($aKeys, true));
+
+                    continue;
+                }
+
+                $aData[] = $sRow;
+            }
+
+            $this->_aExportData = $aData;
+        }
+
+        return $this->_aExportData;
     }
 
 }
