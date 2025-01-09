@@ -7,6 +7,7 @@ use OxidEsales\Eshop\Core\Registry;
 trait ExportTrait
 {
     use ConverterTrait;
+    use FlourTrait;
 
     protected $_sChannel = NULL;
     protected $_iShopId = 1;
@@ -231,58 +232,7 @@ trait ExportTrait
 
         // FLOUR POS
         if (self::PROCESS_CODE == 'FLOUR') {
-            $sPhpMemoryLimit = Registry::getConfig()->getConfigParam('sWmdkFFFlourPhpMemoryLimit');
-
-            $bFlourId = (bool) Registry::getConfig()->getRequestParameter('flour_id');
-
-            // WARNING: MEMORY LIMIT
-            ini_set('memory_limit', $sPhpMemoryLimit);
-
-            // GET FIELDS
-            $sPreparedExportFields = $this->_getPreparedExportFields($this->_aExportFields);
-
-            // GET BASE URL
-            $sSSLShopURL = Registry::getConfig()->getShopUrl();
-
-            // ADD UTM TRACKING
-            $sUtmKey = Registry::getConfig()->getConfigParam('sWmdkFFFlourDeeplinkUtmKey');
-            $sUtmParams = Registry::getConfig()->getConfigParam('sWmdkFFFlourDeeplinkUtmParams');
-
-            if ($sUtmKey != '' && $sUtmParams != '') {
-                $sPreparedExportFields = str_replace(
-                    $sUtmKey,
-                    'CONCAT("' . $sSSLShopURL . '", ' . $sUtmKey . ', "?", "' . $sUtmParams . '") AS ' . $sUtmKey,
-                    $sPreparedExportFields
-                );
-            } elseif ($sUtmKey != '') {
-                $sPreparedExportFields = str_replace(
-                    $sUtmKey,
-                    'CONCAT("' . $sSSLShopURL . '", ' . $sUtmKey . ') AS ' . $sUtmKey,
-                    $sPreparedExportFields
-                );
-            }
-
-            $sQuery = 'SELECT 
-                ' . $sPreparedExportFields . '
-            FROM 
-                `wmdk_ff_export_queue`
-            WHERE
-                (`Channel` = "' . $this->_sChannel . '")
-                AND (`OXSHOPID` = "' . $this->_iShopId . '")
-                AND (`LANG` = "' . $this->_iLang . '")
-                AND (`OXACTIVE` = "1")
-                AND (`FlourActive` = "1")';
-
-            if ($bFlourId) {
-                $sQuery .= ' AND (
-                    (`FlourId` IS NOT NULL)
-                    AND (`FlourId` NOT LIKE "")
-                )';
-            }
-
-            $sQuery .= ';';
-
-            return $sQuery;
+            return $this->_getFlourExportSelection();
         }
 
         return 'SELECT 

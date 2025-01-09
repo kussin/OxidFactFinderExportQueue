@@ -6,6 +6,10 @@ use OxidEsales\Eshop\Core\Registry;
 
 trait FlourTrait
 {
+    private $_sFlourTaxId19 = '10000';
+    private $_sFlourTaxId7 = '20000';
+    private $_sFlourTaxId0 = '30000';
+
     private function _getFlourId()
     {
         return ($this->_oProduct->oxarticles__wmdkflourid->value != '') ? $this->_oProduct->oxarticles__wmdkflourid->value : NULL;
@@ -53,5 +57,89 @@ trait FlourTrait
         $sFallbackUrl = $sUrl . '/' . $sEan;
 
         return (strlen($sShortUrl) > 10) ? $sShortUrl : $sFallbackUrl;
+    }
+
+
+    private function _getFlourExportSelection()
+    {
+        $sPhpMemoryLimit = Registry::getConfig()->getConfigParam('sWmdkFFFlourPhpMemoryLimit');
+
+        $bFlourId = (bool) Registry::getConfig()->getRequestParameter('flour_id');
+
+        // WARNING: MEMORY LIMIT
+        ini_set('memory_limit', $sPhpMemoryLimit);
+
+        // GET FIELDS
+        $sPreparedExportFields = $this->_getPreparedExportFields($this->_aExportFields);
+
+        // PREPARE DEEPLINK
+        $sPreparedExportFields = $this->_getFlourExportSelectionAddUtmTracking($sPreparedExportFields);
+
+        // PREPARE MAP TAX
+        $sPreparedExportFields = $this->_getFlourExportSelectionMapTax($sPreparedExportFields);
+
+        // TODO: Individual: Prozentualer Rabatt Endkunden | Hinweis pb: ohne %
+        // TODO: Individual: Prozentualer Rabatt Lagerverkauf | Hinweis pb: ohne %
+        // TODO: Additional Fields: OXID	WMDKUSED	WMDKSEASON	Stock
+        // TODO: Stock: 1 or 0
+
+        $sQuery = 'SELECT 
+                ' . $sPreparedExportFields . '
+            FROM 
+                `wmdk_ff_export_queue`
+            WHERE
+                (`Channel` = "' . $this->_sChannel . '")
+                AND (`OXSHOPID` = "' . $this->_iShopId . '")
+                AND (`LANG` = "' . $this->_iLang . '")
+                AND (`OXACTIVE` = "1")
+                AND (`FlourActive` = "1")';
+
+        if ($bFlourId) {
+            $sQuery .= ' AND (
+                    (`FlourId` IS NOT NULL)
+                    AND (`FlourId` NOT LIKE "")
+                )';
+        }
+
+        $sQuery .= ';';
+
+        return $sQuery;
+    }
+
+    private function _getFlourExportSelectionAddUtmTracking($sPreparedExportFields)
+    {
+        // GET BASE URL
+        $sSSLShopURL = Registry::getConfig()->getShopUrl();
+
+        // ADD UTM TRACKING
+        $sUtmKey = Registry::getConfig()->getConfigParam('sWmdkFFFlourDeeplinkUtmKey');
+        $sUtmParams = Registry::getConfig()->getConfigParam('sWmdkFFFlourDeeplinkUtmParams');
+
+        if ($sUtmKey != '' && $sUtmParams != '') {
+            $sPreparedExportFields = str_replace(
+                $sUtmKey,
+                'CONCAT("' . $sSSLShopURL . '", ' . $sUtmKey . ', "?", "' . $sUtmParams . '") AS ' . $sUtmKey,
+                $sPreparedExportFields
+            );
+        } elseif ($sUtmKey != '') {
+            $sPreparedExportFields = str_replace(
+                $sUtmKey,
+                'CONCAT("' . $sSSLShopURL . '", ' . $sUtmKey . ') AS ' . $sUtmKey,
+                $sPreparedExportFields
+            );
+        }
+
+        return $sPreparedExportFields;
+    }
+
+
+    private function _getFlourExportSelectionMapTax($sPreparedExportFields, $sTaxField = '`Tax`')
+    {
+        return str_replace(
+            $sTaxField,
+            'IF(' . $sTaxField . ' > 15, ' . $this->_sFlourTaxId19 . ', IF(' . $sTaxField . ' = 0, '
+                . $this->_sFlourTaxId0 . ', ' . $this->_sFlourTaxId7 . ')) AS ' . $sTaxField,
+            $sPreparedExportFields
+        );
     }
 }
