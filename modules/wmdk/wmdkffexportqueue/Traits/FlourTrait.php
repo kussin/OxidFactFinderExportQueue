@@ -33,7 +33,7 @@ trait FlourTrait
         return (double) $this->_oProduct->oxarticles__wmdkflourwarehouseprice->value;
     }
 
-    private function _getFlourSaleAmount($bSign = TRUE)
+    private function _getFlourSaleAmount($bSign = false)
     {
         $dPrice = $this->_getFlourPrice();
         $sMsrp = $this->_getMsrp();
