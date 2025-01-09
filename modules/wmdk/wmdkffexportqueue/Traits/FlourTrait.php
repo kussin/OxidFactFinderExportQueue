@@ -78,8 +78,9 @@ trait FlourTrait
         // PREPARE MAP TAX
         $sPreparedExportFields = $this->_getFlourExportSelectionMapTax($sPreparedExportFields);
 
-        // TODO: Individual: Prozentualer Rabatt Endkunden | Hinweis pb: ohne %
-        // TODO: Individual: Prozentualer Rabatt Lagerverkauf | Hinweis pb: ohne %
+        // REMOVE % SIGN
+        $sPreparedExportFields = $this->_removeFlourExportSelectionPercentageSign($sPreparedExportFields);
+
         // TODO: Additional Fields: OXID	WMDKUSED	WMDKSEASON	Stock
         // TODO: Stock: 1 or 0
 
@@ -139,6 +140,16 @@ trait FlourTrait
             $sTaxField,
             'IF(' . $sTaxField . ' > 15, ' . $this->_sFlourTaxId19 . ', IF(' . $sTaxField . ' = 0, '
                 . $this->_sFlourTaxId0 . ', ' . $this->_sFlourTaxId7 . ')) AS ' . $sTaxField,
+            $sPreparedExportFields
+        );
+    }
+
+
+    private function _removeFlourExportSelectionPercentageSign($sPreparedExportFields, $sTaxField = '`SaleAmount`')
+    {
+        return str_replace(
+            $sTaxField,
+            'REPLACE(' . $sTaxField . ', "%", "") AS ' . $sTaxField,
             $sPreparedExportFields
         );
     }
