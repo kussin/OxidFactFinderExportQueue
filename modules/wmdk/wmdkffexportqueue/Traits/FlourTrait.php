@@ -81,8 +81,8 @@ trait FlourTrait
         // REMOVE % SIGN
         $sPreparedExportFields = $this->_removeFlourExportSelectionPercentageSign($sPreparedExportFields);
 
-        // TODO: Additional Fields: OXID	WMDKUSED	WMDKSEASON	Stock
-        // TODO: Stock: 1 or 0
+        // CONVERT STOCK TO BOOLEAN
+        $sPreparedExportFields = $this->_removeFlourExportSelectionStock($sPreparedExportFields);
 
         $sQuery = 'SELECT 
                 ' . $sPreparedExportFields . '
@@ -133,7 +133,6 @@ trait FlourTrait
         return $sPreparedExportFields;
     }
 
-
     private function _getFlourExportSelectionMapTax($sPreparedExportFields, $sTaxField = '`Tax`')
     {
         return str_replace(
@@ -144,12 +143,20 @@ trait FlourTrait
         );
     }
 
-
-    private function _removeFlourExportSelectionPercentageSign($sPreparedExportFields, $sTaxField = '`SaleAmount`')
+    private function _removeFlourExportSelectionPercentageSign($sPreparedExportFields, $sField = '`SaleAmount`')
     {
         return str_replace(
-            $sTaxField,
-            'REPLACE(' . $sTaxField . ', "%", "") AS ' . $sTaxField,
+            $sField,
+            'REPLACE(' . $sField . ', "%", "") AS ' . $sField,
+            $sPreparedExportFields
+        );
+    }
+
+    private function _removeFlourExportSelectionStock($sPreparedExportFields, $sStockField = '`Stock`')
+    {
+        return str_replace(
+            $sStockField,
+            'IF(' . $sStockField . ' > 15, "1", "0") AS ' . $sStockField,
             $sPreparedExportFields
         );
     }
