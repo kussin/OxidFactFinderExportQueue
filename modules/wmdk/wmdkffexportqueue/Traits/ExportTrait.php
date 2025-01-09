@@ -241,6 +241,9 @@ trait ExportTrait
             // GET FIELDS
             $sPreparedExportFields = $this->_getPreparedExportFields($this->_aExportFields);
 
+            // GET BASE URL
+            $sSSLShopURL = Registry::getConfig()->getShopUrl();
+
             // ADD UTM TRACKING
             $sUtmKey = Registry::getConfig()->getConfigParam('sWmdkFFFlourDeeplinkUtmKey');
             $sUtmParams = Registry::getConfig()->getConfigParam('sWmdkFFFlourDeeplinkUtmParams');
@@ -248,7 +251,13 @@ trait ExportTrait
             if ($sUtmKey != '' && $sUtmParams != '') {
                 $sPreparedExportFields = str_replace(
                     $sUtmKey,
-                    'CONCAT(' . $sUtmKey . ', "?", "' . $sUtmParams . '") AS ' . $sUtmKey,
+                    'CONCAT("' . $sSSLShopURL . '", ' . $sUtmKey . ', "?", "' . $sUtmParams . '") AS ' . $sUtmKey,
+                    $sPreparedExportFields
+                );
+            } elseif ($sUtmKey != '') {
+                $sPreparedExportFields = str_replace(
+                    $sUtmKey,
+                    'CONCAT("' . $sSSLShopURL . '", ' . $sUtmKey . ') AS ' . $sUtmKey,
                     $sPreparedExportFields
                 );
             }
