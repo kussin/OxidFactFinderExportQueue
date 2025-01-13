@@ -165,6 +165,7 @@ $aModule = array(
         array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourBooleanFields', 'type' => 'str', 'value' => 'HasProductImage,HasCustomAsnRestrictions,HasNewFlag,HasTopFlag,HasSaleFlag,HasVariantsSizelist'),
         array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourDateFields', 'type' => 'str', 'value' => 'DateInsert,DateModified'),
         array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourShortUrlDomain', 'type' => 'str', 'value' => 'https://wh1.de/'),
+        array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourShortUrlPrefix', 'type' => 'str', 'value' => 'SR-'),
         array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourDeeplinkUtmKey', 'type' => 'str', 'value' => '`Deeplink`'),
         array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourDeeplinkUtmParams', 'type' => 'str', 'value' => 'showroom-customer=1&utm_source=Showroom+Item+QR&utm_medium=Flyer&utm_campaign=showroom_item_qr&utm_id=showroom-item-qr'),
         array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourPhpMemoryLimit', 'type' => 'str', 'value' => '256M'),

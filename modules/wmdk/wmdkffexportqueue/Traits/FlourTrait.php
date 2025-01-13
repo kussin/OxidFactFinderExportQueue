@@ -51,10 +51,11 @@ trait FlourTrait
     {
         $sShortUrl = trim($this->_oProduct->oxarticles__wmdkflourshorturl->value);
         $sUrl = Registry::getConfig()->getConfigParam('sWmdkFFFlourShortUrlDomain');
+        $sPrefix = Registry::getConfig()->getConfigParam('sWmdkFFFlourShortUrlPrefix');
         $sEan = $this->_oProduct->oxarticles__oxean->value;
 
         // Fallback
-        $sFallbackUrl = $sUrl . '/' . $sEan;
+        $sFallbackUrl = $sUrl . '/' . $sPrefix . $sEan;
 
         return (strlen($sShortUrl) > 10) ? $sShortUrl : $sFallbackUrl;
     }
@@ -156,7 +157,7 @@ trait FlourTrait
     {
         return str_replace(
             $sStockField,
-            'IF(' . $sStockField . ' > 15, "1", "0") AS ' . $sStockField,
+            'IF(' . $sStockField . ' > 0, "1", "0") AS ' . $sStockField,
             $sPreparedExportFields
         );
     }
