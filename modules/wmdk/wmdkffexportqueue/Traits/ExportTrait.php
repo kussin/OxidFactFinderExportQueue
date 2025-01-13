@@ -60,8 +60,13 @@ trait ExportTrait
         return $this->_sTemplate;
     }
 
-    private function _getCSVDataRow($aFields, $sDelimiter = self::EXPORT_DELIMITER) {
+    private function _getCSVDataRow($aFields, $bHeader = false, $sDelimiter = self::EXPORT_DELIMITER) {
         $aTmpCsvData = array();
+
+        if ($bHeader && (self::PROCESS_CODE == 'FLOUR')) {
+            // EXPORT MARKER
+            $aFields[] = Registry::getConfig()->getConfigParam('sWmdkFFFlourExportMarker');
+        }
 
         foreach ($aFields as $iKey => $sValue) {
             /* CategoryPath (Ticket: #35896) */
@@ -114,7 +119,7 @@ trait ExportTrait
 
             // ADD CSV Header
             array_shift($this->_aExportFields);
-            $this->_aCsvData[] = $this->_getCSVDataRow($this->_aExportFields);
+            $this->_aCsvData[] = $this->_getCSVDataRow($this->_aExportFields, true);
 
             while (!$oResult->EOF) {
                 $aData = $oResult->getFields();
@@ -123,7 +128,7 @@ trait ExportTrait
                 $sOxid = array_shift($aData);
 
                 // CLEAN DATA
-                $sCSVDataRow = $this->_getCSVDataRow($aData, $this->_getTmpExportDelimiter());
+                $sCSVDataRow = $this->_getCSVDataRow($aData, false, $this->_getTmpExportDelimiter());
 
                 if (!$this->_bSkipCSVDataRow) {
                     $sCsvData = $sCSVDataRow;
@@ -217,6 +222,11 @@ trait ExportTrait
 
     protected function _getTmpExportDelimiter()
     {
+        // FLOUR POS
+        if (self::PROCESS_CODE == 'FLOUR') {
+            return self::EXPORT_DELIMITER;
+        }
+
         // LOAD DELIMITER
         $sTmpExportDelimiter = trim(Registry::getConfig()->getConfigParam('sWmdkFFExportTmpDelimiter'));
 
@@ -229,7 +239,6 @@ trait ExportTrait
 
     private function _getExportSelection(): string
     {
-
         // FLOUR POS
         if (self::PROCESS_CODE == 'FLOUR') {
             return $this->_getFlourExportSelection();
