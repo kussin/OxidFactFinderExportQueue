@@ -83,7 +83,7 @@ trait FlourTrait
         $sPreparedExportFields = $this->_removeFlourExportSelectionPercentageSign($sPreparedExportFields);
 
         // CONVERT STOCK TO BOOLEAN
-        $sPreparedExportFields = $this->_removeFlourExportSelectionStock($sPreparedExportFields);
+        $sPreparedExportFields = $this->_getFlourExportSelectionStockFlag($sPreparedExportFields);
 
         // EXPORT MARKER
         $sExportMarker = Registry::getConfig()->getConfigParam('sWmdkFFFlourExportMarker');
@@ -157,7 +157,7 @@ trait FlourTrait
         );
     }
 
-    private function _removeFlourExportSelectionStock($sPreparedExportFields, $sStockField = '`Stock`')
+    private function _getFlourExportSelectionStockFlag($sPreparedExportFields, $sStockField = '`Stock`')
     {
         return str_replace(
             $sStockField,
