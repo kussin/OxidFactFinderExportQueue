@@ -85,6 +85,9 @@ trait FlourTrait
         // CONVERT STOCK TO BOOLEAN
         $sPreparedExportFields = $this->_getFlourExportSelectionStockFlag($sPreparedExportFields);
 
+        // EXTRACT ATTRIBUTES
+        $sPreparedExportFields = $this->_extractFlourExportAttributeValue($sPreparedExportFields);
+
         // EXPORT MARKER
         $sExportMarker = Registry::getConfig()->getConfigParam('sWmdkFFFlourExportMarker');
 
@@ -153,6 +156,29 @@ trait FlourTrait
         return str_replace(
             $sField,
             'REPLACE(' . $sField . ', "%", "") AS ' . $sField,
+            $sPreparedExportFields
+        );
+    }
+
+    protected function _extractFlourExportAttributeValue($sPreparedExportFields)
+    {
+        // TODO: Add to composer patch (too individual)
+        $sField = "Attributes";
+        $sAlias = "`Year`";
+        $sSearch = "$sField AS $sAlias";
+        $aReplace = [];
+
+        // SWITCH
+        $aReplace[] = "CASE";
+        for ($iYear = (int) date('Y'); $iYear >= 1998; $iYear--) {
+            $aReplace[] = "WHEN $sField LIKE '%=$iYear|%' THEN \"$iYear\"";
+        }
+        $aReplace[] = "ELSE \"\"";
+        $aReplace[] = "END AS $sAlias";
+
+        return str_replace(
+            $sSearch,
+            implode("\n", $aReplace),
             $sPreparedExportFields
         );
     }
