@@ -85,8 +85,12 @@ trait FlourTrait
         // CONVERT STOCK TO BOOLEAN
         $sPreparedExportFields = $this->_removeFlourExportSelectionStock($sPreparedExportFields);
 
+        // EXPORT MARKER
+        $sExportMarker = Registry::getConfig()->getConfigParam('sWmdkFFFlourExportMarker');
+
         $sQuery = 'SELECT 
-                ' . $sPreparedExportFields . '
+                ' . $sPreparedExportFields . ',
+                "' . date('Y-m-d') . '_' . time() . '" AS `' . $sExportMarker . '`
             FROM 
                 `wmdk_ff_export_queue`
             WHERE

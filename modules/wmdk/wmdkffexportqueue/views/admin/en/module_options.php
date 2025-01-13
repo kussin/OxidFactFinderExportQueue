@@ -80,6 +80,7 @@ $aLang = array(
     'SHOP_MODULE_sWmdkFFFlourShortUrlPrefix'	        => 'Short URL Prefix',
     'SHOP_MODULE_sWmdkFFFlourDeeplinkUtmKey'	        => 'Deeplink SQL Field',
     'SHOP_MODULE_sWmdkFFFlourDeeplinkUtmParams'	        => 'UTM Parameters',
+    'SHOP_MODULE_sWmdkFFFlourExportMarker'	            => 'Export Marker (Timestamp of data export)',
     'SHOP_MODULE_sWmdkFFFlourPhpMemoryLimit'	        => 'PHP Memory Limit (WARNING: This setting overwrites the general PHP memory limit!)',
 
     // CRON TIMINGS
