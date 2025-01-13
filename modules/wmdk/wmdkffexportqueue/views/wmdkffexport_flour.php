@@ -15,7 +15,7 @@ class wmdkffexport_flour extends oxubase
     const PROCESS_CODE = 'FLOUR';
 
     const EXPORT_ADDITIONAL_ESCAPING = '"';
-    const EXPORT_DELIMITER = '|';
+    const EXPORT_DELIMITER = ';';
     const EXPORT_CATEGORY_DELIMITER = '|';
 
     private $_sTemplate = 'wmdkffexport_flour.tpl';
