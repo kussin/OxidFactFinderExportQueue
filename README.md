@@ -1,4 +1,4 @@
-# Kussin | OXID 6 FACT Finder Export Queue
+# Kussin | OXID 6 FACT Finder Export Queue 6.0 (BWC Version)
 
 Kussin | OXID 6 FACT Finder Export Queue provides real-time CSV Exports for FACT Finder NG. And since 08/2023 it also
 supports [Sooqr](https://www.sooqr.com/) and [Doofinder](https://www.doofinder.com/).
@@ -9,8 +9,8 @@ TODO: Will follow soon
 
 ## Requirement
 
-1. OXID eSales CE/PE/EE v6.2.5 or newer
-2. PHP 7.4 or newer
+1. OXID eSales CE/PE/EE v6.0.x
+2. PHP 7.0 or newer
 3. [FACT Finder NG v3.1.149 or newer](https://www.fact-finder.com/)
 
 ## Installation Guide
@@ -67,7 +67,7 @@ Please use the [Github Issues](https://github.com/kussin/OxidFactFinderExportQue
 
 Kussin | eCommerce und Online-Marketing GmbH<br>
 Fahltskamp 3<br>
-25462 Rellingen<br>
+25421 Pinneberg<br>
 Germany
 
 Fon: +49 (4101) 85868 - 0<br>
@@ -79,4 +79,4 @@ Email: info@kussin.de
 
 ## Copyright
 
-&copy; 2006-2023 Kussin | eCommerce und Online-Marketing GmbH
+&copy; 2006-2025 Kussin | eCommerce und Online-Marketing GmbH

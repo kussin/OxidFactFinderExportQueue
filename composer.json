@@ -1,7 +1,7 @@
 {
     "name":        "wmdk/wmdkffexportqueue",
-    "version":     "1.10.3.3",
-    "description": "Kussin | OXID 6 FACT Finder Export Queue",
+    "version":     "1.10.3.3-bwc",
+    "description": "Kussin | OXID 6 FACT Finder Export Queue 6.0 (BWC Version)",
     "type":        "oxideshop-module",
     "keywords":    [
         "wmdk",
@@ -39,7 +39,7 @@
         }
     },
     "require":     {
-        "php": ">=7.4",
+        "php": ">=7.0",
         "oxid-esales/oxideshop-ce": "^6.0",
         "spatie/array-to-xml": "^2.17",
         "ext-zlib": "*"
