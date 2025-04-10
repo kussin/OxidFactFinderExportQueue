@@ -10,7 +10,7 @@ TODO: Will follow soon
 ## Requirement
 
 1. OXID eSales CE/PE/EE v6.0.x
-2. PHP 7.0 or newer
+2. PHP 5.6 or newer
 3. [FACT Finder NG v3.1.149 or newer](https://www.fact-finder.com/)
 
 ## Installation Guide
