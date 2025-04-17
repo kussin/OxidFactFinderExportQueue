@@ -36,7 +36,7 @@ class wmdkffexport_doofinder extends oxubase
             Registry::getConfig()->getConfigParam('sWmdkFFDoofinderBooleanFields'),
             Registry::getConfig()->getConfigParam('sWmdkFFDoofinderDateFields')
         );
-        
+
         // EXPORT
         try {
             // XML
@@ -51,7 +51,7 @@ class wmdkffexport_doofinder extends oxubase
             // EXPORT
             $rXmlFile = fopen($sExportFile, 'w');
 
-            fwrite($rXmlFile, $this->_fixCDataWrapper($oXML->prettify()->toXml()));
+            fwrite($rXmlFile, $oXML->toXml());
 
             fclose($rXmlFile);
 
