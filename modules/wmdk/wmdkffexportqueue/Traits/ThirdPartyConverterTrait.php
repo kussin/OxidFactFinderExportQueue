@@ -1,5 +1,7 @@
 <?php
 
+namespace Wmdk\FactFinderQueue\Traits;
+
 use OxidEsales\Eshop\Core\Registry;
 
 trait ThirdPartyConverterTrait
