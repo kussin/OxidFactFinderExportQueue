@@ -7,6 +7,8 @@ use Spatie\ArrayToXml\ArrayToXml;
 
 trait XmlValidatorTrait
 {
+    use DebugTrait;
+
     private function _validateXmlNode($aNode)
     {
         try {
@@ -23,10 +25,27 @@ trait XmlValidatorTrait
             // ERROR
             $this->_aResponse['validation_errors'][] = 'XML Node Validation Exception (OXARTNUM: ' . $aNode['id'] . '): ' . $oException->getMessage();
 
+            $this->log(json_encode($aNode));
+
             return false;
         }
 
         return true;
+    }
+
+    protected function _replaceSpecialChars($aNode, $bAddOriginValueParam = true)
+    {
+        if ($bAddOriginValueParam) {
+            $aNode['_attributes'] = $aNode['name'];
+        }
+
+        $aNode['name'] = str_replace(
+            array('&', '<', '>', '"', "'", '(', ')', 'ß', 'ä', 'ö', 'ü', 'Ä', 'Ö', 'Ü', '€'),
+            array(''),
+            $aNode['name']
+        );
+
+        return $aNode;
     }
 
 }

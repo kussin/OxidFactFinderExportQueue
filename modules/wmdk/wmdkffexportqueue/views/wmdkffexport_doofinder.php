@@ -84,6 +84,9 @@ class wmdkffexport_doofinder extends oxubase
                 if (count($aKeys) == count($aValues)) {
                     $aNode = $this->_convertData(array_combine($aKeys, $aValues));
 
+                    // REMOVE SPECIAL CHARACTERS FROM NODES
+//                    $aNode = $this->_replaceSpecialChars($aNode);
+
                     if ($this->_validateXmlNode($aNode)) {
                         $aData[] = $aNode;
                     }

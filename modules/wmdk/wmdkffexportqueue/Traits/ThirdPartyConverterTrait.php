@@ -152,23 +152,10 @@ trait ThirdPartyConverterTrait
             (isset($aProductData['Attributes']))
             && (self::PROCESS_CODE != 'FACTFINDER')
         ) {
-            $aAttributes = explode('|', $this->_revertFromCData($aProductData['Attributes']));
+            $aAttributes = $this->_getAttributes($aProductData['Attributes']['_cdata']);
 
             if (count($aAttributes) >= 1) {
-                foreach ($aAttributes as $sAttribute) {
-                    $aData = explode('=', $sAttribute);
-
-                    if (!isset($aProductData[$aData[0]])) {
-                        $sNodeName = str_replace(array(
-                            ' ',
-                        ), array(
-                            '',
-                        ), $aData[0]);
-
-                        // ADD ADDITIONAL NODE
-                        $aProductData[$sNodeName] = $this->_convertToCData($aData[1]);
-                    }
-                }
+                $aProductData['Attributes'] = $aAttributes;
             }
         }
 
@@ -185,5 +172,32 @@ trait ThirdPartyConverterTrait
         }
 
         return $aProductData;
+    }
+
+    protected function _getAttributes($sAttributes)
+    {
+        $aNodes = [];
+        $aAttributes = explode('|', $sAttributes);
+        $sCurrentKey = null;
+
+        foreach ($aAttributes as $sAttribute) {
+            if (strpos($sAttribute, '=') !== false) {
+                list($sKey, $value) = explode('=', $sAttribute, 2);
+                $sCurrentKey = $sKey;
+                $aNodes[$sCurrentKey] = [$value];
+            } elseif ($sCurrentKey !== null) {
+                // Fortführung des vorherigen Attributs (mehrere Werte)
+                $aNodes[$sCurrentKey][] = $sAttribute;
+            }
+        }
+
+        // OPTIMIZE
+        foreach ($aNodes as $sKey => $aValue) {
+            if (count($aValue) == 1) {
+                $aNodes[$sKey] = $aValue[0];
+            }
+        }
+
+        return $aNodes;
     }
 }

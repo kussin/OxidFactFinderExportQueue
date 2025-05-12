@@ -1,6 +1,6 @@
 {
     "name":        "wmdk/wmdkffexportqueue",
-    "version":     "1.10.3.3-bwc",
+    "version":     "1.10.4-bwc",
     "description": "Kussin | OXID 6 FACT Finder Export Queue 6.0 (BWC Version)",
     "type":        "oxideshop-module",
     "keywords":    [
