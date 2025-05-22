@@ -24,6 +24,28 @@ trait ThirdPartyConverterTrait
         $this->_aDateFields = explode(',', $sDateFields);
     }
 
+    private function _convertKeys($Keys, $bQuoted = false)
+    {
+        $aConvertedKeys = array();
+
+        foreach ($Keys as $sKey) {
+            $sCleanKey = $sKey;
+
+            if ($bQuoted) {
+                // CLEAN KEY
+                $sCleanKey = str_replace([
+                    '"',
+                ], '', $sKey);
+            }
+
+            // CONVERT KEY
+            $sConvertedKey = $this->_mapKey(trim($sCleanKey));
+
+            $aConvertedKeys[] = $bQuoted ? '"' . $sConvertedKey . '"' : $sConvertedKey;
+        }
+
+        return $aConvertedKeys;
+    }
     private function _convertData($aData)
     {
         $aConvertedData = array();
@@ -148,6 +170,9 @@ trait ThirdPartyConverterTrait
 
     private function _addAttributesAsNodes($aProductData)
     {
+        $bAddAttributeNode = (bool) Registry::getConfig()->getConfigParam('blWmdkFFExportAddAttributeNode');
+        $sCsvDelimiter = Registry::getConfig()->getConfigParam('sWmdkFFExportCsvDelimiter');
+
         if (
             (isset($aProductData['Attributes']))
             && (self::PROCESS_CODE != 'FACTFINDER')
@@ -155,7 +180,22 @@ trait ThirdPartyConverterTrait
             $aAttributes = $this->_getAttributes($aProductData['Attributes']['_cdata']);
 
             if (count($aAttributes) >= 1) {
-                $aProductData['Attributes'] = $aAttributes;
+
+                if ($bAddAttributeNode) {
+                    // ADD AS ADDITIONAL NODE
+                    $aProductData['Attributes'] = $aAttributes;
+                } else {
+                    // ADD AS NODES
+                    foreach ($aAttributes as $sKey => $sValue) {
+                        if (is_array($sValue)) {
+                            $aProductData[$sKey] = $this->_convertToCData(implode($sCsvDelimiter, $sValue));
+                        } else {
+                            $aProductData[$sKey] = $this->_convertToCData($sValue);
+                        }
+                    }
+
+                    unset($aProductData['Attributes']);
+                }
             }
         }
 

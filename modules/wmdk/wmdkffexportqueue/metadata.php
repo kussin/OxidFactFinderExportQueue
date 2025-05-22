@@ -12,7 +12,7 @@ $aModule = array(
     'title'        => 'Kussin | OXID 6 FACT Finder Export Queue',
     'description'  => 'Bereitet die Produkte für den Export vor und führt den Export aus. (Es wird auch Sooqr (XML) und Doofinder (CSV) unterstützt.)',
     'thumbnail'    => 'module.png',
-    'version'      => '1.10.4-bwc',
+    'version'      => '1.10.6-bwc',
     'author'       => 'Daniel Kussin',
     'url'          => 'https://www.kussin.de',
     'email'        => 'daniel.kussin@kussin.de',
@@ -22,7 +22,9 @@ $aModule = array(
         'wmdkffexport_export' => 'wmdk/wmdkffexportqueue/views/wmdkffexport_export.php',
         'wmdkffexport_sooqr' => 'wmdk/wmdkffexportqueue/views/wmdkffexport_sooqr.php',
         'wmdkffexport_doofinder' => 'wmdk/wmdkffexportqueue/views/wmdkffexport_doofinder.php',
+        'wmdkffexport_flour' => 'wmdk/wmdkffexportqueue/views/wmdkffexport_flour.php',
         'wmdkffexport_reset' => 'wmdk/wmdkffexportqueue/views/wmdkffexport_reset.php',
+        'wmdkffexport_ajax' => 'wmdk/wmdkffexportqueue/views/wmdkffexport_ajax.php',
         'wmdkffexport_ts' => 'wmdk/wmdkffexportqueue/views/wmdkffexport_ts.php',
         
         'wmdkffexport_helper' => 'wmdk/wmdkffexportqueue/core/wmdkffexport_helper.php',
@@ -55,6 +57,8 @@ $aModule = array(
         
 		array('group' => 'sWmdkFFExportSettings', 'name' => 'sWmdkFFExportDataLengthMax', 'type' => 'str', 'value' => 50000),
 		array('group' => 'sWmdkFFExportSettings', 'name' => 'sWmdkFFExportDataLengthMin', 'type' => 'str', 'value' => 475),
+
+        array('group' => 'sWmdkFFExportSettings', 'name' => 'blWmdkFFExportAddAttributeNode', 'type' => 'bool', 'value' => 1),
         
 		array('group' => 'sWmdkFFExportSettings', 'name' => 'sWmdkFFExportTmpDelimiter', 'type' => 'str', 'value' => '#%#%#'),
 		array('group' => 'sWmdkFFExportSettings', 'name' => 'sWmdkFFExportCsvDelimiter', 'type' => 'str', 'value' => '|'),
@@ -93,6 +97,9 @@ $aModule = array(
             'Step On Size' => 'Size',
         )),
 
+        // EU GPSR
+        array('group' => 'sWmdkFFGpsrSettings', 'name' => 'bWmdkFFGpsrExportProductWithNoPic', 'type' => 'bool', 'value' => 0),
+
         // Sooqr
         array('group' => 'sWmdkFFSooqrSettings', 'name' => 'sWmdkFFSooqrMapping', 'type' => 'aarr', 'value' => array(
             'ProductNumber' => 'id',
@@ -129,6 +136,42 @@ $aModule = array(
         array('group' => 'sWmdkFFDoofinderSettings', 'name' => 'sWmdkFFDoofinderNumberFields', 'type' => 'str', 'value' => 'Price,MSRP,BasePrice,Stock,Weight,Rating,RatingCnt,SaleAmount,SoldAmount,TrustedShopsRating,TrustedShopsRatingCnt,TrustedShopsRatingPercentage'),
         array('group' => 'sWmdkFFDoofinderSettings', 'name' => 'sWmdkFFDoofinderBooleanFields', 'type' => 'str', 'value' => 'HasProductImage,HasCustomAsnRestrictions,HasNewFlag,HasTopFlag,HasSaleFlag,HasVariantsSizelist'),
         array('group' => 'sWmdkFFDoofinderSettings', 'name' => 'sWmdkFFDoofinderDateFields', 'type' => 'str', 'value' => 'DateInsert,DateModified'),
+
+        // flour POS
+        array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourExportFields', 'type' => 'str', 'value' => 'FlourId,ProductNumber,Title,Description,Marke,EAN,DateModified,Tax,CategoryPath AS `Tags`,Price,FlourPrice,MSRP,MSRP AS `FlourMsrp`,ImageURL,FlourShortUrl,CategoryPath,SaleAmount,FlourSaleAmount,FlourActive,DateInsert,Deeplink'),
+        array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourMapping', 'type' => 'aarr', 'value' => array(
+            'FlourId' => '_id',
+            'ProductNumber' => 'Art.-Nr.',
+            'Title' => 'Bezeichnung',
+            'Description' => 'Beschreibung',
+            'Marke' => 'Hersteller',
+            'EAN' => 'EAN',
+            'DateModified' => 'WMDKmodifided',
+            'Tax' => 'Kontenzuordnung',
+            'OXPRICE' => 'Preise:Endkundenpreis (VK)',
+            'FlourPrice' => 'Preise:Lagerverkaufspreis (VK)',
+            'OXTPRICE' => 'Normalpreis:Endkundenpreis (UVP)',
+            'FlourMsrp' => 'Normalpreis:Lagerverkauf (UVP)',
+            'ImageURL' => 'BildURL_1',
+            'FlourShortUrl' => 'Produkt URL',
+            'CategoryPath' => 'Kategorie',
+            'OXID' => 'OXID ID',
+            'SaleAmount' => 'Prozentualer Rabatt Endkunden',
+            'FlourSaleAmount' => 'Prozentualer Rabatt Lagerverkauf',
+            'FlourActive' => 'Flour Active',
+            'DateInsert' => 'Einstelldatum',
+            'Deeplink' => 'Link zum Artikel',
+        )),
+        array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourCDataFields', 'type' => 'str', 'value' => 'Title,ImageURL,SuggestPictureURL,Short,Description,Deeplink,Marke,CategoryPath,Attributes,NumericalAttributes,SearchAttributes,SearchKeywords,VariantsSizelistMarkup'),
+        array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourNumberFields', 'type' => 'str', 'value' => 'Price,MSRP,BasePrice,Stock,Weight,Rating,RatingCnt,SaleAmount,SoldAmount,TrustedShopsRating,TrustedShopsRatingCnt,TrustedShopsRatingPercentage'),
+        array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourBooleanFields', 'type' => 'str', 'value' => 'HasProductImage,HasCustomAsnRestrictions,HasNewFlag,HasTopFlag,HasSaleFlag,HasVariantsSizelist'),
+        array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourDateFields', 'type' => 'str', 'value' => 'DateInsert,DateModified'),
+        array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourShortUrlDomain', 'type' => 'str', 'value' => 'https://wh1.de/'),
+        array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourShortUrlPrefix', 'type' => 'str', 'value' => 'SR-'),
+        array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourDeeplinkUtmKey', 'type' => 'str', 'value' => '`Deeplink`'),
+        array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourDeeplinkUtmParams', 'type' => 'str', 'value' => 'showroom-customer=1&utm_source=Showroom+Item+QR&utm_medium=Flyer&utm_campaign=showroom_item_qr&utm_id=showroom-item-qr'),
+        array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourExportMarker', 'type' => 'str', 'value' => 'exported_at'),
+        array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourPhpMemoryLimit', 'type' => 'str', 'value' => '256M'),
         
         // CRON TIMINGS
         array('group' => 'sWmdkFFCronSettings', 'name' => 'sWmdkFFCronResetExistingArticlesSinceDays', 'type' => 'str', 'value' => '-2 days'),
@@ -154,7 +197,9 @@ $aModule = array(
         'wmdkffexport_export.tpl' => 'wmdk/wmdkffexportqueue/views/tpl/wmdkffexport_export.tpl',
         'wmdkffexport_sooqr.tpl' => 'wmdk/wmdkffexportqueue/views/tpl/wmdkffexport_sooqr.tpl',
         'wmdkffexport_doofinder.tpl' => 'wmdk/wmdkffexportqueue/views/tpl/wmdkffexport_doofinder.tpl',
+        'wmdkffexport_flour.tpl' => 'wmdk/wmdkffexportqueue/views/tpl/wmdkffexport_flour.tpl',
         'wmdkffexport_reset.tpl' => 'wmdk/wmdkffexportqueue/views/tpl/wmdkffexport_reset.tpl',
+        'wmdkffexport_ajax.tpl' => 'wmdk/wmdkffexportqueue/views/tpl/wmdkffexport_ajax.tpl',
         'wmdkffexport_ts.tpl' => 'wmdk/wmdkffexportqueue/views/tpl/wmdkffexport_ts.tpl',
     ),
 );

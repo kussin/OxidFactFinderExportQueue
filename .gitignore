@@ -15,3 +15,5 @@ adminer*
 *.xlx
 *.xml
 *.gz
+*.webp
+*.fix.php

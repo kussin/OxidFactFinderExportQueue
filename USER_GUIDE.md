@@ -43,7 +43,7 @@ To execute the CSV export, you can use the following command:
 
 **NOTE:** The exported files can be fetched from https://www.domain.tld/export/factfinder/productData/[CHANNEL_ID].csv.
 
-#### Sooqr XML Export
+#### Spotler XML Export
 
    ```bash
    curl -i -X GET \
@@ -60,6 +60,15 @@ To execute the CSV export, you can use the following command:
    ```
 
 **NOTE:** The exported files can be fetched from https://www.domain.tld/export/factfinder/productData/[CHANNEL_ID].doofinder.xml.gz.
+
+#### flour POS XML Export
+
+   ```bash
+   curl -i -X GET \
+ 'https://www.domain.tld/index.php?cl=wmdkffexport_flour&channel=[CHANNEL_ID]&shop_id=[STORE_ID]&lang=[LANG_ID]'
+   ```
+
+**NOTE:** The exported files can be fetched from https://www.domain.tld/export/factfinder/productData/[CHANNEL_ID].flour.csv.
 
 ### Reset
 

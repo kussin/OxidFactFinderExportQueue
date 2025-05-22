@@ -6,8 +6,10 @@ $aLang = array(
     'SHOP_MODULE_GROUP_sWmdkFFExportSettings'   	    => 'Export-Einstellungen',
     'SHOP_MODULE_GROUP_sWmdkFFQueueSettings'	        => 'Queue-Einstellungen',
     'SHOP_MODULE_GROUP_sWmdkFFConverterSettings'	    => 'Queue Data Converter',
+    'SHOP_MODULE_GROUP_sWmdkFFGpsrSettings'	            => 'EU GPSR Einstellungen',
     'SHOP_MODULE_GROUP_sWmdkFFSooqrSettings'	        => 'Sooqr-Einstellungen',
     'SHOP_MODULE_GROUP_sWmdkFFDoofinderSettings'	    => 'Doofinder-Einstellungen',
+    'SHOP_MODULE_GROUP_sWmdkFFFlourSettings'	        => 'flour POS-Einstellungen',
     'SHOP_MODULE_GROUP_sWmdkFFCronSettings'	            => 'Cronjob Einstellungen',
     'SHOP_MODULE_GROUP_sWmdkFFImportTSSettings'	        => 'Trusted Shops Einstellungen',
     'SHOP_MODULE_GROUP_sWmdkFFDebugSettings'    	    => 'Debug-Einstellungen',
@@ -24,6 +26,7 @@ $aLang = array(
     'SHOP_MODULE_sWmdkFFExportStockMin'                 => 'Mindestbestand für den Produktexport',
     'SHOP_MODULE_sWmdkFFExportDataLengthMax'	        => 'Max. Datensatzlänge inkl. Trennzeichen und Text-Wrapper',
     'SHOP_MODULE_sWmdkFFExportDataLengthMin'	        => 'Min. Datensatzlänge inkl. Trennzeichen und Text-Wrapper',
+    'SHOP_MODULE_blWmdkFFExportAddAttributeNode'	    => 'Attribut-Node hinzufügen',
     'SHOP_MODULE_sWmdkFFExportTmpDelimiter' 	        => 'Tmp. Trennzeichen',
     'SHOP_MODULE_sWmdkFFExportCsvDelimiter' 	        => 'CSV Trennzeichen',
     'SHOP_MODULE_sWmdkFFExportCsvEnclosure' 	        => 'CSV Text-Wrapper',
@@ -50,6 +53,9 @@ $aLang = array(
     'SHOP_MODULE_sWmdkFFConverterFieldlistDouble'       => 'Attribute deren Werte in Fließkommazahlen (Double) umgewandelt werden sollen.',
     'SHOP_MODULE_aWmdkFFConverterRenameAttributes'      => 'Umbenennung von Attributnamen und -werten',
 
+    // EU GPSR
+    'SHOP_MODULE_bWmdkFFGpsrExportProductWithNoPic'     => 'Export von Produkten ohne Bild aktivieren',
+
     // SOOQR
     'SHOP_MODULE_sWmdkFFSooqrMapping'	                => 'Mapping',
     'SHOP_MODULE_sWmdkFFSooqrCDataFields'	            => 'CDATA Werte',
@@ -63,6 +69,20 @@ $aLang = array(
     'SHOP_MODULE_sWmdkFFDoofinderNumberFields'	        => 'Numerische Werte',
     'SHOP_MODULE_sWmdkFFDoofinderBooleanFields'	        => 'Boolische Werte',
     'SHOP_MODULE_sWmdkFFDoofinderDateFields'	        => 'Datumswerte',
+
+    // FLOUR POS
+    'SHOP_MODULE_sWmdkFFFlourExportFields'              => 'Export-Attributfelderliste',
+    'SHOP_MODULE_sWmdkFFFlourMapping'	                => 'Mapping',
+    'SHOP_MODULE_sWmdkFFFlourCDataFields'	            => 'CDATA Werte',
+    'SHOP_MODULE_sWmdkFFFlourNumberFields'	            => 'Numerische Werte',
+    'SHOP_MODULE_sWmdkFFFlourBooleanFields'	            => 'Boolische Werte',
+    'SHOP_MODULE_sWmdkFFFlourDateFields'	            => 'Datumswerte',
+    'SHOP_MODULE_sWmdkFFFlourShortUrlDomain'	        => 'Short URL Domain',
+    'SHOP_MODULE_sWmdkFFFlourShortUrlPrefix'	        => 'Short URL Prefix',
+    'SHOP_MODULE_sWmdkFFFlourDeeplinkUtmKey'	        => 'Deeplink SQL Field',
+    'SHOP_MODULE_sWmdkFFFlourDeeplinkUtmParams'	        => 'UTM Parameters',
+    'SHOP_MODULE_sWmdkFFFlourExportMarker'	            => 'Export Marker (Timestamp das Datensatz-Exports)',
+    'SHOP_MODULE_sWmdkFFFlourPhpMemoryLimit'	        => 'PHP Memory Limit (ACHTUNG: Dieser Wert wird in der PHP-Konfiguration überschrieben!)',
 
     // CRON TIMINGS
     'SHOP_MODULE_sWmdkFFCronResetExistingArticlesSinceDays'   => 'Wie viele Tage sollten für den Reset berücksichtigt werden?',

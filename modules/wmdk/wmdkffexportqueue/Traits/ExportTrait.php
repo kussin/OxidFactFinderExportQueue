@@ -7,6 +7,7 @@ use OxidEsales\Eshop\Core\Registry;
 trait ExportTrait
 {
     use ConverterTrait;
+    use FlourTrait;
 
     protected $_sChannel = NULL;
     protected $_iShopId = 1;
@@ -14,6 +15,7 @@ trait ExportTrait
     protected $_bActive = TRUE;
     protected $_bHidden = FALSE;
     protected $_iStockMin = 0;
+    protected $_bWithNoPics = FALSE;
 
     protected $_aExportFields = NULL;
     protected $_aExportHtmlFields = NULL;
@@ -58,8 +60,13 @@ trait ExportTrait
         return $this->_sTemplate;
     }
 
-    private function _getCSVDataRow($aFields, $sDelimiter = self::EXPORT_DELIMITER) {
+    private function _getCSVDataRow($aFields, $bHeader = false, $sDelimiter = self::EXPORT_DELIMITER) {
         $aTmpCsvData = array();
+
+        if ($bHeader && (self::PROCESS_CODE == 'FLOUR')) {
+            // EXPORT MARKER
+            $aFields[] = Registry::getConfig()->getConfigParam('sWmdkFFFlourExportMarker');
+        }
 
         foreach ($aFields as $iKey => $sValue) {
             /* CategoryPath (Ticket: #35896) */
@@ -87,11 +94,12 @@ trait ExportTrait
         $this->_bActive = (bool) Registry::getConfig()->getConfigParam('sWmdkFFExportOnlyActive');
         $this->_bHidden = (bool) Registry::getConfig()->getConfigParam('sWmdkFFExportHidden');
         $this->_iStockMin = (int) Registry::getConfig()->getConfigParam('sWmdkFFExportStockMin');
+        $this->_bWithNoPics = (bool) Registry::getConfig()->getConfigParam('bWmdkFFGpsrExportProductWithNoPic');
 
         $iCsvLengthMax = (int) Registry::getConfig()->getConfigParam('sWmdkFFExportDataLengthMax');
         $iCsvLengthMin = (int) Registry::getConfig()->getConfigParam('sWmdkFFExportDataLengthMin');
 
-        $this->_aExportFields = explode(',', 'OXID,' . Registry::getConfig()->getConfigParam('sWmdkFFExportFields'));
+        $this->_aExportFields = $this->_getExportFields();
         $this->_aExportHtmlFields = explode(',', Registry::getConfig()->getConfigParam('sWmdkFFExportHtmlFields'));
 
         // GET DATA
@@ -100,17 +108,7 @@ trait ExportTrait
         $this->_iLang = Registry::getConfig()->getRequestParameter('lang');
 
         // LOAD PRODUCTS
-        $sQuery = 'SELECT 
-                        `' . implode('`, `', $this->_aExportFields) . '`
-                    FROM 
-                        `wmdk_ff_export_queue`
-                    WHERE
-                        (`Channel` = "' . $this->_sChannel . '")
-                        AND (`OXSHOPID` = "' . $this->_iShopId . '")
-                        AND (`LANG` = "' . $this->_iLang . '")
-                        AND (`OXACTIVE` = "' . (($this->_bActive) ? '1' : '0') . '")
-                        AND (`OXHIDDEN` = "' . (($this->_bHidden) ? '1' : '0') . '")
-                        AND (`Stock` >= ' . $this->_iStockMin . ');';
+        $sQuery = $this->_getExportSelection();
 
         $oResult = \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->select($sQuery);
 
@@ -121,7 +119,7 @@ trait ExportTrait
 
             // ADD CSV Header
             array_shift($this->_aExportFields);
-            $this->_aCsvData[] = $this->_getCSVDataRow($this->_aExportFields);
+            $this->_aCsvData[] = $this->_getCSVDataRow($this->_aExportFields, true);
 
             while (!$oResult->EOF) {
                 $aData = $oResult->getFields();
@@ -130,7 +128,7 @@ trait ExportTrait
                 $sOxid = array_shift($aData);
 
                 // CLEAN DATA
-                $sCSVDataRow = $this->_getCSVDataRow($aData, $this->_getTmpExportDelimiter());
+                $sCSVDataRow = $this->_getCSVDataRow($aData, false, $this->_getTmpExportDelimiter());
 
                 if (!$this->_bSkipCSVDataRow) {
                     $sCsvData = $sCSVDataRow;
@@ -224,6 +222,11 @@ trait ExportTrait
 
     protected function _getTmpExportDelimiter()
     {
+        // FLOUR POS
+        if (self::PROCESS_CODE == 'FLOUR') {
+            return self::EXPORT_DELIMITER;
+        }
+
         // LOAD DELIMITER
         $sTmpExportDelimiter = trim(Registry::getConfig()->getConfigParam('sWmdkFFExportTmpDelimiter'));
 
@@ -232,5 +235,52 @@ trait ExportTrait
         }
 
         return $sTmpExportDelimiter;
+    }
+
+    private function _getExportSelection(): string
+    {
+        // FLOUR POS
+        if (self::PROCESS_CODE == 'FLOUR') {
+            return $this->_getFlourExportSelection();
+        }
+
+        return 'SELECT 
+            ' . $this->_getPreparedExportFields($this->_aExportFields) . '
+        FROM 
+            `wmdk_ff_export_queue`
+        WHERE
+            (`Channel` = "' . $this->_sChannel . '")
+            AND (`OXSHOPID` = "' . $this->_iShopId . '")
+            AND (`LANG` = "' . $this->_iLang . '")
+            AND (`OXACTIVE` = "' . (($this->_bActive) ? '1' : '0') . '")
+            AND (`OXHIDDEN` = "' . (($this->_bHidden) ? '1' : '0') . '")
+            AND (`Stock` >= ' . $this->_iStockMin . ')
+            AND (`HasProductImage` LIKE "' . (($this->_bWithNoPics) ? '%' : '1') . '");';
+    }
+
+    private function _getExportFields() {
+        // FLOUR POS
+        if (self::PROCESS_CODE == 'FLOUR') {
+            return explode(',', 'OXID,' . Registry::getConfig()->getConfigParam('sWmdkFFFlourExportFields'));
+        }
+
+        return explode(',', 'OXID,' . Registry::getConfig()->getConfigParam('sWmdkFFExportFields'));
+    }
+
+    private function _getPreparedExportFields($aFields = array()): string
+    {
+        if (empty($aFields)) {
+            $aFields = $this->_getExportFields();
+        }
+
+        // ESCAPE FIELDS
+        foreach ($aFields as $iKey => $sField) {
+
+            if (strpos($sField, '`') === false) {
+                $aFields[$iKey] = '`' . $sField . '`';
+            }
+        }
+
+        return implode(', ', $aFields);
     }
 }

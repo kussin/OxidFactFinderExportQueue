@@ -6,8 +6,10 @@ $aLang = array(
     'SHOP_MODULE_GROUP_sWmdkFFExportSettings'	        => 'Export settings',
     'SHOP_MODULE_GROUP_sWmdkFFQueueSettings'	        => 'Queue settings',
     'SHOP_MODULE_GROUP_sWmdkFFConverterSettings'	    => 'Queue Data Converter',
+    'SHOP_MODULE_GROUP_sWmdkFFGpsrSettings'	            => 'EU GPSR Settings',
     'SHOP_MODULE_GROUP_sWmdkFFSooqrSettings'	        => 'Sooqr Settings',
     'SHOP_MODULE_GROUP_sWmdkFFDoofinderSettings'	    => 'Doofinder Settings',
+    'SHOP_MODULE_GROUP_sWmdkFFFlourSettings'	        => 'flour POS Settings',
     'SHOP_MODULE_GROUP_sWmdkFFCronSettings'	            => 'Cron settings',
     'SHOP_MODULE_GROUP_sWmdkFFImportTSSettings'	        => 'Trusted Shops settings',
     'SHOP_MODULE_GROUP_sWmdkFFDebugSettings'	        => 'Debug settings',
@@ -24,6 +26,7 @@ $aLang = array(
     'SHOP_MODULE_sWmdkFFExportStockMin'                 => 'Min. stock for product export',
     'SHOP_MODULE_sWmdkFFExportDataLengthMax'	        => 'Max. dataset length incl. delimiter and enclosure',
     'SHOP_MODULE_sWmdkFFExportDataLengthMin'	        => 'Min. dataset length incl. delimiter and enclosure',
+    'SHOP_MODULE_blWmdkFFExportAddAttributeNode'	    => 'Add attribute node',
     'SHOP_MODULE_sWmdkFFExportTmpDelimiter' 	        => 'Tmp. delimiter',
     'SHOP_MODULE_sWmdkFFExportCsvDelimiter' 	        => 'CSV delimiter',
     'SHOP_MODULE_sWmdkFFExportCsvEnclosure' 	        => 'CSV enclosure',
@@ -50,6 +53,9 @@ $aLang = array(
     'SHOP_MODULE_sWmdkFFConverterFieldlistDouble'       => 'Attributes whose values are to be converted to decimals (double).',
     'SHOP_MODULE_aWmdkFFConverterRenameAttributes'      => 'Rename attribute names and values.',
 
+    // EU GPSR
+    'SHOP_MODULE_bWmdkFFGpsrExportProductWithNoPic'     => 'Enable export of products without pictures',
+
     // SOOQR
     'SHOP_MODULE_sWmdkFFSooqrMapping'	                => 'Mapping',
     'SHOP_MODULE_sWmdkFFSooqrCDataFields'	            => 'CDATA values',
@@ -63,6 +69,20 @@ $aLang = array(
     'SHOP_MODULE_sWmdkFFDoofinderNumberFields'	        => 'Numeric values',
     'SHOP_MODULE_sWmdkFFDoofinderBooleanFields'	        => 'Boolean values',
     'SHOP_MODULE_sWmdkFFDoofinderDateFields'	        => 'Date values',
+
+    // FLOUR POS
+    'SHOP_MODULE_sWmdkFFFlourExportFields'              => 'Export attribute field list',
+    'SHOP_MODULE_sWmdkFFFlourMapping'	                => 'Mapping',
+    'SHOP_MODULE_sWmdkFFFlourCDataFields'	            => 'CDATA values',
+    'SHOP_MODULE_sWmdkFFFlourNumberFields'	            => 'Numeric values',
+    'SHOP_MODULE_sWmdkFFFlourBooleanFields'	            => 'Boolean values',
+    'SHOP_MODULE_sWmdkFFFlourDateFields'	            => 'Date values',
+    'SHOP_MODULE_sWmdkFFFlourShortUrlDomain'	        => 'Short URL Domain',
+    'SHOP_MODULE_sWmdkFFFlourShortUrlPrefix'	        => 'Short URL Prefix',
+    'SHOP_MODULE_sWmdkFFFlourDeeplinkUtmKey'	        => 'Deeplink SQL Field',
+    'SHOP_MODULE_sWmdkFFFlourDeeplinkUtmParams'	        => 'UTM Parameters',
+    'SHOP_MODULE_sWmdkFFFlourExportMarker'	            => 'Export Marker (Timestamp of data export)',
+    'SHOP_MODULE_sWmdkFFFlourPhpMemoryLimit'	        => 'PHP Memory Limit (WARNING: This setting overwrites the general PHP memory limit!)',
 
     // CRON TIMINGS
     'SHOP_MODULE_sWmdkFFCronResetExistingArticlesSinceDays'   => 'How many days should be considered for the reset?',
