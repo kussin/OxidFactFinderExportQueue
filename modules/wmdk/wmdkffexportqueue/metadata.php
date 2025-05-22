@@ -12,7 +12,7 @@ $aModule = array(
     'title'        => 'Kussin | OXID 6 FACT Finder Export Queue',
     'description'  => 'Bereitet die Produkte für den Export vor und führt den Export aus. (Es wird auch Sooqr (XML) und Doofinder (CSV) unterstützt.)',
     'thumbnail'    => 'module.png',
-    'version'      => '1.10.3.3',
+    'version'      => '1.10.5',
     'author'       => 'Daniel Kussin',
     'url'          => 'https://www.kussin.de',
     'email'        => 'daniel.kussin@kussin.de',
@@ -55,6 +55,8 @@ $aModule = array(
         
 		array('group' => 'sWmdkFFExportSettings', 'name' => 'sWmdkFFExportDataLengthMax', 'type' => 'str', 'value' => 50000),
 		array('group' => 'sWmdkFFExportSettings', 'name' => 'sWmdkFFExportDataLengthMin', 'type' => 'str', 'value' => 475),
+
+        array('group' => 'sWmdkFFExportSettings', 'name' => 'blWmdkFFExportAddAttributeNode', 'type' => 'bool', 'value' => 1),
         
 		array('group' => 'sWmdkFFExportSettings', 'name' => 'sWmdkFFExportTmpDelimiter', 'type' => 'str', 'value' => '#%#%#'),
 		array('group' => 'sWmdkFFExportSettings', 'name' => 'sWmdkFFExportCsvDelimiter', 'type' => 'str', 'value' => '|'),
