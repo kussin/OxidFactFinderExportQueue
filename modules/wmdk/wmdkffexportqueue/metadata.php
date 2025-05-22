@@ -57,6 +57,8 @@ $aModule = array(
         
 		array('group' => 'sWmdkFFExportSettings', 'name' => 'sWmdkFFExportDataLengthMax', 'type' => 'str', 'value' => 50000),
 		array('group' => 'sWmdkFFExportSettings', 'name' => 'sWmdkFFExportDataLengthMin', 'type' => 'str', 'value' => 475),
+
+        array('group' => 'sWmdkFFExportSettings', 'name' => 'blWmdkFFExportAddAttributeNode', 'type' => 'bool', 'value' => 1),
         
 		array('group' => 'sWmdkFFExportSettings', 'name' => 'sWmdkFFExportTmpDelimiter', 'type' => 'str', 'value' => '#%#%#'),
 		array('group' => 'sWmdkFFExportSettings', 'name' => 'sWmdkFFExportCsvDelimiter', 'type' => 'str', 'value' => '|'),
