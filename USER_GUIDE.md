@@ -1,4 +1,4 @@
-# Kussin | OXID 6 FACT Finder Export Queue
+# Kussin | OXID 6 FACT Finder Export Queue 6.0 (BWC Version)
 
 ## Module Settings
 
@@ -100,7 +100,7 @@ Please use the [Github Issues](https://github.com/kussin/OxidFactFinderExportQue
 
 Kussin | eCommerce und Online-Marketing GmbH<br>
 Fahltskamp 3<br>
-25462 Rellingen<br>
+25421 Pinneberg<br>
 Germany
 
 Fon: +49 (4101) 85868 - 0<br>
@@ -108,4 +108,4 @@ Email: info@kussin.de
 
 ## Copyright
 
-&copy; 2006-2023 Kussin | eCommerce und Online-Marketing GmbH
+&copy; 2006-2025 Kussin | eCommerce und Online-Marketing GmbH
