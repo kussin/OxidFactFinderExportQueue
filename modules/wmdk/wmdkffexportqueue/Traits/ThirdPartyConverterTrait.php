@@ -57,6 +57,9 @@ trait ThirdPartyConverterTrait
         // ADD ATTRIBUTES AS NODES
         $aConvertedData = $this->_addAttributesAsNodes($aConvertedData);
 
+        // ADD CLONED ATTRIBUTES AS NODES
+        $aConvertedData = $this->_addAttributesAsNodes($aConvertedData, 'ClonedAttributes');
+
         return $aConvertedData;
     }
 
@@ -168,22 +171,22 @@ trait ThirdPartyConverterTrait
         }
     }
 
-    private function _addAttributesAsNodes($aProductData)
+    private function _addAttributesAsNodes($aProductData, $sFieldName = 'Attributes')
     {
         $bAddAttributeNode = (bool) Registry::getConfig()->getConfigParam('blWmdkFFExportAddAttributeNode');
         $sCsvDelimiter = Registry::getConfig()->getConfigParam('sWmdkFFExportCsvDelimiter');
 
         if (
-            (isset($aProductData['Attributes']))
+            (isset($aProductData[$sFieldName]))
             && (self::PROCESS_CODE != 'FACTFINDER')
         ) {
-            $aAttributes = $this->_getAttributes($aProductData['Attributes']['_cdata']);
+            $aAttributes = $this->_getAttributes($aProductData[$sFieldName]['_cdata']);
 
             if (count($aAttributes) >= 1) {
 
                 if ($bAddAttributeNode) {
                     // ADD AS ADDITIONAL NODE
-                    $aProductData['Attributes'] = $aAttributes;
+                    $aProductData[$sFieldName] = $aAttributes;
                 } else {
                     // ADD AS NODES
                     foreach ($aAttributes as $sKey => $sValue) {
@@ -194,7 +197,7 @@ trait ThirdPartyConverterTrait
                         }
                     }
 
-                    unset($aProductData['Attributes']);
+                    unset($aProductData[$sFieldName]);
                 }
             }
         }
