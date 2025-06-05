@@ -2,12 +2,14 @@
 
 use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\Registry;
+use Wmdk\FactFinderQueue\Traits\ClonedAttributesTrait;
 
 /**
  * Class wmdkffexport_mapping
  */
 class wmdkffexport_mapping extends oxubase
 {
+    use ClonedAttributesTrait;
 
     public function render() {
         // SET LIMITS
@@ -73,27 +75,13 @@ WHERE
         exit;
     }
 
-    private function _getValue($sAttributeName, $sData)
-    {
-        $aAttributeTuples = explode('|', $sData);
-
-        foreach ($aAttributeTuples as $sTuple) {
-            $aTuple = explode('=', $sTuple);
-            if (count($aTuple) == 2 && $aTuple[0] == $sAttributeName) {
-                return trim($aTuple[1]);
-            }
-        }
-
-        return '';
-    }
-
     private function _getAttributeValue($sAttributeName, $sData)
     {
-        return $this->_getValue($sAttributeName, $sData);
+        return $this->_getAttributeValueFromTupleString($sAttributeName, $sData);
     }
 
     private function _getClonedAttributeValue($sAttributeName, $sData)
     {
-        return $this->_getValue($sAttributeName, $sData);
+        return $this->_getAttributeValueFromTupleString($sAttributeName, $sData);
     }
 }

@@ -53,6 +53,7 @@ $aLang = array(
     // CLONED ATTRIBUTES
     'SHOP_MODULE_bWmdkFFClonedAttributeEnabled'         => 'Enable &quot;Cloned Attributes&quot;',
     'SHOP_MODULE_aWmdkFFClonedAttributeMapping'         => 'Map attributes',
+    'SHOP_MODULE_sWmdkFFClonedAttributeMappingFile'     => 'CSV file for &quot;Cloned Attributes&quot; mapping',
 
     // CONVERTER
     'SHOP_MODULE_sWmdkFFConverterFieldlistDouble'       => 'Attributes whose values are to be converted to decimals (double).',
@@ -104,4 +105,5 @@ $aLang = array(
     'SHOP_MODULE_sWmdkFFDebugLogFileQueue'              => 'Log-File for queue',
     'SHOP_MODULE_sWmdkFFDebugLogFileExport' 	        => 'Log-File for product exports',
     'SHOP_MODULE_sWmdkFFDebugLogFileStock'  	        => 'Log-File for stock update',
+    'SHOP_MODULE_sWmdkFFDebugLogFileClonedAttributes'   => 'Log-File for &quot;Cloned Attributes&quot;',
 );

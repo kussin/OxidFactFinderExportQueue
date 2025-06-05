@@ -96,6 +96,7 @@ $aModule = array(
         array('group' => 'sWmdkFFClonedAttributeSettings', 'name' => 'aWmdkFFClonedAttributeMapping', 'type' => 'aarr', 'value' => array(
             'Farbe' => 'Farben',
         )),
+        array('group' => 'sWmdkFFClonedAttributeSettings', 'name' => 'sWmdkFFClonedAttributeMappingFile', 'type' => 'str', 'value' => 'export/factfinder/serversideMapping/clonedattributesmapping.csv'),
 
         // CONVERTER
         array('group' => 'sWmdkFFConverterSettings', 'name' => 'sWmdkFFConverterFieldlistDouble', 'type' => 'str', 'value' => 'Terrain,Schwung,Speed'),
@@ -197,6 +198,7 @@ $aModule = array(
 		array('group' => 'sWmdkFFDebugSettings', 'name' => 'sWmdkFFDebugLogFileQueue', 'type' => 'str', 'value' => 'log/WMDK_FF_QUEUE.log'),
 		array('group' => 'sWmdkFFDebugSettings', 'name' => 'sWmdkFFDebugLogFileExport', 'type' => 'str', 'value' => 'log/WMDK_FF_EXPORT.log'),
 		array('group' => 'sWmdkFFDebugSettings', 'name' => 'sWmdkFFDebugLogFileStock', 'type' => 'str', 'value' => 'log/WMDK_FF_STOCK.log'),
+        array('group' => 'sWmdkFFDebugSettings', 'name' => 'sWmdkFFDebugLogFileClonedAttributes', 'type' => 'str', 'value' => 'log/WMDK_FF_CLONEDATTRIBUTES.log'),
     ),
 	
     'templates' => array(

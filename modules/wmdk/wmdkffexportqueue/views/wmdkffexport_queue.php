@@ -2,6 +2,7 @@
 
 use OxidEsales\Eshop\Application\Model\SeoEncoderArticle;
 use OxidEsales\Eshop\Core\Registry;
+use Wmdk\FactFinderQueue\Traits\ClonedAttributesTrait;
 use Wmdk\FactFinderQueue\Traits\ConverterTrait;
 use Wmdk\FactFinderQueue\Traits\FlourTrait;
 
@@ -10,6 +11,7 @@ use Wmdk\FactFinderQueue\Traits\FlourTrait;
  */
 class wmdkffexport_queue extends oxubase
 {
+    use ClonedAttributesTrait;
     use ConverterTrait;
     use FlourTrait;
 
@@ -217,6 +219,7 @@ class wmdkffexport_queue extends oxubase
             $this->_aUpdateData['CategoryPath'] = $this->_getCategoryPath();
             
             $this->_aUpdateData['Attributes'] = $this->_getAttributes();
+            $this->_aUpdateData['ClonedAttributes'] = $this->_cloneAttributes($this->_aUpdateData['Attributes']);
             $this->_aUpdateData['NumericalAttributes'] = $this->_getNumericalAttributes();
             $this->_aUpdateData['SearchAttributes'] = $this->_getSearchAttributes();
             
