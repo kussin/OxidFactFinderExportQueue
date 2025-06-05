@@ -2,7 +2,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 
 DROP TABLE IF EXISTS `wmdk_ff_export_queue`;
 CREATE TABLE IF NOT EXISTS `wmdk_ff_export_queue` (
-                                                      `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Article id',
+    `OXID` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL COMMENT 'Article id',
     `Channel` enum('haw_live_de','haw_live_en','haw_dev_de','haw_dev_en','haw_stage_de','haw_stage_en') NOT NULL DEFAULT 'haw_live_de' COMMENT 'FACT-Finder Channel',
     `OXSHOPID` int(1) NOT NULL DEFAULT '1' COMMENT 'Store ID (oxarticles__oxshopid)',
     `LANG` enum('0','1') NOT NULL DEFAULT '0' COMMENT 'Exportsprache',
