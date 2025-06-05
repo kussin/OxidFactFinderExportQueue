@@ -5,6 +5,7 @@ $aLang = array(
     'SHOP_MODULE_GROUP_sWmdkFFGeneralSettings'   	    => 'Grund-Einstellungen',
     'SHOP_MODULE_GROUP_sWmdkFFExportSettings'   	    => 'Export-Einstellungen',
     'SHOP_MODULE_GROUP_sWmdkFFQueueSettings'	        => 'Queue-Einstellungen',
+    'SHOP_MODULE_GROUP_sWmdkFFClonedAttributeSettings'	=> '&quot;Cloned Attributes&quot;-Einstellungen',
     'SHOP_MODULE_GROUP_sWmdkFFConverterSettings'	    => 'Queue Data Converter',
     'SHOP_MODULE_GROUP_sWmdkFFGpsrSettings'	            => 'EU GPSR Einstellungen',
     'SHOP_MODULE_GROUP_sWmdkFFSooqrSettings'	        => 'Sooqr-Einstellungen',
@@ -49,9 +50,14 @@ $aLang = array(
     'SHOP_MODULE_bWmdkFFQueueUpdateSiblings' 	        => 'Update der Geschwister-Varianten',
     'SHOP_MODULE_bWmdkFFQueueUseCategoryPath' 	        => 'Benutze die Hauptkategorie-URL anstelle der Marken-URL',
 
+    // CLONED ATTRIBUTES
+    'SHOP_MODULE_bWmdkFFClonedAttributeEnabled'         => '&quot;Cloned Attributes&quot;-aktivieren',
+    'SHOP_MODULE_aWmdkFFClonedAttributeMapping'         => 'Attribute mappen',
+
     // CONVERTER
     'SHOP_MODULE_sWmdkFFConverterFieldlistDouble'       => 'Attribute deren Werte in Fließkommazahlen (Double) umgewandelt werden sollen.',
     'SHOP_MODULE_aWmdkFFConverterRenameAttributes'      => 'Umbenennung von Attributnamen und -werten',
+    'SHOP_MODULE_sWmdkFFClonedAttributeMappingFile'     => 'CSV Datei für &quot;Cloned Attributes&quot;-Mapping',
 
     // EU GPSR
     'SHOP_MODULE_bWmdkFFGpsrExportProductWithNoPic'     => 'Export von Produkten ohne Bild aktivieren',
@@ -99,4 +105,5 @@ $aLang = array(
     'SHOP_MODULE_sWmdkFFDebugLogFileQueue'              => 'Log-Datei der Queue',
     'SHOP_MODULE_sWmdkFFDebugLogFileExport' 	        => 'Log-Datei des Produktexports',
     'SHOP_MODULE_sWmdkFFDebugLogFileStock'  	        => 'Log-Datei des Bestandsexports',
+    'SHOP_MODULE_sWmdkFFDebugLogFileClonedAttributes'   => 'Log-Datei für &quot;Cloned Attributes&quot;',
 );

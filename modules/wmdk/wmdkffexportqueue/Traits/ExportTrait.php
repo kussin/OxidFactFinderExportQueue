@@ -78,7 +78,10 @@ trait ExportTrait
             }
 
             /* Attributes (Ticket: #62637) */
-            if ($this->_aExportFields[$iKey] == 'Attributes') {
+            if (
+                ($this->_aExportFields[$iKey] == 'Attributes')
+                || ($this->_aExportFields[$iKey] == 'ClonedAttributes')
+            ) {
                 $sValue = $this->_convertAttributes($sValue);
             }
 
@@ -258,13 +261,23 @@ trait ExportTrait
             AND (`HasProductImage` LIKE "' . (($this->_bWithNoPics) ? '%' : '1') . '");';
     }
 
-    private function _getExportFields() {
+    private function _getExportFields($aExportFields = ['OXID']) {
         // FLOUR POS
         if (self::PROCESS_CODE == 'FLOUR') {
-            return explode(',', 'OXID,' . Registry::getConfig()->getConfigParam('sWmdkFFFlourExportFields'));
+            $aExportFields = array_merge(
+                $aExportFields,
+                explode(',', Registry::getConfig()->getConfigParam('sWmdkFFFlourExportFields'))
+            );
+        } else {
+            $aExportFields = array_merge(
+                $aExportFields,
+                explode(',', Registry::getConfig()->getConfigParam('sWmdkFFExportFields'))
+            );
         }
 
-        return explode(',', 'OXID,' . Registry::getConfig()->getConfigParam('sWmdkFFExportFields'));
+        return (bool) Registry::getConfig()->getConfigParam('bWmdkFFClonedAttributeEnabled')
+            ? array_merge($aExportFields, ['ClonedAttributes'])
+            : $aExportFields;
     }
 
     private function _getPreparedExportFields($aFields = array()): string

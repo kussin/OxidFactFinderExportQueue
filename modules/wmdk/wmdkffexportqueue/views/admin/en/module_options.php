@@ -5,6 +5,7 @@ $aLang = array(
     'SHOP_MODULE_GROUP_sWmdkFFGeneralSettings'   	    => 'General settings',
     'SHOP_MODULE_GROUP_sWmdkFFExportSettings'	        => 'Export settings',
     'SHOP_MODULE_GROUP_sWmdkFFQueueSettings'	        => 'Queue settings',
+    'SHOP_MODULE_GROUP_sWmdkFFClonedAttributeSettings'	=> '&quot;Cloned Attributes&quot; settings',
     'SHOP_MODULE_GROUP_sWmdkFFConverterSettings'	    => 'Queue Data Converter',
     'SHOP_MODULE_GROUP_sWmdkFFGpsrSettings'	            => 'EU GPSR Settings',
     'SHOP_MODULE_GROUP_sWmdkFFSooqrSettings'	        => 'Sooqr Settings',
@@ -48,6 +49,11 @@ $aLang = array(
     'SHOP_MODULE_sWmdkFFQueueResetLimit' 	            => 'Max. product resets per run',
     'SHOP_MODULE_bWmdkFFQueueUpdateSiblings' 	        => 'Update siblings',
     'SHOP_MODULE_bWmdkFFQueueUseCategoryPath' 	        => 'Use main category url instead of manufacturer url',
+
+    // CLONED ATTRIBUTES
+    'SHOP_MODULE_bWmdkFFClonedAttributeEnabled'         => 'Enable &quot;Cloned Attributes&quot;',
+    'SHOP_MODULE_aWmdkFFClonedAttributeMapping'         => 'Map attributes',
+    'SHOP_MODULE_sWmdkFFClonedAttributeMappingFile'     => 'CSV file for &quot;Cloned Attributes&quot; mapping',
 
     // CONVERTER
     'SHOP_MODULE_sWmdkFFConverterFieldlistDouble'       => 'Attributes whose values are to be converted to decimals (double).',
@@ -99,4 +105,5 @@ $aLang = array(
     'SHOP_MODULE_sWmdkFFDebugLogFileQueue'              => 'Log-File for queue',
     'SHOP_MODULE_sWmdkFFDebugLogFileExport' 	        => 'Log-File for product exports',
     'SHOP_MODULE_sWmdkFFDebugLogFileStock'  	        => 'Log-File for stock update',
+    'SHOP_MODULE_sWmdkFFDebugLogFileClonedAttributes'   => 'Log-File for &quot;Cloned Attributes&quot;',
 );

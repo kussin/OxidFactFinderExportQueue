@@ -10,9 +10,9 @@ $sMetadataVersion = '1.1';
 $aModule = array(
     'id'           => 'wmdkffexportqueue',
     'title'        => 'Kussin | OXID 6 FACT Finder Export Queue',
-    'description'  => 'Bereitet die Produkte für den Export vor und führt den Export aus. (Es wird auch Sooqr (XML) und Doofinder (CSV) unterstützt.)',
+    'description'  => file_get_contents(__DIR__ . '/description.inc.php', true),
     'thumbnail'    => 'module.png',
-    'version'      => '1.10.6',
+    'version'      => '1.11.0.1',
     'author'       => 'Daniel Kussin',
     'url'          => 'https://www.kussin.de',
     'email'        => 'daniel.kussin@kussin.de',
@@ -26,6 +26,7 @@ $aModule = array(
         'wmdkffexport_reset' => 'wmdk/wmdkffexportqueue/views/wmdkffexport_reset.php',
         'wmdkffexport_ajax' => 'wmdk/wmdkffexportqueue/views/wmdkffexport_ajax.php',
         'wmdkffexport_ts' => 'wmdk/wmdkffexportqueue/views/wmdkffexport_ts.php',
+        'wmdkffexport_mapping' => 'wmdk/wmdkffexportqueue/views/wmdkffexport_mapping.php',
         
         'wmdkffexport_helper' => 'wmdk/wmdkffexportqueue/core/wmdkffexport_helper.php',
         'wmdkffexport_compressor' => 'wmdk/wmdkffexportqueue/core/wmdkffexport_compressor.php',
@@ -90,6 +91,13 @@ $aModule = array(
 
         array('group' => 'sWmdkFFQueueSettings', 'name' => 'bWmdkFFQueueUseCategoryPath', 'type' => 'bool', 'value' => 0),
 
+        // Cloned Attributes
+        array('group' => 'sWmdkFFClonedAttributeSettings', 'name' => 'bWmdkFFClonedAttributeEnabled', 'type' => 'bool', 'value' => 0),
+        array('group' => 'sWmdkFFClonedAttributeSettings', 'name' => 'aWmdkFFClonedAttributeMapping', 'type' => 'aarr', 'value' => array(
+            'Farbe' => 'Farben',
+        )),
+        array('group' => 'sWmdkFFClonedAttributeSettings', 'name' => 'sWmdkFFClonedAttributeMappingFile', 'type' => 'str', 'value' => 'export/factfinder/serversideMapping/clonedattributesmapping.csv'),
+
         // CONVERTER
         array('group' => 'sWmdkFFConverterSettings', 'name' => 'sWmdkFFConverterFieldlistDouble', 'type' => 'str', 'value' => 'Terrain,Schwung,Speed'),
         array('group' => 'sWmdkFFConverterSettings', 'name' => 'aWmdkFFConverterRenameAttributes', 'type' => 'aarr', 'value' => array(
@@ -113,7 +121,7 @@ $aModule = array(
             'MSRP' => 'normal_price',
             'CategoryPath' => 'category',
         )),
-        array('group' => 'sWmdkFFSooqrSettings', 'name' => 'sWmdkFFSooqrCDataFields', 'type' => 'str', 'value' => 'Title,ImageURL,SuggestPictureURL,Short,Description,Deeplink,Marke,CategoryPath,Attributes,NumericalAttributes,SearchAttributes,SearchKeywords,VariantsSizelistMarkup'),
+        array('group' => 'sWmdkFFSooqrSettings', 'name' => 'sWmdkFFSooqrCDataFields', 'type' => 'str', 'value' => 'Title,ImageURL,SuggestPictureURL,Short,Description,Deeplink,Marke,CategoryPath,Attributes,ClonedAttributes,NumericalAttributes,SearchAttributes,SearchKeywords,VariantsSizelistMarkup'),
         array('group' => 'sWmdkFFSooqrSettings', 'name' => 'sWmdkFFSooqrNumberFields', 'type' => 'str', 'value' => 'Price,MSRP,BasePrice,Stock,Weight,Rating,RatingCnt,SaleAmount,SoldAmount,TrustedShopsRating,TrustedShopsRatingCnt,TrustedShopsRatingPercentage'),
         array('group' => 'sWmdkFFSooqrSettings', 'name' => 'sWmdkFFSooqrBooleanFields', 'type' => 'str', 'value' => 'HasProductImage,HasCustomAsnRestrictions,HasNewFlag,HasTopFlag,HasSaleFlag,HasVariantsSizelist'),
         array('group' => 'sWmdkFFSooqrSettings', 'name' => 'sWmdkFFSooqrDateFields', 'type' => 'str', 'value' => 'DateInsert,DateModified'),
@@ -132,7 +140,7 @@ $aModule = array(
             'MSRP' => 'normal_price',
             'CategoryPath' => 'category',
         )),
-        array('group' => 'sWmdkFFDoofinderSettings', 'name' => 'sWmdkFFDoofinderCDataFields', 'type' => 'str', 'value' => 'Title,ImageURL,SuggestPictureURL,Short,Description,Deeplink,Marke,CategoryPath,Attributes,NumericalAttributes,SearchAttributes,SearchKeywords,VariantsSizelistMarkup'),
+        array('group' => 'sWmdkFFDoofinderSettings', 'name' => 'sWmdkFFDoofinderCDataFields', 'type' => 'str', 'value' => 'Title,ImageURL,SuggestPictureURL,Short,Description,Deeplink,Marke,CategoryPath,Attributes,ClonedAttributes,NumericalAttributes,SearchAttributes,SearchKeywords,VariantsSizelistMarkup'),
         array('group' => 'sWmdkFFDoofinderSettings', 'name' => 'sWmdkFFDoofinderNumberFields', 'type' => 'str', 'value' => 'Price,MSRP,BasePrice,Stock,Weight,Rating,RatingCnt,SaleAmount,SoldAmount,TrustedShopsRating,TrustedShopsRatingCnt,TrustedShopsRatingPercentage'),
         array('group' => 'sWmdkFFDoofinderSettings', 'name' => 'sWmdkFFDoofinderBooleanFields', 'type' => 'str', 'value' => 'HasProductImage,HasCustomAsnRestrictions,HasNewFlag,HasTopFlag,HasSaleFlag,HasVariantsSizelist'),
         array('group' => 'sWmdkFFDoofinderSettings', 'name' => 'sWmdkFFDoofinderDateFields', 'type' => 'str', 'value' => 'DateInsert,DateModified'),
@@ -162,7 +170,7 @@ $aModule = array(
             'DateInsert' => 'Einstelldatum',
             'Deeplink' => 'Link zum Artikel',
         )),
-        array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourCDataFields', 'type' => 'str', 'value' => 'Title,ImageURL,SuggestPictureURL,Short,Description,Deeplink,Marke,CategoryPath,Attributes,NumericalAttributes,SearchAttributes,SearchKeywords,VariantsSizelistMarkup'),
+        array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourCDataFields', 'type' => 'str', 'value' => 'Title,ImageURL,SuggestPictureURL,Short,Description,Deeplink,Marke,CategoryPath,Attributes,ClonedAttributes,NumericalAttributes,SearchAttributes,SearchKeywords,VariantsSizelistMarkup'),
         array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourNumberFields', 'type' => 'str', 'value' => 'Price,MSRP,BasePrice,Stock,Weight,Rating,RatingCnt,SaleAmount,SoldAmount,TrustedShopsRating,TrustedShopsRatingCnt,TrustedShopsRatingPercentage'),
         array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourBooleanFields', 'type' => 'str', 'value' => 'HasProductImage,HasCustomAsnRestrictions,HasNewFlag,HasTopFlag,HasSaleFlag,HasVariantsSizelist'),
         array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourDateFields', 'type' => 'str', 'value' => 'DateInsert,DateModified'),
@@ -190,6 +198,7 @@ $aModule = array(
 		array('group' => 'sWmdkFFDebugSettings', 'name' => 'sWmdkFFDebugLogFileQueue', 'type' => 'str', 'value' => 'log/WMDK_FF_QUEUE.log'),
 		array('group' => 'sWmdkFFDebugSettings', 'name' => 'sWmdkFFDebugLogFileExport', 'type' => 'str', 'value' => 'log/WMDK_FF_EXPORT.log'),
 		array('group' => 'sWmdkFFDebugSettings', 'name' => 'sWmdkFFDebugLogFileStock', 'type' => 'str', 'value' => 'log/WMDK_FF_STOCK.log'),
+        array('group' => 'sWmdkFFDebugSettings', 'name' => 'sWmdkFFDebugLogFileClonedAttributes', 'type' => 'str', 'value' => 'log/WMDK_FF_CLONEDATTRIBUTES.log'),
     ),
 	
     'templates' => array(
