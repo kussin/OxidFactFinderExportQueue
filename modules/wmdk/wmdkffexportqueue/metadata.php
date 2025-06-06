@@ -12,7 +12,7 @@ $aModule = array(
     'title'        => 'Kussin | OXID 6 FACT Finder Export Queue',
     'description'  => file_get_contents(__DIR__ . '/description.inc.php', true),
     'thumbnail'    => 'module.png',
-    'version'      => '1.11.0.1-bwc',
+    'version'      => '1.11.1.1-bwc',
     'author'       => 'Daniel Kussin',
     'url'          => 'https://www.kussin.de',
     'email'        => 'daniel.kussin@kussin.de',
@@ -97,6 +97,10 @@ $aModule = array(
             'Farbe' => 'Farben',
         )),
         array('group' => 'sWmdkFFClonedAttributeSettings', 'name' => 'sWmdkFFClonedAttributeMappingFile', 'type' => 'str', 'value' => 'export/factfinder/serversideMapping/clonedattributesmapping.csv'),
+
+        // Product Name Builder
+        array('group' => 'sWmdkFFProductNameBuilderSettings', 'name' => 'bWmdkFFProductNameBuilderEnabled', 'type' => 'bool', 'value' => 0),
+        array('group' => 'sWmdkFFProductNameBuilderSettings', 'name' => 'sWmdkFFProductNameBuilderPattern', 'type' => 'str', 'value' => '<b>[Marke]</b> [Title] [Attributes(Jahr)]<br><span>[Variante]</span>'),
 
         // CONVERTER
         array('group' => 'sWmdkFFConverterSettings', 'name' => 'sWmdkFFConverterFieldlistDouble', 'type' => 'str', 'value' => 'Terrain,Schwung,Speed'),

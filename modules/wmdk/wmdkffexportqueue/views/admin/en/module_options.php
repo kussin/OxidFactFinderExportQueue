@@ -6,6 +6,7 @@ $aLang = array(
     'SHOP_MODULE_GROUP_sWmdkFFExportSettings'	        => 'Export settings',
     'SHOP_MODULE_GROUP_sWmdkFFQueueSettings'	        => 'Queue settings',
     'SHOP_MODULE_GROUP_sWmdkFFClonedAttributeSettings'	=> '&quot;Cloned Attributes&quot; settings',
+    'SHOP_MODULE_GROUP_sWmdkFFProductNameBuilderSettings' => 'Product Name Builder settings',
     'SHOP_MODULE_GROUP_sWmdkFFConverterSettings'	    => 'Queue Data Converter',
     'SHOP_MODULE_GROUP_sWmdkFFGpsrSettings'	            => 'EU GPSR Settings',
     'SHOP_MODULE_GROUP_sWmdkFFSooqrSettings'	        => 'Sooqr Settings',
@@ -54,6 +55,10 @@ $aLang = array(
     'SHOP_MODULE_bWmdkFFClonedAttributeEnabled'         => 'Enable &quot;Cloned Attributes&quot;',
     'SHOP_MODULE_aWmdkFFClonedAttributeMapping'         => 'Map attributes',
     'SHOP_MODULE_sWmdkFFClonedAttributeMappingFile'     => 'CSV file for &quot;Cloned Attributes&quot; mapping',
+
+    // PRODUCT NAME BUILDER
+    'SHOP_MODULE_bWmdkFFProductNameBuilderEnabled'      => 'Enable Product Name Builder',
+    'SHOP_MODULE_sWmdkFFProductNameBuilderPattern'      => 'Product name pattern',
 
     // CONVERTER
     'SHOP_MODULE_sWmdkFFConverterFieldlistDouble'       => 'Attributes whose values are to be converted to decimals (double).',

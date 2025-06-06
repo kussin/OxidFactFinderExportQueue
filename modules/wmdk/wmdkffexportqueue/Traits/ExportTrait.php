@@ -8,6 +8,7 @@ trait ExportTrait
 {
     use ConverterTrait;
     use FlourTrait;
+    use ProductNameBuilderTrait;
 
     protected $_sChannel = NULL;
     protected $_iShopId = 1;
@@ -89,6 +90,10 @@ trait ExportTrait
 
             $aTmpCsvData[] = self::EXPORT_ADDITIONAL_ESCAPING . $this->_excapeString( $sExportData ) . self::EXPORT_ADDITIONAL_ESCAPING;
         }
+
+        /* Product Name Builder (Ticket: #66958) */
+        $aTmpCsvData = $this->_ProductNameBuilder($aTmpCsvData);
+
         return implode($sDelimiter, $aTmpCsvData);
     }
 
