@@ -1,4 +1,4 @@
-# Kussin | OXID 6 FACT Finder Export Queue 6.0 (BWC Version)
+# Kussin | OXID 6 FACT Finder Export Queue 6.0
 
 Kussin | OXID 6 FACT Finder Export Queue provides real-time CSV Exports for FACT Finder NG. It also
 supports [Spotler](https://spotler.com/sooqr-is-now-spotler) and [Doofinder](https://www.doofinder.com/) and since 10/2024 also [flour POS](https://www.flour.io/).

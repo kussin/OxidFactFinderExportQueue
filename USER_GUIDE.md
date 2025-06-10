@@ -1,4 +1,4 @@
-# Kussin | OXID 6 FACT Finder Export Queue 6.0 (BWC Version)
+# Kussin | OXID 6 FACT Finder Export Queue 6.0
 
 ## Module Settings
 
