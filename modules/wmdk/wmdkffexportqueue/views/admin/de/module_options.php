@@ -6,6 +6,7 @@ $aLang = array(
     'SHOP_MODULE_GROUP_sWmdkFFExportSettings'   	    => 'Export-Einstellungen',
     'SHOP_MODULE_GROUP_sWmdkFFQueueSettings'	        => 'Queue-Einstellungen',
     'SHOP_MODULE_GROUP_sWmdkFFClonedAttributeSettings'	=> '&quot;Cloned Attributes&quot;-Einstellungen',
+    'SHOP_MODULE_GROUP_sWmdkFFProductNameBuilderSettings' => 'Product Name Builder-Einstellungen',
     'SHOP_MODULE_GROUP_sWmdkFFConverterSettings'	    => 'Queue Data Converter',
     'SHOP_MODULE_GROUP_sWmdkFFGpsrSettings'	            => 'EU GPSR Einstellungen',
     'SHOP_MODULE_GROUP_sWmdkFFSooqrSettings'	        => 'Sooqr-Einstellungen',
@@ -53,6 +54,10 @@ $aLang = array(
     // CLONED ATTRIBUTES
     'SHOP_MODULE_bWmdkFFClonedAttributeEnabled'         => '&quot;Cloned Attributes&quot;-aktivieren',
     'SHOP_MODULE_aWmdkFFClonedAttributeMapping'         => 'Attribute mappen',
+
+    // PRODUCT NAME BUILDER
+    'SHOP_MODULE_bWmdkFFProductNameBuilderEnabled'      => 'Product Name Builder aktivieren',
+    'SHOP_MODULE_sWmdkFFProductNameBuilderPattern'      => 'Produktnamensmuster',
 
     // CONVERTER
     'SHOP_MODULE_sWmdkFFConverterFieldlistDouble'       => 'Attribute deren Werte in Fließkommazahlen (Double) umgewandelt werden sollen.',
