@@ -2,6 +2,7 @@
 
 namespace Wmdk\FactFinderQueue\Traits;
 
+use OxidEsales\Eshop\Application\Model\Article;
 use OxidEsales\Eshop\Core\Registry;
 
 trait ProductNameBuilderTrait
@@ -73,6 +74,7 @@ trait ProductNameBuilderTrait
 
     private function _getPNBVariantsData($aData)
     {
+        $iLang = Registry::getConfig()->getRequestParameter('lang');
         $sProductNumber = $aData[$this->_aProductNameBuilderColumns['ProductNumber']];
         $sMasterProductNumber = $aData[$this->_aProductNameBuilderColumns['MasterProductNumber']];
 
@@ -80,12 +82,20 @@ trait ProductNameBuilderTrait
             return '';
         }
 
+        // LOAD Product
+        $oProduct = oxNew(Article::class);
+        $oProduct->loadInLang($iLang, $sProductNumber);
+
+        // LOAD Parent
+        $oParent = oxNew(Article::class);
+        $oParent->loadInLang($iLang, $sMasterProductNumber);
+
         // TODO: Implement logic to retrieve variant data
-//        return implode(' ', [
-//            '<label>',
-//            $sMasterProductNumber,
-//            ':</label>',
-//            $sProductNumber,
-//        ]);
+        return implode(' ', [
+            '<label>',
+            $oParent->oxarticles__oxvarname->value,
+            ':</label>',
+            $oProduct->oxarticles__oxvarselect->value,
+        ]);
     }
 }
