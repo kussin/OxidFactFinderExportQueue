@@ -3,6 +3,7 @@
 namespace Wmdk\FactFinderQueue\Traits;
 
 use OxidEsales\Eshop\Application\Model\Article;
+use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\Registry;
 
 trait ProductNameBuilderTrait
@@ -84,18 +85,38 @@ trait ProductNameBuilderTrait
 
         // LOAD Product
         $oProduct = oxNew(Article::class);
-        $oProduct->loadInLang($iLang, $sProductNumber);
+        $oProduct->loadInLang($iLang, $this->_getArticleId($sProductNumber));
 
         // LOAD Parent
         $oParent = oxNew(Article::class);
-        $oParent->loadInLang($iLang, $sMasterProductNumber);
+        $oParent->loadInLang($iLang, $this->_getArticleId($sMasterProductNumber));
 
         // TODO: Implement logic to retrieve variant data
-        return implode(' ', [
+        return implode('', [
             '<label>',
             $oParent->oxarticles__oxvarname->value,
             ':</label>',
+            ' ',
             $oProduct->oxarticles__oxvarselect->value,
         ]);
+    }
+
+    protected function _getArticleId($sProductNumber)
+    {
+        $sQuery = 'SELECT DISTINCT 
+            `OXID`
+        FROM 
+            `oxarticles`
+        WHERE
+            (`OXARTNUM` LIKE "' . $sProductNumber . '")
+        LIMIT 1;';
+
+        $oResult = DatabaseProvider::getDb()->select($sQuery);
+
+        if ($oResult != FALSE && $oResult->count() > 0) {
+            return $oResult->fields[0];
+        }
+
+        return $sProductNumber;
     }
 }
