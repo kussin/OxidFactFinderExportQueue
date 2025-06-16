@@ -21,7 +21,7 @@ class wmdkffexport_compressor
      *
      * @return string Output filename
      */
-    function gzcompressfile(string $inFilename, int $level = 9): string
+    function gzcompressfile($inFilename, $level = 9)
     {
         // Is the file gzipped already?
         $extension = pathinfo($inFilename, PATHINFO_EXTENSION);

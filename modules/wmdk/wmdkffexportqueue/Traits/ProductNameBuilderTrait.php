@@ -10,7 +10,7 @@ trait ProductNameBuilderTrait
 {
     private $_aProductNameBuilderColumns = null;
 
-    private function _ProductNameBuilder($aData, $sFieldName = 'Title') : string
+    private function _ProductNameBuilder($aData, $sFieldName = 'Title')
     {
         // CONFIG
         $bEnabled = Registry::getConfig()->getConfigParam('bWmdkFFProductNameBuilderEnabled');
@@ -61,19 +61,19 @@ trait ProductNameBuilderTrait
         return $aData;
     }
 
-    private function _getPNBSimpleData($aData, $sAttributeName) : string
+    private function _getPNBSimpleData($aData, $sAttributeName)
     {
         return isset($aData[$this->_aProductNameBuilderColumns[$sAttributeName]])
             ? $aData[$this->_aProductNameBuilderColumns[$sAttributeName]] : '';
     }
 
-    private function _getPNBComplexData($aData, $sDataKey, $sAttributeName) : string
+    private function _getPNBComplexData($aData, $sDataKey, $sAttributeName)
     {
         // TODO: Implement logic to retrieve complex data based on the key and attribute name
         return '';
     }
 
-    private function _getPNBVariantsData($aData) : string
+    private function _getPNBVariantsData($aData)
     {
         $iLang = Registry::getConfig()->getRequestParameter('lang');
         $sProductNumber = $aData[$this->_aProductNameBuilderColumns['ProductNumber']];
@@ -101,7 +101,7 @@ trait ProductNameBuilderTrait
         ]);
     }
 
-    protected function _getArticleId($sProductNumber) : string
+    protected function _getArticleId($sProductNumber)
     {
         $sQuery = 'SELECT DISTINCT 
             `OXID`

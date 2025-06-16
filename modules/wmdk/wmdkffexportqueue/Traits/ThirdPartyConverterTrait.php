@@ -6,7 +6,6 @@ use OxidEsales\Eshop\Core\Registry;
 
 trait ThirdPartyConverterTrait
 {
-    use ConverterTrait;
 
     private $_aMapping = NULL;
     private $_aCDataFields = NULL;

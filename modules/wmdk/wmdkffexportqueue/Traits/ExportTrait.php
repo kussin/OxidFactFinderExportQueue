@@ -245,7 +245,7 @@ trait ExportTrait
         return $sTmpExportDelimiter;
     }
 
-    private function _getExportSelection(): string
+    private function _getExportSelection()
     {
         // FLOUR POS
         if (self::PROCESS_CODE == 'FLOUR') {
@@ -285,7 +285,7 @@ trait ExportTrait
             : $aExportFields;
     }
 
-    private function _getPreparedExportFields($aFields = array()): string
+    private function _getPreparedExportFields($aFields = array())
     {
         if (empty($aFields)) {
             $aFields = $this->_getExportFields();
