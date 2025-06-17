@@ -219,7 +219,10 @@ class wmdkffexport_queue extends oxubase
             $this->_aUpdateData['CategoryPath'] = $this->_getCategoryPath();
             
             $this->_aUpdateData['Attributes'] = $this->_getAttributes();
-            $this->_aUpdateData['ClonedAttributes'] = $this->_cloneAttributes($this->_aUpdateData['Attributes']);
+            $this->_aUpdateData['ClonedAttributes'] = $this->_cloneAttributes(
+                $this->_aUpdateData['Attributes'],
+                $this->_oProduct->oxarticles__wmdkvarselectmapping->value
+            );
             $this->_aUpdateData['NumericalAttributes'] = $this->_getNumericalAttributes();
             $this->_aUpdateData['SearchAttributes'] = $this->_getSearchAttributes();
             

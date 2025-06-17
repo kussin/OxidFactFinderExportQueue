@@ -8,12 +8,21 @@ trait ClonedAttributesTrait
 {
     private $_aClonedAttributesMapping = null;
 
-    private function _cloneAttributes($aAttributes)
+    private function _cloneAttributes($aAttributes, $sVarSelectMapping = '')
     {
         if (!Registry::getConfig()->getConfigParam('bWmdkFFClonedAttributeEnabled')) {
             // ERROR: FEATURE DISABLED
             //TODO: Add logging
             return null;
+        }
+
+        $sVarNameMappingAttribute = Registry::getConfig()->getConfigParam('sWmdkFFClonedAttributeOxvarnameAttribute');
+
+        if (
+            (trim($sVarSelectMapping) != '')
+            && (trim($sVarNameMappingAttribute) != '')
+        ) {
+            return trim($sVarSelectMapping);
         }
 
         $sFilePath  = str_replace('//', '/', $_SERVER['DOCUMENT_ROOT'] . Registry::getConfig()->getConfigParam('sWmdkFFClonedAttributeMappingFile'));

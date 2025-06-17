@@ -126,7 +126,7 @@ $aModule = array(
             'Farbe' => 'Farben',
         )),
         array('group' => 'sWmdkFFClonedAttributeSettings', 'name' => 'sWmdkFFClonedAttributeMappingFile', 'type' => 'str', 'value' => 'export/factfinder/serversideMapping/clonedattributesmapping.csv'),
-        array('group' => 'sWmdkFFClonedAttributeSettings', 'name' => 'aWmdkFFClonedAttributeOxvarnameAttribute', 'type' => 'str', 'value' => 'Farbe'),
+        array('group' => 'sWmdkFFClonedAttributeSettings', 'name' => 'sWmdkFFClonedAttributeOxvarnameAttribute', 'type' => 'str', 'value' => 'Farben'),
         array('group' => 'sWmdkFFClonedAttributeSettings', 'name' => 'aWmdkFFClonedAttributeOxvarselectMapping', 'type' => 'arr', 'value' => array(
             'beige',
             'blau',
