@@ -42,7 +42,36 @@ $aModule = array(
         'article_variant' => 'wmdk/wmdkffexportqueue/controllers/admin/wmdkffqueuearticle_variant',
     ),
 
-	'settings' => array(
+    'blocks' => array(
+        array(
+            'template' => 'article_variant.tpl',
+            'block' => 'admin_article_variant_listheader',
+            'file' => 'views/blocks/admin/admin_article_variant_listheader.tpl',
+        ),
+        array(
+            'template' => 'article_variant.tpl',
+            'block' => 'admin_article_variant_parent',
+            'file' => 'views/blocks/admin/admin_article_variant_parent.tpl',
+        ),
+        array(
+            'template' => 'article_variant.tpl',
+            'block' => 'admin_article_variant_listitem',
+            'file' => 'views/blocks/admin/admin_article_variant_listitem.tpl',
+        ),
+        array(
+            'template' => 'article_variant.tpl',
+            'block' => 'admin_article_variant_newitem',
+            'file' => 'views/blocks/admin/admin_article_variant_newitem.tpl',
+        ),
+        array(
+//            'template' => 'dx_savevariant_atonce.tpl',
+            'template' => 'article_variant.tpl',
+            'block'    => 'dx_savevariant_atonce_oxvarselect',
+            'file'     => 'views/blocks/admin/custom/dx_savevariant_atonce_oxvarselect.tpl',
+        ),
+    ),
+
+    'settings' => array(
         // GENERAL
 		array('group' => 'sWmdkFFGeneralSettings', 'name' => 'sWmdkFFGeneralChannelList', 'type' => 'str', 'value' => 'demo::1::0'),
         
@@ -97,6 +126,48 @@ $aModule = array(
             'Farbe' => 'Farben',
         )),
         array('group' => 'sWmdkFFClonedAttributeSettings', 'name' => 'sWmdkFFClonedAttributeMappingFile', 'type' => 'str', 'value' => 'export/factfinder/serversideMapping/clonedattributesmapping.csv'),
+        array('group' => 'sWmdkFFClonedAttributeSettings', 'name' => 'aWmdkFFClonedAttributeOxvarnameAttribute', 'type' => 'str', 'value' => 'Farbe'),
+        array('group' => 'sWmdkFFClonedAttributeSettings', 'name' => 'aWmdkFFClonedAttributeOxvarselectMapping', 'type' => 'arr', 'value' => array(
+            'beige',
+            'blau',
+            'braun',
+            'bunt',
+            'creme',
+            'dunkelblau',
+            'dunkelbraun',
+            'dunkelgrau',
+            'dunkelgrün',
+            'fuchsia',
+            'gelb',
+            'gold',
+            'grau',
+            'grün',
+            'hellblau',
+            'hellbraun',
+            'hellgrau',
+            'hellgrün',
+            'koralle',
+            'lachs',
+            'leinen',
+            'lila',
+            'mint',
+            'natur',
+            'oliv',
+            'orange',
+            'petrol',
+            'pink',
+            'rosa',
+            'rose',
+            'rot',
+            'royal',
+            'sand',
+            'schwarz',
+            'senf',
+            'silber',
+            'türkis',
+            'violett',
+            'weiß',
+        )),
 
         // Product Name Builder
         array('group' => 'sWmdkFFProductNameBuilderSettings', 'name' => 'bWmdkFFProductNameBuilderEnabled', 'type' => 'bool', 'value' => 0),
