@@ -285,5 +285,8 @@ $aModule = array(
         'wmdkffexport_reset.tpl' => 'wmdk/wmdkffexportqueue/views/tpl/wmdkffexport_reset.tpl',
         'wmdkffexport_ajax.tpl' => 'wmdk/wmdkffexportqueue/views/tpl/wmdkffexport_ajax.tpl',
         'wmdkffexport_ts.tpl' => 'wmdk/wmdkffexportqueue/views/tpl/wmdkffexport_ts.tpl',
+
+        // INCLUDES
+        'admin_article_variant_listitem_mapping_select.tpl' => 'wmdk/wmdkffexportqueue/views/tpl/admin/inc/admin_article_variant_listitem_mapping_select.tpl',
     ),
 );

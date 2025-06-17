@@ -15,4 +15,9 @@ class wmdkFfQueueArticle_Variant extends wmdkFfQueueArticle_Variant_parent
         // ACTIVE OXID
         wmdkffexport_helper::saveArticle(Registry::getConfig()->getRequestParameter('oxid'));
     }
+
+    public function getMappingOptions()
+    {
+        return Registry::getConfig()->getConfigParam('aWmdkFFClonedAttributeOxvarselectMapping');
+    }
 }

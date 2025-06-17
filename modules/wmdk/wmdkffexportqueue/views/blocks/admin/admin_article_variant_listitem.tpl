@@ -3,7 +3,9 @@
 <td class="[{$listclass}]"><a href="Javascript:editThis('[{$listitem->oxarticles__oxid->value}]');" class="[{$listclass}]" [{include file="help.tpl" helpid=editvariant}]><img src="[{$oViewConf->getImageUrl()}]/editvariant.gif" width="15" height="15" alt="" border="0" align="absmiddle"></a></td>
 <td class="[{$listclass}]" align="center"><input class="edittext" type="checkbox" name="editval[[{$listitem->oxarticles__oxid->value}]][oxarticles__oxactive]" value='1' [{if $listitem->oxarticles__oxactive->value == 1}]checked[{/if}] [{$readonly}]></td>
 <td class="[{$listclass}]"><input type="text" class="editinput" size="15" maxlength="[{$listitem->oxarticles__oxvarselect->fldmax_length}]" name="editval[[{$listitem->oxarticles__oxid->value}]][oxarticles__oxvarselect]" value="[{$listitem->oxarticles__oxvarselect->value}]" [{$readonly}]></td>
-<td class="[{$listclass}]" data-column="wmdkffexport__mapping">[{* TODO: #67042 OXVARSELECT Mapping *}]</td>
+<td class="[{$listclass}]" data-column="wmdkffexport__mapping">
+    [{include file="admin_article_variant_listitem_mapping_select.tpl" is_new=false}]
+</td>
 <td class="[{$listclass}]"><input type="text" class="editinput" size="10" maxlength="[{$listitem->oxarticles__oxartnum->fldmax_length}]" name="editval[[{$listitem->oxarticles__oxid->value}]][oxarticles__oxartnum]" value="[{$listitem->oxarticles__oxartnum->value}]" [{$readonly}]></td>
 <td class="[{$listclass}]"><input type="text" class="editinput" size="7" maxlength="[{$listitem->oxarticles__oxprice->fldmax_length}]" name="editval[[{$listitem->oxarticles__oxid->value}]][oxarticles__oxprice]" value="[{$listitem->oxarticles__oxprice->value}]" [{$readonly}]></td>
 <td class="[{$listclass}]"><input type="text" class="editinput" size="7" maxlength="[{$listitem->oxarticles__oxsort->fldmax_length}]" name="editval[[{$listitem->oxarticles__oxid->value}]][oxarticles__oxsort]" value="[{$listitem->oxarticles__oxsort->value}]" [{$readonly}]></td>
