@@ -54,6 +54,9 @@ $aLang = array(
     // CLONED ATTRIBUTES
     'SHOP_MODULE_bWmdkFFClonedAttributeEnabled'         => '&quot;Cloned Attributes&quot;-aktivieren',
     'SHOP_MODULE_aWmdkFFClonedAttributeMapping'         => 'Attribute mappen',
+    'SHOP_MODULE_sWmdkFFClonedAttributeMappingFile'     => 'CSV Datei für &quot;Cloned Attributes&quot;-Mapping',
+    'SHOP_MODULE_sWmdkFFClonedAttributeOxvarnameAttribute' => 'Prio 1 Attribut-Mapping Name',
+    'SHOP_MODULE_aWmdkFFClonedAttributeOxvarselectMapping' => 'Prio 1 Attribut-Mapping Werte',
 
     // PRODUCT NAME BUILDER
     'SHOP_MODULE_bWmdkFFProductNameBuilderEnabled'      => 'Product Name Builder aktivieren',
@@ -62,7 +65,6 @@ $aLang = array(
     // CONVERTER
     'SHOP_MODULE_sWmdkFFConverterFieldlistDouble'       => 'Attribute deren Werte in Fließkommazahlen (Double) umgewandelt werden sollen.',
     'SHOP_MODULE_aWmdkFFConverterRenameAttributes'      => 'Umbenennung von Attributnamen und -werten',
-    'SHOP_MODULE_sWmdkFFClonedAttributeMappingFile'     => 'CSV Datei für &quot;Cloned Attributes&quot;-Mapping',
 
     // EU GPSR
     'SHOP_MODULE_bWmdkFFGpsrExportProductWithNoPic'     => 'Export von Produkten ohne Bild aktivieren',

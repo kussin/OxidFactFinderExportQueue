@@ -5,7 +5,11 @@
 [{/if}]
 
 <select
-        name="editval[[{$listitem->oxarticles__oxid->value}]][oxarticles__wmdkvarselectmapping]"
+        [{if $is_new}]
+            name="editval[oxarticles__wmdkvarselectmapping]"
+        [{else}]
+            name="editval[[{$listitem->oxarticles__oxid->value}]][oxarticles__wmdkvarselectmapping]"
+        [{/if}]
         class="editinput wmdkffexportmapping" [{$readonly}]
         style="max-width: 100px; [{if $sCurrentMappingValue == ""}]color: red;[{/if}]">
     <option value="" [{if $sCurrentMappingValue == ""}]SELECTED[{/if}]>[{oxmultilang ident="WMDK_UNMAPPED"}]</option>

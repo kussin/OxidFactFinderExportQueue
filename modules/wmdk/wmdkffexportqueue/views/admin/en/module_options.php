@@ -55,6 +55,8 @@ $aLang = array(
     'SHOP_MODULE_bWmdkFFClonedAttributeEnabled'         => 'Enable &quot;Cloned Attributes&quot;',
     'SHOP_MODULE_aWmdkFFClonedAttributeMapping'         => 'Map attributes',
     'SHOP_MODULE_sWmdkFFClonedAttributeMappingFile'     => 'CSV file for &quot;Cloned Attributes&quot; mapping',
+    'SHOP_MODULE_sWmdkFFClonedAttributeOxvarnameAttribute' => 'Prio 1 attribute mapping name',
+    'SHOP_MODULE_aWmdkFFClonedAttributeOxvarselectMapping' => 'Prio 1 attribute mapping values',
 
     // PRODUCT NAME BUILDER
     'SHOP_MODULE_bWmdkFFProductNameBuilderEnabled'      => 'Enable Product Name Builder',
