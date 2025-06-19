@@ -4,7 +4,10 @@
     [{assign var="sCurrentMappingValue" value=$listitem->oxarticles__wmdkvarselectmapping->value|trim}]
 [{/if}]
 
-<select name="editval[[{$listitem->oxarticles__oxid->value}]][oxarticles__wmdkvarselectmapping]" class="editinput wmdkffexportmapping" [{$readonly}] style="max-width: 100px">
+<select
+        name="editval[[{$listitem->oxarticles__oxid->value}]][oxarticles__wmdkvarselectmapping]"
+        class="editinput wmdkffexportmapping" [{$readonly}]
+        style="max-width: 100px; [{if $sCurrentMappingValue == ""}]color: red;[{/if}]">
     <option value="" [{if $sCurrentMappingValue == ""}]SELECTED[{/if}]>[{oxmultilang ident="WMDK_UNMAPPED"}]</option>
 
     [{foreach from=$oView->getMappingOptions() item=sColorOptionRaw}]
