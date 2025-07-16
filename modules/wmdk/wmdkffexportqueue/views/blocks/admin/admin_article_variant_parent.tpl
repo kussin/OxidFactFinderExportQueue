@@ -2,7 +2,8 @@
 <td class="[{$listclass}]">&nbsp;</td>
 <td class="[{$listclass}]"><input type="text" class="editinput" size="15" maxlength="[{$edit->oxarticles__oxvarselect->fldmax_length}]" name="editval[oxarticles__oxvarselect]" value="[{$edit->oxarticles__oxvarselect->value}]" [{$readonly}]></td>
 <td class="[{$listclass}]" data-column="wmdkffexport__mapping"></td>
-<td class="[{$listclass}]"><input type="text" class="editinput" size="10" maxlength="[{$edit->oxarticles__oxartnum->fldmax_length}]" name="editval[oxarticles__oxartnum]" value="[{$edit->oxarticles__oxartnum->value}]" [{$readonly}]></td>
+<td class="[{$listclass}]"><input type="text" class="editinput" size="16" maxlength="[{$edit->oxarticles__oxartnum->fldmax_length}]" name="editval[oxarticles__oxartnum]" value="[{$edit->oxarticles__oxartnum->value}]" [{$readonly}]></td>
+<td class="[{$listclass}]"><input type="text" class="editinput" size="16" maxlength="[{$edit->oxarticles__oxean->fldmax_length}]" name="editval[oxarticles__oxean]" value="[{$edit->oxarticles__oxean->value}]" [{$readonly}]></td>
 <td class="[{$listclass}]"><input type="text" class="editinput" size="7" maxlength="[{$edit->oxarticles__oxprice->fldmax_length}]" name="editval[oxarticles__oxprice]" value="[{$edit->oxarticles__oxprice->value}]" [{$readonly}]></td>
 <td class="[{$listclass}]">&nbsp;</td>
 <td class="[{$listclass}]"><input type="text" class="editinput" size="7" maxlength="[{$edit->oxarticles__oxstock->fldmax_length}]" name="editval[oxarticles__oxstock]" value="[{$edit->oxarticles__oxstock->value}]" [{$readonly}]></td>

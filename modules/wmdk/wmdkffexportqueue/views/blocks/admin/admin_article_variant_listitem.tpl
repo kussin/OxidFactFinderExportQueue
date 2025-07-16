@@ -6,7 +6,8 @@
 <td class="[{$listclass}]" data-column="wmdkffexport__mapping">
     [{include file="admin_article_variant_listitem_mapping_select.tpl" is_new=false}]
 </td>
-<td class="[{$listclass}]"><input type="text" class="editinput" size="10" maxlength="[{$listitem->oxarticles__oxartnum->fldmax_length}]" name="editval[[{$listitem->oxarticles__oxid->value}]][oxarticles__oxartnum]" value="[{$listitem->oxarticles__oxartnum->value}]" [{$readonly}]></td>
+<td class="[{$listclass}]"><input type="text" class="editinput" size="16" maxlength="[{$listitem->oxarticles__oxartnum->fldmax_length}]" name="editval[[{$listitem->oxarticles__oxid->value}]][oxarticles__oxartnum]" value="[{$listitem->oxarticles__oxartnum->value}]" [{$readonly}]></td>
+<td class="[{$listclass}]"><input type="text" class="editinput" size="16" maxlength="[{$listitem->oxarticles__oxean->fldmax_length}]" name="editval[[{$listitem->oxarticles__oxid->value}]][oxarticles__oxean]" value="[{$listitem->oxarticles__oxean->value}]" [{$readonly}]></td>
 <td class="[{$listclass}]"><input type="text" class="editinput" size="7" maxlength="[{$listitem->oxarticles__oxprice->fldmax_length}]" name="editval[[{$listitem->oxarticles__oxid->value}]][oxarticles__oxprice]" value="[{$listitem->oxarticles__oxprice->value}]" [{$readonly}]></td>
 <td class="[{$listclass}]"><input type="text" class="editinput" size="7" maxlength="[{$listitem->oxarticles__oxsort->fldmax_length}]" name="editval[[{$listitem->oxarticles__oxid->value}]][oxarticles__oxsort]" value="[{$listitem->oxarticles__oxsort->value}]" [{$readonly}]></td>
 <td class="[{$listclass}]"><input type="text" class="editinput" size="7" maxlength="[{$listitem->oxarticles__oxstock->fldmax_length}]" name="editval[[{$listitem->oxarticles__oxid->value}]][oxarticles__oxstock]" value="[{$listitem->oxarticles__oxstock->value}]" [{$readonly}]></td>
