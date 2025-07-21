@@ -22,7 +22,7 @@ trait ClonedAttributesTrait
             (trim($sVarSelectMapping) != '')
             && (trim($sVarNameMappingAttribute) != '')
         ) {
-            return trim($sVarSelectMapping);
+            return trim($sVarNameMappingAttribute) . '=' . trim($sVarSelectMapping);
         }
 
         $sFilePath  = str_replace('//', '/', $_SERVER['DOCUMENT_ROOT'] . Registry::getConfig()->getConfigParam('sWmdkFFClonedAttributeMappingFile'));

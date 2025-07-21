@@ -47,6 +47,10 @@ trait ExportTrait
      * @return string
      */
     public function render() {
+        // SET LIMITS
+        ini_set('max_execution_time', '600');
+        ini_set('memory_limit', '2048M');
+
         // Variablendeklaration
         $this->_aResponse['template'] = $this->_sTemplate;
 
