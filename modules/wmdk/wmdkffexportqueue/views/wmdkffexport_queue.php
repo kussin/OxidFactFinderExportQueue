@@ -496,6 +496,10 @@ class wmdkffexport_queue extends oxubase
             $sAttributeName = trim($sAttribute);
             $sAttributeValue = isset($aVarselects[$iKey]) ? html_entity_decode(trim($aVarselects[$iKey]), ENT_QUOTES) : '';
 
+            // HOTFIX #67324
+            $oLang = Registry::getLang();
+            $sAttributeName = $sAttributeName == "" ? $oLang->translateString( 'VARINAT', $this->_iLang) : $sAttributeName;
+
             $aAttributes[] = $sAttributeName . '=' . $this->_converter($sAttributeName, $sAttributeValue);
         }
 

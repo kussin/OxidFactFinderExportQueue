@@ -51,7 +51,7 @@ trait ThirdPartyConverterTrait
         $aConvertedData = array();
 
         foreach ($aData as $sKey => $sValue) {
-            // HOTFIX
+            // HOTFIX #67324
             if (
                 ($sKey == 'MSRP')
                 && ($sValue == 0)
@@ -198,10 +198,11 @@ trait ThirdPartyConverterTrait
                 } else {
                     // ADD AS NODES
                     foreach ($aAttributes as $sKey => $sValue) {
-                        // HOTFIX
-                        $sKey = trim($sKey) == "" ? 'Variante' : $sKey;
+                        // HOTFIX #67324
+                        $oLang = Registry::getLang();
+                        $sKey = trim($sKey) == "" ? $oLang->translateString( 'VARINAT', $this->_iLang) : $sKey;
 
-                        // CLEAN KEY
+                        // CLEAN KEY FIX #67324
                         $sKey = str_replace(['/'], '|', $sKey);
                         $aKey = explode('|', $sKey);
                         $sKey = $aKey[0];
