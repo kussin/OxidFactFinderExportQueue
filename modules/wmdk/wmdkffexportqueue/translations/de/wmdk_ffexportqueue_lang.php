@@ -6,4 +6,6 @@ $aLang = array(
 
     'SALE'				=> 'Sale',
     'REDUCED_ARTICLES'	=> 'Reduzierte Artikel',
+
+    'VARINAT'           => 'Variante',
 );

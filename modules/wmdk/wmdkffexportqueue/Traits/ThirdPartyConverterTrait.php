@@ -52,6 +52,14 @@ trait ThirdPartyConverterTrait
         $aConvertedData = array();
 
         foreach ($aData as $sKey => $sValue) {
+            // HOTFIX #67324
+            if (
+                ($sKey == 'MSRP')
+                && ($sValue == 0)
+            ) {
+                $sValue = $aData['Price'];
+            }
+
             $aConvertedData[$this->_mapKey($sKey)] = $this->_convertValue($sKey, $sValue);
         }
 
@@ -191,6 +199,15 @@ trait ThirdPartyConverterTrait
                 } else {
                     // ADD AS NODES
                     foreach ($aAttributes as $sKey => $sValue) {
+                        // HOTFIX #67324
+                        $oLang = Registry::getLang();
+                        $sKey = trim($sKey) == "" ? $oLang->translateString( 'VARINAT', $this->_iLang) : $sKey;
+
+                        // CLEAN KEY FIX #67324
+                        $sKey = str_replace(['/'], '|', $sKey);
+                        $aKey = explode('|', $sKey);
+                        $sKey = $aKey[0];
+
                         if (is_array($sValue)) {
                             $aProductData[$sKey] = $this->_convertToCData(implode($sCsvDelimiter, $sValue));
                         } else {
