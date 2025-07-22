@@ -8,4 +8,7 @@ $aLang = array(
     'REDUCED_ARTICLES'	=> 'Reduzierte Artikel',
 
     'VARINAT'           => 'Variante',
+
+    'DATEMODIFIED'      => 'Letzte Speicherung (Speichern)',
+    'OXTIMESTAMP'       => 'Letzte Aenderung (Preis)',
 );

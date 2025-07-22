@@ -81,12 +81,17 @@ trait FlourTrait
 
         // REMOVE % SIGN
         $sPreparedExportFields = $this->_removeFlourExportSelectionPercentageSign($sPreparedExportFields);
+        $sPreparedExportFields = $this->_removeFlourExportSelectionPercentageSign($sPreparedExportFields, '`FlourSaleAmount`');
 
         // CONVERT STOCK TO BOOLEAN
         $sPreparedExportFields = $this->_getFlourExportSelectionStockFlag($sPreparedExportFields);
 
         // EXTRACT ATTRIBUTES
         $sPreparedExportFields = $this->_extractFlourExportAttributeValue($sPreparedExportFields);
+
+        // RENAME TIMESTAMPS
+        $sPreparedExportFields = $this->_renameFlourExportSelectionTimestamp($sPreparedExportFields);
+        $sPreparedExportFields = $this->_renameFlourExportSelectionTimestamp($sPreparedExportFields, 'OXTIMESTAMP');
 
         // EXPORT MARKER
         $sExportMarker = Registry::getConfig()->getConfigParam('sWmdkFFFlourExportMarker');
@@ -155,7 +160,7 @@ trait FlourTrait
     {
         return str_replace(
             $sField,
-            'REPLACE(' . $sField . ', "%", "") AS ' . $sField,
+            'IF(' . $sField . ' = "" OR ' . $sField . ' IS NULL, "EMPTY", REPLACE(' . $sField . ', "%", "")) AS ' . $sField,
             $sPreparedExportFields
         );
     }
@@ -179,6 +184,18 @@ trait FlourTrait
         return str_replace(
             $sSearch,
             implode("\n", $aReplace),
+            $sPreparedExportFields
+        );
+    }
+
+    private function _renameFlourExportSelectionTimestamp($sPreparedExportFields, $sField = 'DateModified')
+    {
+        $oLang = Registry::getLang();
+        $sLabel = $oLang->translateString(strtoupper($sField), $this->_iLang);
+
+        return str_replace(
+            $sField,
+            $sField . ' AS `' . $sLabel . '`',
             $sPreparedExportFields
         );
     }
