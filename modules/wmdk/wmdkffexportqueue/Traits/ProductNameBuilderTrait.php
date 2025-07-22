@@ -10,7 +10,7 @@ trait ProductNameBuilderTrait
 {
     private $_aProductNameBuilderColumns = null;
 
-    private function _ProductNameBuilder($aData, $sFieldName = 'Title') : string
+    private function _ProductNameBuilder($aData, $sFieldName = 'Title') : array
     {
         // CONFIG
         $bEnabled = Registry::getConfig()->getConfigParam('bWmdkFFProductNameBuilderEnabled');
