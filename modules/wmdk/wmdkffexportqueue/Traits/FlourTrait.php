@@ -91,7 +91,7 @@ trait FlourTrait
 
         // RENAME TIMESTAMPS
         $sPreparedExportFields = $this->_renameFlourExportSelectionTimestamp($sPreparedExportFields);
-        $sPreparedExportFields = $this->_renameFlourExportSelectionTimestamp($sPreparedExportFields, 'OXTIMESTAMP');
+        $sPreparedExportFields = $this->_renameFlourExportSelectionTimestamp($sPreparedExportFields, '`OXTIMESTAMP`');
 
         // EXPORT MARKER
         $sExportMarker = Registry::getConfig()->getConfigParam('sWmdkFFFlourExportMarker');
@@ -151,7 +151,7 @@ trait FlourTrait
         return str_replace(
             $sTaxField,
             'IF(' . $sTaxField . ' > 15, ' . $this->_sFlourTaxId19 . ', IF(' . $sTaxField . ' = 0, '
-                . $this->_sFlourTaxId0 . ', ' . $this->_sFlourTaxId7 . ')) AS ' . $sTaxField,
+            . $this->_sFlourTaxId0 . ', ' . $this->_sFlourTaxId7 . ')) AS ' . $sTaxField,
             $sPreparedExportFields
         );
     }
@@ -188,10 +188,10 @@ trait FlourTrait
         );
     }
 
-    private function _renameFlourExportSelectionTimestamp($sPreparedExportFields, $sField = 'DateModified')
+    private function _renameFlourExportSelectionTimestamp($sPreparedExportFields, $sField = '`DateModified`')
     {
         $oLang = Registry::getLang();
-        $sLabel = $oLang->translateString(strtoupper($sField), $this->_iLang);
+        $sLabel = $oLang->translateString(strtoupper(str_replace('`', '',$sField)), $this->_iLang);
 
         return str_replace(
             $sField,
