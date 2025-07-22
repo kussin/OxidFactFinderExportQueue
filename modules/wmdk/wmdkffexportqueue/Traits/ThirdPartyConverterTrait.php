@@ -74,6 +74,19 @@ trait ThirdPartyConverterTrait
 
     private function _mapKey($sKey)
     {
+        // HOTFIX #66954
+        if (self::PROCESS_CODE == 'FLOUR') {
+            $sField = strtoupper($sKey);
+
+            if (
+                ($sField == 'DATEMODIFIED')
+                || ($sField == 'OXTIMESTAMP')
+            ) {
+                $oLang = Registry::getLang();
+                return $oLang->translateString(strtoupper(str_replace('`', '',$sField)), $this->_iLang);
+            }
+        }
+
         return (isset($this->_aMapping[$sKey])) ? $this->_aMapping[$sKey] : $sKey;
     }
 
