@@ -48,9 +48,9 @@ trait ExportTrait
      */
     public function render() {
         // SET LIMITS
-        ini_set('max_execution_time', '600');
-        ini_set('memory_limit', '2048M');
-
+        ini_set('max_execution_time', (int) Registry::getConfig()->getConfigParam('sWmdkFFQueuePhpLimitTimeout'));
+        ini_set('memory_limit', Registry::getConfig()->getConfigParam('sWmdkFFQueuePhpLimitMemory'));
+		
         // Variablendeklaration
         $this->_aResponse['template'] = $this->_sTemplate;
 
