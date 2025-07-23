@@ -48,6 +48,7 @@ $aLang = array(
     'SHOP_MODULE_sWmdkFFQueuePhpLimitTimeout' 	        => 'PHP Timeout',
     'SHOP_MODULE_sWmdkFFQueuePhpLimitMemory' 	        => 'PHP Memory Limit',
     'SHOP_MODULE_sWmdkFFQueueResetLimit' 	            => 'Max. Produkt-Resets pro Run',
+    'SHOP_MODULE_bWmdkFFQueueEnableFromPrice' 	        => 'Anzeigen von ab-Preisen',
     'SHOP_MODULE_bWmdkFFQueueUpdateSiblings' 	        => 'Update der Geschwister-Varianten',
     'SHOP_MODULE_bWmdkFFQueueUseCategoryPath' 	        => 'Benutze die Hauptkategorie-URL anstelle der Marken-URL',
 
@@ -65,6 +66,7 @@ $aLang = array(
     // CONVERTER
     'SHOP_MODULE_sWmdkFFConverterFieldlistDouble'       => 'Attribute deren Werte in Fließkommazahlen (Double) umgewandelt werden sollen.',
     'SHOP_MODULE_aWmdkFFConverterRenameAttributes'      => 'Umbenennung von Attributnamen und -werten',
+    'SHOP_MODULE_sWmdkFFClonedAttributeMappingFile'     => 'CSV Datei für &quot;Cloned Attributes&quot;-Mapping',
 
     // EU GPSR
     'SHOP_MODULE_bWmdkFFGpsrExportProductWithNoPic'     => 'Export von Produkten ohne Bild aktivieren',

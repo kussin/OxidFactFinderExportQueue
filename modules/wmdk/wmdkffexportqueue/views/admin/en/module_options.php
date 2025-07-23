@@ -48,6 +48,7 @@ $aLang = array(
     'SHOP_MODULE_sWmdkFFQueuePhpLimitTimeout' 	        => 'PHP Timeout',
     'SHOP_MODULE_sWmdkFFQueuePhpLimitMemory' 	        => 'PHP Memory limit',
     'SHOP_MODULE_sWmdkFFQueueResetLimit' 	            => 'Max. product resets per run',
+    'SHOP_MODULE_bWmdkFFQueueEnableFromPrice' 	        => 'Enable from prices',
     'SHOP_MODULE_bWmdkFFQueueUpdateSiblings' 	        => 'Update siblings',
     'SHOP_MODULE_bWmdkFFQueueUseCategoryPath' 	        => 'Use main category url instead of manufacturer url',
 

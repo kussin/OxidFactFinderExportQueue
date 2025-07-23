@@ -115,6 +115,8 @@ $aModule = array(
 		array('group' => 'sWmdkFFQueueSettings', 'name' => 'sWmdkFFQueuePhpLimitTimeout', 'type' => 'str', 'value' => 900),
 		array('group' => 'sWmdkFFQueueSettings', 'name' => 'sWmdkFFQueuePhpLimitMemory', 'type' => 'str', 'value' => '512M'),
 		array('group' => 'sWmdkFFQueueSettings', 'name' => 'sWmdkFFQueueResetLimit', 'type' => 'str', 'value' => 75),
+
+        array('group' => 'sWmdkFFQueueSettings', 'name' => 'bWmdkFFQueueEnableFromPrice', 'type' => 'bool', 'value' => 1),
 		
 		array('group' => 'sWmdkFFQueueSettings', 'name' => 'bWmdkFFQueueUpdateSiblings', 'type' => 'bool', 'value' => 0),
 
@@ -187,6 +189,7 @@ $aModule = array(
         array('group' => 'sWmdkFFSooqrSettings', 'name' => 'sWmdkFFSooqrMapping', 'type' => 'aarr', 'value' => array(
             'ProductNumber' => 'id',
             'MasterProductNumber' => 'parent',
+            'MPN' => 'mpn',
             'Title' => 'title',
             'Marke' => 'brand',
             'Deeplink' => 'link',
@@ -194,7 +197,7 @@ $aModule = array(
             'Description' => 'description',
             'Price' => 'price',
             'MSRP' => 'normal_price',
-            'CategoryPath' => 'category',
+            'CategoryPath' => 'categories',
         )),
         array('group' => 'sWmdkFFSooqrSettings', 'name' => 'sWmdkFFSooqrCDataFields', 'type' => 'str', 'value' => 'Title,ImageURL,SuggestPictureURL,Short,Description,Deeplink,Marke,CategoryPath,Attributes,ClonedAttributes,NumericalAttributes,SearchAttributes,SearchKeywords,VariantsSizelistMarkup'),
         array('group' => 'sWmdkFFSooqrSettings', 'name' => 'sWmdkFFSooqrNumberFields', 'type' => 'str', 'value' => 'Price,MSRP,BasePrice,Stock,Weight,Rating,RatingCnt,SaleAmount,SoldAmount,TrustedShopsRating,TrustedShopsRatingCnt,TrustedShopsRatingPercentage'),

@@ -282,6 +282,12 @@ class wmdkffexport_queue extends oxubase
     
     
     private function _getHasFromPrice() {
+        $bWmdkFFQueueEnableFromPrice = (int) Registry::getConfig()->getConfigParam('bWmdkFFQueueEnableFromPrice');
+
+        if ($this->_bIsVariant && !$bWmdkFFQueueEnableFromPrice) {
+            return '';
+        }
+
         $oArticle = ($this->_bIsVariant) ? $this->_oParent : $this->_oProduct;
         
         $dVarMinPrice = (double) $oArticle->oxarticles__oxvarminprice->value;
@@ -293,13 +299,18 @@ class wmdkffexport_queue extends oxubase
     
     private function _getPrice() {
         if ($this->_bIsParent || $this->_bIsVariant) {
-            $oFirstActiveVariant = ($this->_bIsVariant) ? $this->_getFirstActiveVariant($this->_oProduct->oxarticles__oxparentid->value) : $this->_getFirstActiveVariant();
-            
-            if ($oFirstActiveVariant != FALSE) {
-                return (double) $oFirstActiveVariant->oxarticles__oxprice->value;
+
+            $bWmdkFFQueueEnableFromPrice = (int) Registry::getConfig()->getConfigParam('bWmdkFFQueueEnableFromPrice');
+
+            if ($this->_bIsParent || $bWmdkFFQueueEnableFromPrice) {
+                $oFirstActiveVariant = ($this->_bIsVariant) ? $this->_getFirstActiveVariant($this->_oProduct->oxarticles__oxparentid->value) : $this->_getFirstActiveVariant();
+
+                if ($oFirstActiveVariant != FALSE) {
+                    return (double)$oFirstActiveVariant->oxarticles__oxprice->value;
+                }
+
+                return (double)$this->_oProduct->oxarticles__oxvarminprice->value;
             }
-            
-            return (double) $this->_oProduct->oxarticles__oxvarminprice->value;
         }
         
 		return (double) $this->_oProduct->oxarticles__oxprice->value;
@@ -308,10 +319,15 @@ class wmdkffexport_queue extends oxubase
     
     private function _getMsrp() {
         if ($this->_bIsParent || $this->_bIsVariant) {
-            $oFirstActiveVariant = ($this->_bIsVariant) ? $this->_getFirstActiveVariant($this->_oProduct->oxarticles__oxparentid->value) : $this->_getFirstActiveVariant();
-            
-            if ($oFirstActiveVariant != FALSE) {
-                return (double) $oFirstActiveVariant->oxarticles__oxtprice->value;
+
+            $bWmdkFFQueueEnableFromPrice = (int) Registry::getConfig()->getConfigParam('bWmdkFFQueueEnableFromPrice');
+
+            if ($this->_bIsParent || $bWmdkFFQueueEnableFromPrice) {
+                $oFirstActiveVariant = ($this->_bIsVariant) ? $this->_getFirstActiveVariant($this->_oProduct->oxarticles__oxparentid->value) : $this->_getFirstActiveVariant();
+
+                if ($oFirstActiveVariant != FALSE) {
+                    return (double)$oFirstActiveVariant->oxarticles__oxtprice->value;
+                }
             }
         }
         

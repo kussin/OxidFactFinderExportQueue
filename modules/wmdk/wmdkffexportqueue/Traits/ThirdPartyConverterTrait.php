@@ -183,7 +183,7 @@ trait ThirdPartyConverterTrait
                     '|',
                 ), array(
                     ' > ',
-                    ' %%% ',
+                    ' %% ',
                 ), $sCategoryPath);
 
             case 'FACTFINDER':
@@ -221,6 +221,10 @@ trait ThirdPartyConverterTrait
                         $sKey = $aKey[0];
 
                         if (is_array($sValue)) {
+                            if (self::PROCESS_CODE == 'DOOFINDER') {
+                                $sCsvDelimiter = '/';
+                            }
+
                             $aProductData[$sKey] = $this->_convertToCData(implode($sCsvDelimiter, $sValue));
                         } else {
                             $aProductData[$sKey] = $this->_convertToCData($sValue);
@@ -237,11 +241,20 @@ trait ThirdPartyConverterTrait
             (isset($aProductData['price']))
             && (isset($aProductData['normal_price']))
             && (self::PROCESS_CODE == 'DOOFINDER')
+            && ($sFieldName == 'Attributes')
         ) {
             $dPrice = (double) $aProductData['price'];
             $dNormalPrice = (double) $aProductData['normal_price'];
 
-            $aProductData['sale_price'] = ($dPrice < $dNormalPrice) ? $dPrice : '';
+            $dSalePrice = ($dPrice < $dNormalPrice) ? $dPrice : '';
+
+            if (
+                ($dSalePrice < $dNormalPrice)
+            ) {
+                // SET PRICES
+                $aProductData['price'] = $dNormalPrice;
+                $aProductData['sale_price'] = $dSalePrice;
+            }
         }
 
         return $aProductData;
