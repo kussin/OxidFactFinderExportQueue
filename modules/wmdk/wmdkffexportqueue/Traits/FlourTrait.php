@@ -115,6 +115,8 @@ trait FlourTrait
                 )';
         }
 
+        $sQuery .= ' ORDER BY `OXTIMESTAMP` DESC';
+
         $sQuery .= ';';
 
         return $sQuery;
