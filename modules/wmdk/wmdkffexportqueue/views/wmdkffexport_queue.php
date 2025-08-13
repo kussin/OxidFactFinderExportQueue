@@ -204,6 +204,7 @@ class wmdkffexport_queue extends oxubase
             
             $this->_aUpdateData['HasFromPrice'] = $this->_getHasFromPrice();
             $this->_aUpdateData['Price'] = $this->_getPrice();
+            $this->_aUpdateData['FromPrice'] = $this->_getPrice(true);
             $this->_aUpdateData['MSRP'] = $this->_getMsrp();
             $this->_aUpdateData['BasePrice'] = $this->_getBasePrice();
             $this->_aUpdateData['Tax'] = $this->_getTaxRate();

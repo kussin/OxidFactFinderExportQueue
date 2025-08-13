@@ -12,7 +12,7 @@ $aModule = array(
     'title'        => 'Kussin | OXID 6 FACT Finder Export Queue',
     'description'  => file_get_contents(__DIR__ . '/description.inc.php', true),
     'thumbnail'    => 'module.png',
-    'version'      => '1.11.3.1-bwc',
+    'version'      => '1.11.4',
     'author'       => 'Daniel Kussin',
     'url'          => 'https://www.kussin.de',
     'email'        => 'daniel.kussin@kussin.de',
@@ -78,7 +78,7 @@ $aModule = array(
         // EXPORT
 		array('group' => 'sWmdkFFExportSettings', 'name' => 'sWmdkFFExportDirectory', 'type' => 'str', 'value' => 'export/factfinder/productData/'),
         
-		array('group' => 'sWmdkFFExportSettings', 'name' => 'sWmdkFFExportFields', 'type' => 'str', 'value' => 'ProductNumber,MasterProductNumber,Title,Short,HasProductImage,ImageURL,SuggestPictureURL,HasFromPrice,Price,MSRP,BasePrice,Stock,Description,Deeplink,Marke,CategoryPath,HasCustomAsnRestrictions,Attributes,NumericalAttributes,SearchAttributes,SearchKeywords,EAN,MPN,DISTEAN,Weight,Rating,RatingCnt,HasNewFlag,HasTopFlag,HasSaleFlag,SaleAmount,HasVariantsSizelist,VariantsSizelistMarkup,SoldAmount,DateInsert,DateModified,TrustedShopsRating,TrustedShopsRatingCnt,TrustedShopsRatingPercentage'),
+		array('group' => 'sWmdkFFExportSettings', 'name' => 'sWmdkFFExportFields', 'type' => 'str', 'value' => 'ProductNumber,MasterProductNumber,Title,Short,HasProductImage,ImageURL,SuggestPictureURL,HasFromPrice,FromPrice AS `Price`,MSRP,BasePrice,Stock,Description,Deeplink,Marke,CategoryPath,HasCustomAsnRestrictions,Attributes,NumericalAttributes,SearchAttributes,SearchKeywords,EAN,MPN,DISTEAN,Weight,Rating,RatingCnt,HasNewFlag,HasTopFlag,HasSaleFlag,SaleAmount,HasVariantsSizelist,VariantsSizelistMarkup,SoldAmount,DateInsert,DateModified,TrustedShopsRating,TrustedShopsRatingCnt,TrustedShopsRatingPercentage'),
 		array('group' => 'sWmdkFFExportSettings', 'name' => 'sWmdkFFExportHtmlFields', 'type' => 'str', 'value' => 'VariantsSizelistMarkup'),
 		
 		array('group' => 'sWmdkFFExportSettings', 'name' => 'sWmdkFFExportOnlyActive', 'type' => 'bool', 'value' => 1),
@@ -115,7 +115,7 @@ $aModule = array(
 		array('group' => 'sWmdkFFQueueSettings', 'name' => 'sWmdkFFQueuePhpLimitTimeout', 'type' => 'str', 'value' => 900),
 		array('group' => 'sWmdkFFQueueSettings', 'name' => 'sWmdkFFQueuePhpLimitMemory', 'type' => 'str', 'value' => '512M'),
 		array('group' => 'sWmdkFFQueueSettings', 'name' => 'sWmdkFFQueueResetLimit', 'type' => 'str', 'value' => 75),
-
+		
         array('group' => 'sWmdkFFQueueSettings', 'name' => 'bWmdkFFQueueEnableFromPrice', 'type' => 'bool', 'value' => 1),
 		
 		array('group' => 'sWmdkFFQueueSettings', 'name' => 'bWmdkFFQueueUpdateSiblings', 'type' => 'bool', 'value' => 0),
