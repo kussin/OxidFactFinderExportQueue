@@ -82,6 +82,9 @@ class wmdkffexport_reset extends oxubase
 
         /* wmdk_dkussin (Ticket: 61736) */
         $this->_resetArticlesWithNoPic();
+
+        /* wmdk_dkussin (Ticket: 67491) */
+        $this->_disableMissingOriginOxid();
     }
     
     
@@ -457,6 +460,41 @@ class wmdkffexport_reset extends oxubase
                 $this->_aResponse['fixed_nopic'] = FALSE;
             }
 
+        }
+    }
+
+
+    private function _disableMissingOriginOxid() {
+        $sArticles = 'UPDATE
+                wmdk_ff_export_queue b
+            SET
+                b.LASTSYNC = "0000-00-00 00:00:00",
+                b.ProcessIp = "' . $this->_getProcessIp() . '",
+                b.OXACTIVE = 0,
+                b.OXHIDDEN = 1,
+                b.OXTIMESTAMP = "0000-00-00 00:00:00"
+            WHERE
+                (b.OXACTIVE != 0)
+                AND (NOT EXISTS (
+                    SELECT 
+                        1
+                    FROM 
+                        oxarticles
+                    WHERE 
+                        (oxarticles.OXID = wmdk_ff_export_queue.OXID)
+                ));';
+
+        try {
+            DatabaseProvider::getDb()->execute($sArticles);
+
+            // LOG
+            $this->_aResponse['disable_missing_oxids'] = TRUE;
+
+        } catch (Exception $oException) {
+            // ERROR
+
+            // LOG
+            $this->_aResponse['disable_missing_oxids'] = FALSE;
         }
     }
     
