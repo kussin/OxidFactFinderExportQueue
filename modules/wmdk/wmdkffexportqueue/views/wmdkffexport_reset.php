@@ -466,23 +466,20 @@ class wmdkffexport_reset extends oxubase
 
     private function _disableMissingOriginOxid() {
         $sArticles = 'UPDATE
-                wmdk_ff_export_queue b
-            SET
-                b.LASTSYNC = "0000-00-00 00:00:00",
-                b.ProcessIp = "' . $this->_getProcessIp() . '",
-                b.OXACTIVE = 0,
-                b.OXHIDDEN = 1,
-                b.OXTIMESTAMP = "0000-00-00 00:00:00"
-            WHERE
-                (b.OXACTIVE != 0)
-                AND (NOT EXISTS (
-                    SELECT 
-                        1
-                    FROM 
-                        oxarticles
-                    WHERE 
-                        (oxarticles.OXID = wmdk_ff_export_queue.OXID)
-                ));';
+            wmdk_ff_export_queue b
+        SET
+            b.LASTSYNC = "0000-00-00 00:00:00",
+            b.ProcessIp = "' . $this->_getProcessIp() . '",
+            b.OXACTIVE = 0,
+            b.OXHIDDEN = 1,
+            b.OXTIMESTAMP = "0000-00-00 00:00:00"
+        WHERE
+            (b.OXACTIVE != 0)
+            AND b.OXID NOT IN (
+                SELECT OXID FROM (
+                    SELECT OXID FROM oxarticles
+                ) AS tmp
+            );';
 
         try {
             DatabaseProvider::getDb()->execute($sArticles);
