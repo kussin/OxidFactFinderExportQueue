@@ -40,6 +40,7 @@ $aModule = array(
         'article_seo' => 'wmdk/wmdkffexportqueue/controllers/admin/wmdkffqueuearticle_seo',
         'article_stock' => 'wmdk/wmdkffexportqueue/controllers/admin/wmdkffqueuearticle_stock',
         'article_variant' => 'wmdk/wmdkffexportqueue/controllers/admin/wmdkffqueuearticle_variant',
+        'module_main' => 'wmdk/wmdkffexportqueue/controllers/admin/wmdkffqueuearticle_module_main',
     ),
 
     'blocks' => array(
