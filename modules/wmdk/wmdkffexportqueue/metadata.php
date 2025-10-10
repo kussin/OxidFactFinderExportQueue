@@ -40,6 +40,8 @@ $aModule = array(
         'article_seo' => 'wmdk/wmdkffexportqueue/controllers/admin/wmdkffqueuearticle_seo',
         'article_stock' => 'wmdk/wmdkffexportqueue/controllers/admin/wmdkffqueuearticle_stock',
         'article_variant' => 'wmdk/wmdkffexportqueue/controllers/admin/wmdkffqueuearticle_variant',
+        'article_attribute' => 'wmdk/wmdkffexportqueue/controllers/admin/wmdkffqueuearticle_attribute',
+        'article_attribute_ajax' => 'wmdk/wmdkffexportqueue/controllers/admin/wmdkffqueuearticle_attribute_ajax'
     ),
 
     'blocks' => array(
@@ -291,5 +293,8 @@ $aModule = array(
 
         // INCLUDES
         'admin_article_variant_listitem_mapping_select.tpl' => 'wmdk/wmdkffexportqueue/views/tpl/admin/inc/admin_article_variant_listitem_mapping_select.tpl',
+
+        // POPUPS
+        'popups/wmdk_article_attribute.tpl' => 'wmdk/wmdkffexportqueue/views/tpl/admin/popups/wmdkffqueuearticle_attribute.tpl',
     ),
 );
