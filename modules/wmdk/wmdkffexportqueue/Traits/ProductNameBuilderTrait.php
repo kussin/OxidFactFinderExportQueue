@@ -50,6 +50,13 @@ trait ProductNameBuilderTrait
             $sPattern = str_replace("[$sPlaceholder]", $sValue, $sPattern);
         }
 
+
+        //drop empty parentheses like "()", "( )", "( - )"
+        $sPattern = preg_replace('~\s*\(\s*(?:&nbsp;|[-,.;:/|]|\s)*\)\s*~u', ' ', $sPattern);
+
+        //normalize whitespace and trim
+        $sPattern = preg_replace('~\s{2,}~u', ' ', trim($sPattern));
+
         // SET PRODUCT NAME
         if (
             isset($this->_aProductNameBuilderColumns[$sFieldName])
@@ -91,13 +98,19 @@ trait ProductNameBuilderTrait
         $oParent = oxNew(Article::class);
         $oParent->loadInLang($iLang, $this->_getArticleId($sMasterProductNumber));
 
-        // TODO: Implement logic to retrieve variant data
+        //if label or value is missing, return empty to avoid "(Farbe: )"
+        $label = trim((string)$oParent->oxarticles__oxvarname->value);
+        $value = trim((string)$oProduct->oxarticles__oxvarselect->value);
+        if ($label === '' || $value === '') {
+            return '';
+        }
+
         return implode('', [
             '<label>',
-            $oParent->oxarticles__oxvarname->value,
+            $label,
             ':</label>',
             ' ',
-            $oProduct->oxarticles__oxvarselect->value,
+            $value,
         ]);
     }
 
