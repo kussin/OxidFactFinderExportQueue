@@ -131,7 +131,13 @@ trait ExportTrait
 
             // ADD CSV Header
             array_shift($this->_aExportFields);
-            $this->_aCsvData[] = $this->_getCSVDataRow($this->_aExportFields, true);
+//            $this->_aCsvData[] = $this->_getCSVDataRow($this->_aExportFields, true);
+            $sHeader = $this->_getCSVDataRow($this->_aExportFields, true);
+            $this->_aCsvData[] = str_replace(
+                'FromPrice AS `Price`',
+                'Price',
+                $sHeader
+            );
 
             while (!$oResult->EOF) {
                 $aData = $oResult->getFields();
