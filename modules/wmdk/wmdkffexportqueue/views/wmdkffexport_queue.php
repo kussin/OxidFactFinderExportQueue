@@ -298,10 +298,10 @@ class wmdkffexport_queue extends oxubase
     }
     
     
-    private function _getPrice() {
+    private function _getPrice($bWmdkFFQueueEnableFromPrice = false) {
         if ($this->_bIsParent || $this->_bIsVariant) {
 
-            $bWmdkFFQueueEnableFromPrice = (int) Registry::getConfig()->getConfigParam('bWmdkFFQueueEnableFromPrice');
+            //$bWmdkFFQueueEnableFromPrice = (int) Registry::getConfig()->getConfigParam('bWmdkFFQueueEnableFromPrice');
 
             if ($this->_bIsParent || $bWmdkFFQueueEnableFromPrice) {
                 $oFirstActiveVariant = ($this->_bIsVariant) ? $this->_getFirstActiveVariant($this->_oProduct->oxarticles__oxparentid->value) : $this->_getFirstActiveVariant();
