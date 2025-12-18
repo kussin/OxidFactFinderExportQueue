@@ -600,7 +600,9 @@ class wmdkffexport_queue extends oxubase
     
     
     private function _getSaleAmount($sSign = '%') {
-        $dOxPrice = $this->_getPrice();
+        $bWmdkFFQueueEnableFromPrice = (int) Registry::getConfig()->getConfigParam('bWmdkFFQueueEnableFromPrice');
+
+        $dOxPrice = $this->_getPrice($bWmdkFFQueueEnableFromPrice == 1);
         $dOxTPrice = $this->_getMsrp();
         
         if ($dOxPrice < $dOxTPrice) {
