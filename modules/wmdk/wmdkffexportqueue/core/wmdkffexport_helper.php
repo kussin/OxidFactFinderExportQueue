@@ -45,8 +45,8 @@ class wmdkffexport_helper
     public static function touchVariants(string $sOxid): void
     {
         // LOAD VARIANTS
-        $sQuery = 'SELECT OXID, OXACTIVE FROM `oxarticles` WHERE OXPARENTID = "' . $sOxid . '" ORDER BY OXVARSELECT ASC;';  
-        $oResult = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(false)->select($sQuery);
+        $sQuery = 'SELECT OXID, OXACTIVE FROM `oxarticles` WHERE OXPARENTID = ? ORDER BY OXVARSELECT ASC;';
+        $oResult = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(false)->select($sQuery, array($sOxid));
 
         if ($oResult !== false && $oResult->count() > 0) {
 
@@ -102,12 +102,12 @@ class wmdkffexport_helper
         FROM 
             `' . self::QUEUE_TABLE . '`
         WHERE
-            (`OXID` = ' . $oDb->quote($sOxid) . ')
-            AND (`Channel` = ' . $oDb->quote($sChannel) . ')
-            AND (`OXSHOPID` = ' . (int) $iShopId . ')
-            AND (`LANG` = ' . (int) $iLang . ');';
+            (`OXID` = ?)
+            AND (`Channel` = ?)
+            AND (`OXSHOPID` = ?)
+            AND (`LANG` = ?);';
         
-        $oResult = $oDb->select($sQuery);
+        $oResult = $oDb->select($sQuery, array($sOxid, $sChannel, (int) $iShopId, (int) $iLang));
         
         if ($oResult !== false && $oResult->count() > 0) {
             return ((int) $oResult->fields[0] > 0);
@@ -134,25 +134,36 @@ class wmdkffexport_helper
         ) 
         VALUES
         (
-            ' . $oDb->quote($sOxid) . ',
-            ' . $oDb->quote($sChannel) . ',
-            ' . (int) $iShopId . ',
-            ' . (int) $iLang . ',
-            "' . self::NULL_DATE . '",
-            ' . $oDb->quote(self::getClientIp()) . ',
-            "' . self::NULL_DATE . '",
-            "1"
+            ?,
+            ?,
+            ?,
+            ?,
+            ?,
+            ?,
+            ?,
+            ?
         );';
-        
-        // UPDATE oxarticles.WMDK_FFQUEUE   
-        $sQuery .= 'UPDATE
+
+        $oDb->execute($sQuery, array(
+            $sOxid,
+            $sChannel,
+            (int) $iShopId,
+            (int) $iLang,
+            self::NULL_DATE,
+            self::getClientIp(),
+            self::NULL_DATE,
+            1,
+        ));
+
+        // UPDATE oxarticles.WMDK_FFQUEUE
+        $sQuery = 'UPDATE
             oxarticles
         SET
             WMDK_FFQUEUE = "1"
         WHERE
-            OXID = ' . $oDb->quote($sOxid) . ';';
-        
-        $oDb->execute($sQuery);
+            OXID = ?;';
+
+        $oDb->execute($sQuery, array($sOxid));
     }
     
     
@@ -167,17 +178,26 @@ class wmdkffexport_helper
         $sQuery = 'UPDATE 
             `' . self::QUEUE_TABLE . '` 
         SET 
-            `LASTSYNC` = "' . self::NULL_DATE . '",
-            `ProcessIp` = ' . $oDb->quote(self::getClientIp()) . ',
-            `OXTIMESTAMP` = "' . self::NULL_DATE . '",
-            `OXACTIVE` = "' . (int) $iActive . '"
+            `LASTSYNC` = ?,
+            `ProcessIp` = ?,
+            `OXTIMESTAMP` = ?,
+            `OXACTIVE` = ?
         WHERE 
-            (`OXID` = ' . $oDb->quote($sOxid) . ')
-            AND (`Channel` = ' . $oDb->quote($sChannel) . ')
-            AND (`OXSHOPID` = ' . (int) $iShopId . ')
-            AND (`LANG` = ' . (int) $iLang . ');';
+            (`OXID` = ?)
+            AND (`Channel` = ?)
+            AND (`OXSHOPID` = ?)
+            AND (`LANG` = ?);';
         
-        $oDb->execute($sQuery);
+        $oDb->execute($sQuery, array(
+            self::NULL_DATE,
+            self::getClientIp(),
+            self::NULL_DATE,
+            (int) $iActive,
+            $sOxid,
+            $sChannel,
+            (int) $iShopId,
+            (int) $iLang,
+        ));
     }
     
     
