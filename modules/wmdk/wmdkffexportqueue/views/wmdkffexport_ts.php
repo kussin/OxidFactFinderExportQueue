@@ -1,12 +1,15 @@
 <?php
 
 use OxidEsales\Eshop\Core\Registry;
+use Wmdk\FactFinderQueue\Traits\ProcessIpTrait;
 
 /**
  * Class wmdkffexport_ts
  */
 class wmdkffexport_ts extends oxubase
 {    
+    use ProcessIpTrait;
+
     protected $_aResponse = array(
         'success' => TRUE,
 
@@ -23,8 +26,6 @@ class wmdkffexport_ts extends oxubase
     );
     
     private $_sChannel = 'wh1_live_de';
-    
-    protected $_sProcessIp = NULL;
     
     protected $_sApiUrl = NULL;
     
@@ -286,32 +287,6 @@ class wmdkffexport_ts extends oxubase
         
         // LOG
         $this->_aResponse['reviews_copied'] = $iCopied;
-    }
-    
-    
-    private function _getProcessIp($sIp = FALSE) {
-        if ($this->_sProcessIp == NULL) {
-            
-            if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-                $this->_sProcessIp = $_SERVER['HTTP_CLIENT_IP'];
-                
-            } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-                $this->_sProcessIp = $_SERVER['HTTP_X_FORWARDED_FOR'];
-                
-            } else {
-                $this->_sProcessIp = $_SERVER['REMOTE_ADDR'];
-            }
-            
-        }
-        
-        return ($sIp != FALSE) ? $sIp : $this->_sProcessIp;
-    }
-    
-    
-    private function _isCron() {
-        $sIsCronjobOrg = in_array( $this->_getProcessIp(), explode(',', Registry::getConfig()->getConfigParam('sWmdkFFDebugCronjobIpList') ) );
-        
-        return ( (php_sapi_name() == 'cli') || $sIsCronjobOrg);
     }
     
     

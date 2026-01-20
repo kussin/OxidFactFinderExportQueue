@@ -1,10 +1,12 @@
 <?php
 
 
-use OxidEsales\Eshop\Core\Registry;
+use Wmdk\FactFinderQueue\Traits\QueueArticleSaveTrait;
 
 class wmdkFfQueueArticle_Stock extends wmdkFfQueueArticle_Stock_parent
 {
+    use QueueArticleSaveTrait;
+
     /**
      * Saves changes of article parameters.
      */
@@ -13,6 +15,6 @@ class wmdkFfQueueArticle_Stock extends wmdkFfQueueArticle_Stock_parent
         parent::save();
         
         // ACTIVE OXID
-        wmdkffexport_helper::saveArticle(Registry::getConfig()->getRequestParameter('oxid'));
+        $this->saveQueueArticleFromRequest();
     }
 }
