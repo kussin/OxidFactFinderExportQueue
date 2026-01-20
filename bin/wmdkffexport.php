@@ -1,7 +1,9 @@
 <?php
 
+// Bootstrap the OXID application environment for CLI execution.
 require_once dirname(__FILE__) . '/../bootstrap.php';
 
+// Print CLI usage information and exit with the provided status code.
 function wmdkffexport_usage(int $exitCode = 1): void
 {
     $usage = <<<TXT
@@ -38,13 +40,16 @@ TXT;
     exit($exitCode);
 }
 
+// Read the requested CLI action from argv.
 $action = $argv[1] ?? null;
 if ($action === null || in_array($action, ['-h', '--help', 'help'], true)) {
     wmdkffexport_usage(0);
 }
 
+// Parse supported CLI options.
 $options = getopt('', ['channel:', 'shop-id:', 'lang:', 'flour-id::']);
 
+// Map CLI actions to OXID controller class names.
 $controllerMap = [
     'queue' => 'wmdkffexport_queue',
     'reset' => 'wmdkffexport_reset',
@@ -59,9 +64,11 @@ if (!isset($controllerMap[$action])) {
     wmdkffexport_usage();
 }
 
+// Seed the OXID controller parameter list for the request.
 $params = ['cl' => $controllerMap[$action]];
 $required = [];
 
+// Define required options per action.
 switch ($action) {
     case 'export':
     case 'sooqr':
@@ -74,6 +81,7 @@ switch ($action) {
         break;
 }
 
+// Validate required options before booting the shop runtime.
 foreach ($required as $key) {
     if (!isset($options[$key]) || $options[$key] === '') {
         fwrite(STDERR, 'Missing required option: --' . $key . PHP_EOL);
@@ -81,6 +89,7 @@ foreach ($required as $key) {
     }
 }
 
+// Map CLI options into request parameters expected by the controllers.
 if (isset($options['channel'])) {
     $params['channel'] = $options['channel'];
 }
@@ -94,6 +103,7 @@ if ($action === 'flour' && isset($options['flour-id']) && $options['flour-id'] !
     $params['flour_id'] = $options['flour-id'];
 }
 
+// Emulate a web request context for the OXID controller runner.
 $_GET = array_merge($_GET, $params);
 $_REQUEST = array_merge($_REQUEST, $params);
 $_SERVER['REQUEST_METHOD'] = $_SERVER['REQUEST_METHOD'] ?? 'GET';
@@ -104,7 +114,9 @@ $_SERVER['SCRIPT_URI'] = $_SERVER['SCRIPT_URI'] ?? $_SERVER['REQUEST_URI'];
 $_SERVER['HTTP_HOST'] = $_SERVER['HTTP_HOST'] ?? 'localhost';
 $_SERVER['REMOTE_ADDR'] = $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
 
+// Run the OXID front controller for the requested action.
 OxidEsales\EshopCommunity\Core\Oxid::run();
 
+// Close the configuration/page to flush buffers and cleanup resources.
 $myConfig = OxidEsales\Eshop\Core\Registry::getConfig();
 $myConfig->pageClose();

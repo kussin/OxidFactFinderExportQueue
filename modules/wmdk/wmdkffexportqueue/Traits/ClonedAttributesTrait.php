@@ -4,10 +4,25 @@ namespace Wmdk\FactFinderQueue\Traits;
 
 use OxidEsales\Eshop\Core\Registry;
 
+/**
+ * Provides helpers to clone attribute values based on mapping files.
+ */
 trait ClonedAttributesTrait
 {
+    /**
+     * Cached cloned attribute mapping data.
+     *
+     * @var array|null
+     */
     private $_aClonedAttributesMapping = null;
 
+    /**
+     * Build cloned attribute values from a tuple string.
+     *
+     * @param string $aAttributes Attribute tuple string.
+     * @param string $sVarSelectMapping Optional variant select mapping.
+     * @return string|null
+     */
     private function _cloneAttributes($aAttributes, $sVarSelectMapping = '')
     {
         if (!Registry::getConfig()->getConfigParam('bWmdkFFClonedAttributeEnabled')) {
@@ -93,6 +108,13 @@ trait ClonedAttributesTrait
         return (count($aClonedAttributes) > 0) ? implode('|', $aClonedAttributes) : null;
     }
 
+    /**
+     * Extract a single attribute value from a tuple string.
+     *
+     * @param string $sAttributeName Attribute key.
+     * @param string $sData Tuple string data.
+     * @return string
+     */
     private function _getAttributeValueFromTupleString($sAttributeName, $sData)
     {
         $aAttributeTuples = explode('|', $sData);

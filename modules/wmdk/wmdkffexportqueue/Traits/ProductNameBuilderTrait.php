@@ -6,10 +6,25 @@ use OxidEsales\Eshop\Application\Model\Article;
 use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\Registry;
 
+/**
+ * Builds product names based on configurable patterns.
+ */
 trait ProductNameBuilderTrait
 {
+    /**
+     * Cached column index mapping for CSV data.
+     *
+     * @var array|null
+     */
     private $_aProductNameBuilderColumns = null;
 
+    /**
+     * Apply the configured product name pattern to CSV data rows.
+     *
+     * @param array $aData CSV row data.
+     * @param string $sFieldName Target field name for the title.
+     * @return array
+     */
     private function _ProductNameBuilder($aData, $sFieldName = 'Title')
     {
         // CONFIG
@@ -61,18 +76,39 @@ trait ProductNameBuilderTrait
         return $aData;
     }
 
+    /**
+     * Fetch a simple placeholder value from the data row.
+     *
+     * @param array $aData CSV row data.
+     * @param string $sAttributeName Attribute name to read.
+     * @return string
+     */
     private function _getPNBSimpleData($aData, $sAttributeName)
     {
         return isset($aData[$this->_aProductNameBuilderColumns[$sAttributeName]])
             ? $aData[$this->_aProductNameBuilderColumns[$sAttributeName]] : '';
     }
 
+    /**
+     * Resolve a complex placeholder value.
+     *
+     * @param array $aData CSV row data.
+     * @param string $sDataKey Placeholder key.
+     * @param string $sAttributeName Attribute name to read.
+     * @return string
+     */
     private function _getPNBComplexData($aData, $sDataKey, $sAttributeName)
     {
         // TODO: Implement logic to retrieve complex data based on the key and attribute name
         return '';
     }
 
+    /**
+     * Build the variants placeholder value for the product name pattern.
+     *
+     * @param array $aData CSV row data.
+     * @return string
+     */
     private function _getPNBVariantsData($aData)
     {
         $iLang = Registry::getConfig()->getRequestParameter('lang');
@@ -101,6 +137,12 @@ trait ProductNameBuilderTrait
         ]);
     }
 
+    /**
+     * Resolve the article OXID for a given product number.
+     *
+     * @param string $sProductNumber Product number to search.
+     * @return string
+     */
     protected function _getArticleId($sProductNumber)
     {
         $sQuery = 'SELECT DISTINCT 

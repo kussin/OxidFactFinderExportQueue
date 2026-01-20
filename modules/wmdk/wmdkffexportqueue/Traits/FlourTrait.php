@@ -4,22 +4,55 @@ namespace Wmdk\FactFinderQueue\Traits;
 
 use OxidEsales\Eshop\Core\Registry;
 
+/**
+ * Provides Flour-specific export helpers and transformations.
+ */
 trait FlourTrait
 {
+    /**
+     * Flour tax ID for 19% VAT.
+     *
+     * @var string
+     */
     private $_sFlourTaxId19 = '10000';
+    /**
+     * Flour tax ID for 7% VAT.
+     *
+     * @var string
+     */
     private $_sFlourTaxId7 = '20000';
+    /**
+     * Flour tax ID for 0% VAT.
+     *
+     * @var string
+     */
     private $_sFlourTaxId0 = '30000';
 
+    /**
+     * Read the Flour ID for the current product.
+     *
+     * @return string|null
+     */
     private function _getFlourId()
     {
         return ($this->_oProduct->oxarticles__wmdkflourid->value != '') ? $this->_oProduct->oxarticles__wmdkflourid->value : NULL;
     }
 
+    /**
+     * Determine whether the current product is Flour-active.
+     *
+     * @return string
+     */
     private function _getFlourActive()
     {
         return $this->_oProduct->oxarticles__wmdkflouractive->value;
     }
 
+    /**
+     * Resolve the Flour price, preferring the first active variant when needed.
+     *
+     * @return double
+     */
     private function _getFlourPrice()
     {
         if ($this->_bIsParent || $this->_bIsVariant) {
@@ -33,6 +66,12 @@ trait FlourTrait
         return (double) $this->_oProduct->oxarticles__wmdkflourwarehouseprice->value;
     }
 
+    /**
+     * Calculate Flour sale percentage for the product.
+     *
+     * @param bool $bSign Whether to append the percent sign.
+     * @return string|int
+     */
     private function _getFlourSaleAmount($bSign = false)
     {
         $dPrice = $this->_getFlourPrice();
@@ -47,6 +86,11 @@ trait FlourTrait
         return '';
     }
 
+    /**
+     * Build the Flour short URL, falling back to configured domain/prefix.
+     *
+     * @return string
+     */
     private function _getFlourShortUrl()
     {
         $sShortUrl = trim($this->_oProduct->oxarticles__wmdkflourshorturl->value);
@@ -61,6 +105,11 @@ trait FlourTrait
     }
 
 
+    /**
+     * Build the Flour export selection SQL query.
+     *
+     * @return string
+     */
     private function _getFlourExportSelection()
     {
         $sPhpMemoryLimit = Registry::getConfig()->getConfigParam('sWmdkFFFlourPhpMemoryLimit');
@@ -122,6 +171,12 @@ trait FlourTrait
         return $sQuery;
     }
 
+    /**
+     * Add UTM tracking to the Flour deeplink field.
+     *
+     * @param string $sPreparedExportFields Prepared field list.
+     * @return string
+     */
     private function _getFlourExportSelectionAddUtmTracking($sPreparedExportFields)
     {
         // GET BASE URL
@@ -148,6 +203,13 @@ trait FlourTrait
         return $sPreparedExportFields;
     }
 
+    /**
+     * Map tax values to Flour tax IDs.
+     *
+     * @param string $sPreparedExportFields Prepared field list.
+     * @param string $sTaxField Tax field name.
+     * @return string
+     */
     private function _getFlourExportSelectionMapTax($sPreparedExportFields, $sTaxField = '`Tax`')
     {
         return str_replace(
@@ -158,6 +220,13 @@ trait FlourTrait
         );
     }
 
+    /**
+     * Strip percentage symbols from Flour export fields.
+     *
+     * @param string $sPreparedExportFields Prepared field list.
+     * @param string $sField Field name to normalize.
+     * @return string
+     */
     private function _removeFlourExportSelectionPercentageSign($sPreparedExportFields, $sField = '`SaleAmount`')
     {
         return str_replace(
@@ -167,6 +236,12 @@ trait FlourTrait
         );
     }
 
+    /**
+     * Extract specific attribute values into dedicated Flour fields.
+     *
+     * @param string $sPreparedExportFields Prepared field list.
+     * @return string
+     */
     protected function _extractFlourExportAttributeValue($sPreparedExportFields)
     {
         // TODO: Add to composer patch (too individual)
@@ -190,6 +265,13 @@ trait FlourTrait
         );
     }
 
+    /**
+     * Rename timestamp fields with translated labels.
+     *
+     * @param string $sPreparedExportFields Prepared field list.
+     * @param string $sField Field name to rename.
+     * @return string
+     */
     private function _renameFlourExportSelectionTimestamp($sPreparedExportFields, $sField = '`DateModified`')
     {
         $oLang = Registry::getLang();
@@ -202,6 +284,13 @@ trait FlourTrait
         );
     }
 
+    /**
+     * Convert stock quantities to boolean stock flags.
+     *
+     * @param string $sPreparedExportFields Prepared field list.
+     * @param string $sStockField Stock field name.
+     * @return string
+     */
     private function _getFlourExportSelectionStockFlag($sPreparedExportFields, $sStockField = '`Stock`')
     {
         return str_replace(

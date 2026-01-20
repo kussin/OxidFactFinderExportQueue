@@ -5,7 +5,7 @@ use OxidEsales\Eshop\Core\Registry;
 use Wmdk\FactFinderQueue\Traits\ProcessIpTrait;
 
 /**
- * Class wmdkffexport_reset
+ * Reset controller for queue maintenance and cleanup.
  */
 class wmdkffexport_reset extends oxubase
 {
@@ -35,6 +35,11 @@ class wmdkffexport_reset extends oxubase
     private $_iCurrentMinute = NULL;
 
     
+    /**
+     * Run reset routines and return the template name.
+     *
+     * @return string
+     */
     public function render() {
         // SET LIMITS
         ini_set('max_execution_time', (int) Registry::getConfig()->getConfigParam('sWmdkFFQueuePhpLimitTimeout'));
@@ -58,6 +63,9 @@ class wmdkffexport_reset extends oxubase
     }
     
     
+    /**
+     * Execute the full reset sequence for queue data.
+     */
     private function _cleanErrors() {
         $this->_resetExistingProducts();
 
@@ -89,6 +97,9 @@ class wmdkffexport_reset extends oxubase
     }
     
     
+    /**
+     * Reset queue entries for products updated since last sync.
+     */
     private function _resetExistingProducts() {
         $sResetExistingArticlesSinceDays = Registry::getConfig()->getConfigParam('sWmdkFFCronResetExistingArticlesSinceDays');
 
@@ -111,6 +122,12 @@ class wmdkffexport_reset extends oxubase
         $this->_aResponse['reseted_products'] = $iReseted;
     }
 
+    /**
+     * Reset variants within a scheduled time window.
+     *
+     * @param string $sFrom Start time window.
+     * @param string $sTo End time window.
+     */
     private function _resetExistingVariants($sFrom = '02:05:00', $sTo = '03:15:00') {
         $sResetExistingArticlesSinceDays = Registry::getConfig()->getConfigParam('sWmdkFFCronResetExistingArticlesSinceDays');
         $aResetExistingVariantsDays = explode(',', Registry::getConfig()->getConfigParam('sWmdkFFCronResetExistingVariantsDays'));
@@ -150,6 +167,9 @@ class wmdkffexport_reset extends oxubase
     }
     
     
+    /**
+     * Reset variants that are missing variant name attributes.
+     */
     private function _resetVariantsWithoutVarname() {
         $sQuery = 'UPDATE
             wmdk_ff_export_queue
@@ -167,6 +187,9 @@ class wmdkffexport_reset extends oxubase
     }
     
     
+    /**
+     * Reset products that are missing from the queue.
+     */
     private function _resetMissingProducts() {
         $aChannelList = wmdkffexport_helper::getChannelList();
         
@@ -185,6 +208,9 @@ class wmdkffexport_reset extends oxubase
     }
     
     
+    /**
+     * Add missing products into the queue.
+     */
     private function _addMissingProducts() {
         $aSqlQueries = array();
         
@@ -249,6 +275,9 @@ class wmdkffexport_reset extends oxubase
     }
     
     
+    /**
+     * Correct parent stock values after queue updates.
+     */
     private function _parentStockCorrection() {
         $sQuery = 'UPDATE
             oxarticles,
@@ -287,6 +316,9 @@ class wmdkffexport_reset extends oxubase
     }
     
     
+    /**
+     * Update queue status flags based on article activity.
+     */
     private function _updateStatus() {
         $sQuery = 'UPDATE
             oxarticles a,
@@ -316,6 +348,9 @@ class wmdkffexport_reset extends oxubase
     }
     
     
+    /**
+     * Synchronize stock values in the queue.
+     */
     private function _updateStock() {
         $sArticles = 'UPDATE
             oxarticles a,
@@ -359,6 +394,11 @@ class wmdkffexport_reset extends oxubase
     }
     
     
+    /**
+     * Reset variants whose parents changed recently.
+     *
+     * @param string $sTimeBack Relative time window.
+     */
     private function _resetVariantsWithParentsModifiedWithinTheLastHour($sTimeBack = '-90 minutes') {
         $sArticles = 'UPDATE
             oxarticles a,
@@ -387,6 +427,11 @@ class wmdkffexport_reset extends oxubase
     }
 
 
+    /**
+     * Reset sibling variants for recently modified parents.
+     *
+     * @param string $sTimeBack Relative time window.
+     */
     private function _resetSiblings($sTimeBack = '-90 minutes') {
         $bUpdateSiblings = Registry::getConfig()->getConfigParam('bWmdkFFQueueUpdateSiblings');
 
@@ -423,6 +468,9 @@ class wmdkffexport_reset extends oxubase
     }
 
 
+    /**
+     * Reset articles that still have no product picture.
+     */
     private function _resetArticlesWithNoPic() {
         $sFrom = Registry::getConfig()->getConfigParam('sWmdkFFCronResetArticlesWithNoPicFrom');
         $sTo = Registry::getConfig()->getConfigParam('sWmdkFFCronResetArticlesWithNoPicTo');
@@ -465,6 +513,9 @@ class wmdkffexport_reset extends oxubase
     }
 
 
+    /**
+     * Disable queue entries with missing origin OXIDs.
+     */
     private function _disableMissingOriginOxid() {
         $sArticles = 'UPDATE
             wmdk_ff_export_queue b
@@ -497,6 +548,9 @@ class wmdkffexport_reset extends oxubase
     }
     
     
+    /**
+     * Append the reset run response to the debug log file.
+     */
     private function _log() {
         $sFilename  = str_replace('//', '/', $_SERVER['DOCUMENT_ROOT'] . Registry::getConfig()->getConfigParam('sWmdkFFDebugLogFileQueue'));
         
@@ -511,6 +565,13 @@ class wmdkffexport_reset extends oxubase
 		return fclose($rFile);
     }
 
+    /**
+     * Extract a time component from a formatted time string.
+     *
+     * @param string $sTime Time string.
+     * @param string $sPart Part to extract (hour/minute/second).
+     * @return int
+     */
     private function _getTimePart($sTime, $sPart = 'hour') {
         $aTime = explode(':', $sTime);
 

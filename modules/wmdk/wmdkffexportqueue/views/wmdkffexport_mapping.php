@@ -5,12 +5,17 @@ use OxidEsales\Eshop\Core\Registry;
 use Wmdk\FactFinderQueue\Traits\ClonedAttributesTrait;
 
 /**
- * Class wmdkffexport_mapping
+ * Export controller that renders cloned attribute mapping CSV files.
  */
 class wmdkffexport_mapping extends oxubase
 {
     use ClonedAttributesTrait;
 
+    /**
+     * Build and stream the mapping CSV file.
+     *
+     * @return void
+     */
     public function render() {
         // SET LIMITS
         ini_set('max_execution_time', (int) Registry::getConfig()->getConfigParam('sWmdkFFQueuePhpLimitTimeout'));
@@ -75,11 +80,25 @@ WHERE
         exit;
     }
 
+    /**
+     * Extract the value for a specific attribute from a tuple string.
+     *
+     * @param string $sAttributeName Attribute to locate.
+     * @param string $sData Tuple string data.
+     * @return string
+     */
     private function _getAttributeValue($sAttributeName, $sData)
     {
         return $this->_getAttributeValueFromTupleString($sAttributeName, $sData);
     }
 
+    /**
+     * Extract the value for a specific cloned attribute from a tuple string.
+     *
+     * @param string $sAttributeName Attribute to locate.
+     * @param string $sData Tuple string data.
+     * @return string
+     */
     private function _getClonedAttributeValue($sAttributeName, $sData)
     {
         return $this->_getAttributeValueFromTupleString($sAttributeName, $sData);

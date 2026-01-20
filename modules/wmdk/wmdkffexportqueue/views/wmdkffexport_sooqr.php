@@ -7,7 +7,7 @@ use Wmdk\FactFinderQueue\Traits\ThirdPartyConverterTrait;
 use Wmdk\FactFinderQueue\Traits\XmlValidatorTrait;
 
 /**
- * Class wmdkffexport_sooqr
+ * Export controller for the SooQR XML feed.
  */
 class wmdkffexport_sooqr extends oxubase
 {
@@ -15,15 +15,30 @@ class wmdkffexport_sooqr extends oxubase
     use ThirdPartyConverterTrait;
     use XmlValidatorTrait;
 
+    /**
+     * Identifier for the export process type.
+     */
     const PROCESS_CODE = 'SOOQR';
 
+    /**
+     * Additional escaping characters for XML export.
+     */
     const EXPORT_ADDITIONAL_ESCAPING = '';
+    /**
+     * Field delimiter used to split export rows.
+     */
     const EXPORT_DELIMITER = '|';
+    /**
+     * Delimiter for category path segments.
+     */
     const EXPORT_CATEGORY_DELIMITER = '###';
 
     private $_aExportData = NULL;
     private $_sTemplate = 'wmdkffexport_sooqr.tpl';
 
+    /**
+     * Generate and write the SooQR XML export file.
+     */
     private function _exportData() {
         // CONFIG
         $sExportFile = Registry::getConfig()->getShopConfVar('sShopDir') . Registry::getConfig()->getConfigParam('sWmdkFFExportDirectory') . $this->_sChannel . '.sooqr.xml';
@@ -65,6 +80,11 @@ class wmdkffexport_sooqr extends oxubase
         $this->_aResponse['products'] = count($this->_aExportData);
     }
 
+    /**
+     * Transform CSV rows into XML-ready product nodes.
+     *
+     * @return array
+     */
     protected function _getData() {
         if ($this->_aExportData === NULL) {
             $aKeys = NULL;

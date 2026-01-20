@@ -4,6 +4,9 @@ namespace Wmdk\FactFinderQueue\Traits;
 
 use OxidEsales\Eshop\Core\Registry;
 
+/**
+ * Shared export logic for building CSV data sets.
+ */
 trait ExportTrait
 {
     use ConverterTrait;
@@ -44,6 +47,8 @@ trait ExportTrait
 
 
     /**
+     * Execute the export workflow and return the template name.
+     *
      * @return string
      */
     public function render() {
@@ -65,6 +70,14 @@ trait ExportTrait
         return $this->_sTemplate;
     }
 
+    /**
+     * Build a CSV row from raw field values.
+     *
+     * @param array $aFields Row data fields.
+     * @param bool $bHeader Whether to generate header row values.
+     * @param string $sDelimiter Delimiter to use.
+     * @return string
+     */
     private function _getCSVDataRow($aFields, $bHeader = false, $sDelimiter = self::EXPORT_DELIMITER) {
         $aTmpCsvData = array();
 
@@ -101,6 +114,9 @@ trait ExportTrait
         return implode($sDelimiter, $aTmpCsvData);
     }
 
+    /**
+     * Load product data into the CSV buffer.
+     */
     private function _loadData() {
         // CONFIG
         $this->_bActive = (bool) Registry::getConfig()->getConfigParam('sWmdkFFExportOnlyActive');
@@ -178,6 +194,12 @@ trait ExportTrait
     }
 
 
+    /**
+     * Escape a value for CSV export.
+     *
+     * @param string $sString Raw value.
+     * @return string
+     */
     private function _excapeString($sString) {
         return str_replace(array(
             '"',
@@ -187,12 +209,25 @@ trait ExportTrait
     }
 
 
+    /**
+     * Remove HTML tags and normalize whitespace.
+     *
+     * @param string $sHtmlText Raw HTML.
+     * @return string
+     */
     private function _removeHtmlAndBlankLines($sHtmlText) {
         $sHtmlText = str_replace(array("\n\r", "\n", "\r"), array(' ', ' ', ' '), $sHtmlText);
 
         return strip_tags($sHtmlText, Registry::getConfig()->getConfigParam('sWmdkFFQueueAllowableTags'));
     }
 
+    /**
+     * Filter category paths based on allowed categories.
+     *
+     * @param string $sCategoryPath Raw category path.
+     * @param string $sDelimiter Delimiter between categories.
+     * @return string
+     */
     private function _checkAllowedCategoies($sCategoryPath, $sDelimiter = ',') {
         // HACK
         $aCategoryPath = explode(self::EXPORT_CATEGORY_DELIMITER, $sCategoryPath);
@@ -238,6 +273,11 @@ trait ExportTrait
         return $sCleanedCategoryPath;
     }
 
+    /**
+     * Return the temporary delimiter used during CSV building.
+     *
+     * @return string
+     */
     protected function _getTmpExportDelimiter()
     {
         // FLOUR POS
@@ -255,6 +295,11 @@ trait ExportTrait
         return $sTmpExportDelimiter;
     }
 
+    /**
+     * Build the SQL query for export selection.
+     *
+     * @return string
+     */
     private function _getExportSelection()
     {
         // FLOUR POS
@@ -276,6 +321,12 @@ trait ExportTrait
             AND (`HasProductImage` LIKE "' . (($this->_bWithNoPics) ? '%' : '1') . '");';
     }
 
+    /**
+     * Fetch configured export field list.
+     *
+     * @param array $aExportFields Base fields to prepend.
+     * @return array
+     */
     private function _getExportFields($aExportFields = ['OXID']) {
         // FLOUR POS
         if (self::PROCESS_CODE == 'FLOUR') {
@@ -295,6 +346,12 @@ trait ExportTrait
             : $aExportFields;
     }
 
+    /**
+     * Prepare SQL-safe export field list.
+     *
+     * @param array $aFields Field list.
+     * @return string
+     */
     private function _getPreparedExportFields($aFields = array())
     {
         if (empty($aFields)) {

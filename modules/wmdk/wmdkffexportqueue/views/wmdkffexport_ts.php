@@ -4,7 +4,7 @@ use OxidEsales\Eshop\Core\Registry;
 use Wmdk\FactFinderQueue\Traits\ProcessIpTrait;
 
 /**
- * Class wmdkffexport_ts
+ * Imports Trusted Shops product reviews into the export queue.
  */
 class wmdkffexport_ts extends oxubase
 {    
@@ -37,6 +37,11 @@ class wmdkffexport_ts extends oxubase
     protected $_iApiMaxRetries = 3;
 
     
+    /**
+     * Run the Trusted Shops import flow and return the template name.
+     *
+     * @return string
+     */
     public function render() {
         // SET LIMITS
         ini_set('max_execution_time', (int) Registry::getConfig()->getConfigParam('sWmdkFFQueuePhpLimitTimeout'));
@@ -59,6 +64,9 @@ class wmdkffexport_ts extends oxubase
     }
     
     
+    /**
+     * Orchestrate the review import, combine, and copy steps.
+     */
     private function _startImport() {
         if ($this->_loadReviews()) {
             $this->_importReviews();
@@ -68,6 +76,11 @@ class wmdkffexport_ts extends oxubase
     }
     
     
+    /**
+     * Fetch and load reviews into the in-memory list.
+     *
+     * @return bool
+     */
     private function _loadReviews() {
         $this->_sApiUrl = Registry::getConfig()->getConfigParam('sWmdkFFImportTSApiUrl');
         
@@ -103,6 +116,11 @@ class wmdkffexport_ts extends oxubase
         return FALSE;
     }
 
+    /**
+     * Retrieve and decode the Trusted Shops API response.
+     *
+     * @return object|null
+     */
     private function _fetchTrustedShopsResponse() {
         $aOptions = array(
             'http' => array(
@@ -140,6 +158,9 @@ class wmdkffexport_ts extends oxubase
     }
     
     
+    /**
+     * Update queue entries with Trusted Shops review data.
+     */
     private function _importReviews() { 
         $aReviewedArticles = array();
 
@@ -185,6 +206,9 @@ class wmdkffexport_ts extends oxubase
     }
     
     
+    /**
+     * Combine reviews for related products.
+     */
     private function _combineReviews() {
         $this->_createTmpReviewData();
         $iCombined = 0;
@@ -238,6 +262,9 @@ class wmdkffexport_ts extends oxubase
         $this->_aResponse['reviews_combined'] = $iCombined;
     }
     
+    /**
+     * Create a temporary review dataset for combination steps.
+     */
     private function _createTmpReviewData() {
         // TRUNCATE
         \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->execute('TRUNCATE `wmdk_ff_export_queue_tmp_ts`;');
@@ -293,6 +320,9 @@ class wmdkffexport_ts extends oxubase
         }
     }
 
+    /**
+     * Clear review data in the queue before importing new values.
+     */
     private function _resetReviewsInQueue() {
         $sQuery = 'UPDATE 
             wmdk_ff_export_queue
@@ -309,6 +339,9 @@ class wmdkffexport_ts extends oxubase
         $this->_aResponse['reviews_reseted_in_queue'] = $iReseted;
     }
     
+    /**
+     * Copy combined review data back into the queue table.
+     */
     private function _copyReviews() {
         $sQuery = 'UPDATE
             wmdk_ff_export_queue a,
@@ -349,6 +382,9 @@ class wmdkffexport_ts extends oxubase
     }
     
     
+    /**
+     * Write a log entry for the import run.
+     */
     private function _log() {
         $sFilename  = str_replace('//', '/', $_SERVER['DOCUMENT_ROOT'] . Registry::getConfig()->getConfigParam('sWmdkFFDebugLogFileQueue'));
         
