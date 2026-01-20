@@ -9,7 +9,7 @@
     <li>FACT Finder Export</li>
     <li>Spotler (ehem. Sooqr) Export</li>
     <li>Doofinder Export</li>
-    <li><span style="color: red">NEU:</span> flour Export</li>
+    <li>flour Export</li>
     <li>Trusted Shops Import</li>
 </ul>
 <h2><span style="color: red">NEU:</span> &quot;Cloned Attributes&quot;</h2>
