@@ -59,6 +59,11 @@ TODO: Will follow soon
 
 [User Guide](USER_GUIDE.md)
 
+## CLI Commands
+
+The module ships with CLI commands for queue, reset, and export workflows. See the
+User Guide for full usage and examples.
+
 ## Bugtracker and Feature Requests
 
 Please use the [Github Issues](https://github.com/kussin/OxidFactFinderExportQueue/issues) for bug reports and feature requests.
@@ -79,4 +84,4 @@ Email: info@kussin.de
 
 ## Copyright
 
-&copy; 2006-2025 Kussin | eCommerce und Online-Marketing GmbH
+&copy; 2006-2026 Kussin | eCommerce und Online-Marketing GmbH

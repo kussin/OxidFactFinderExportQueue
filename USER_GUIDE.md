@@ -21,6 +21,48 @@ TODO: Will follow soon
 
 **NOTE:** You can execute the initial import as often as you like it will always remove all previous data.
 
+## CLI Commands
+
+For server-side execution (cron, deployment pipelines, or shells), you can use the
+CLI wrapper in `source/bin/wmdkffexport.php`. It triggers the same controllers as
+the HTTP endpoints but avoids having to call `index.php` via HTTP.
+
+### Usage
+
+   ```bash
+   php source/bin/wmdkffexport.php <action> [options]
+   ```
+
+### Actions
+
+* `queue` - Process the export queue.
+* `reset` - Reset the queue.
+* `export` - CSV export for FACT Finder.
+* `ts` - Trusted Shops review import.
+* `sooqr` - Spotler XML export.
+* `doofinder` - Doofinder XML export.
+* `flour` - flour POS CSV export.
+
+### Options
+
+* `--channel=<channel>` (required for `export`, `ts`, `sooqr`, `doofinder`, `flour`)
+* `--shop-id=<id>` (required for `export`, `sooqr`, `doofinder`, `flour`)
+* `--lang=<lang>` (required for `export`, `sooqr`, `doofinder`, `flour`)
+* `--flour-id=<id>` (optional for `flour`)
+
+### Examples
+
+   ```bash
+   php source/bin/wmdkffexport.php queue
+   php source/bin/wmdkffexport.php reset
+   php source/bin/wmdkffexport.php export --channel=wh1_live_de --shop-id=1 --lang=0
+   php source/bin/wmdkffexport.php export --channel=wh1_live_en --shop-id=1 --lang=1
+   php source/bin/wmdkffexport.php ts --channel=wh1_live_de
+   php source/bin/wmdkffexport.php sooqr --channel=wh1_live_de --shop-id=1 --lang=0
+   php source/bin/wmdkffexport.php doofinder --channel=wh1_live_de --shop-id=1 --lang=0
+   php source/bin/wmdkffexport.php flour --channel=wh1_live_de --shop-id=1 --lang=0 --flour-id=1
+   ```
+
 ## Bash Commands (Modes)
 
 ### Queue (default)
@@ -108,4 +150,4 @@ Email: info@kussin.de
 
 ## Copyright
 
-&copy; 2006-2025 Kussin | eCommerce und Online-Marketing GmbH
+&copy; 2006-2026 Kussin | eCommerce und Online-Marketing GmbH
