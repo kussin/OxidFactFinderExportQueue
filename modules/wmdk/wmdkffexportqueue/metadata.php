@@ -2,7 +2,7 @@
 /**
  * Metadata version
  */
-$sMetadataVersion = '1.1';
+$sMetadataVersion = '2.1';
  
 /**
  * Module information
@@ -17,30 +17,32 @@ $aModule = array(
     'url'          => 'https://www.kussin.de',
     'email'        => 'daniel.kussin@kussin.de',
 	
+    'controllers'  => array(
+        'wmdkffexport_queue' => 'wmdkffexport_queue',
+        'wmdkffexport_export' => 'wmdkffexport_export',
+        'wmdkffexport_sooqr' => 'wmdkffexport_sooqr',
+        'wmdkffexport_doofinder' => 'wmdkffexport_doofinder',
+        'wmdkffexport_flour' => 'wmdkffexport_flour',
+        'wmdkffexport_reset' => 'wmdkffexport_reset',
+        'wmdkffexport_ajax' => 'wmdkffexport_ajax',
+        'wmdkffexport_ts' => 'wmdkffexport_ts',
+        'wmdkffexport_mapping' => 'wmdkffexport_mapping',
+    ),
+
     'files'        => array(
-        'wmdkffexport_queue' => 'wmdk/wmdkffexportqueue/views/wmdkffexport_queue.php',
-        'wmdkffexport_export' => 'wmdk/wmdkffexportqueue/views/wmdkffexport_export.php',
-        'wmdkffexport_sooqr' => 'wmdk/wmdkffexportqueue/views/wmdkffexport_sooqr.php',
-        'wmdkffexport_doofinder' => 'wmdk/wmdkffexportqueue/views/wmdkffexport_doofinder.php',
-        'wmdkffexport_flour' => 'wmdk/wmdkffexportqueue/views/wmdkffexport_flour.php',
-        'wmdkffexport_reset' => 'wmdk/wmdkffexportqueue/views/wmdkffexport_reset.php',
-        'wmdkffexport_ajax' => 'wmdk/wmdkffexportqueue/views/wmdkffexport_ajax.php',
-        'wmdkffexport_ts' => 'wmdk/wmdkffexportqueue/views/wmdkffexport_ts.php',
-        'wmdkffexport_mapping' => 'wmdk/wmdkffexportqueue/views/wmdkffexport_mapping.php',
-        
         'wmdkffexport_helper' => 'wmdk/wmdkffexportqueue/core/wmdkffexport_helper.php',
         'wmdkffexport_compressor' => 'wmdk/wmdkffexportqueue/core/wmdkffexport_compressor.php',
-	),
+    ),
     
     'extend'       => array(
-        'article_extend' => 'wmdk/wmdkffexportqueue/controllers/admin/wmdkffqueuearticle_extend',
-        'article_files' => 'wmdk/wmdkffexportqueue/controllers/admin/wmdkffqueuearticle_files',
-        'article_main' => 'wmdk/wmdkffexportqueue/controllers/admin/wmdkffqueuearticle_main',
-        'article_pictures' => 'wmdk/wmdkffexportqueue/controllers/admin/wmdkffqueuearticle_pictures',
-        'article_seo' => 'wmdk/wmdkffexportqueue/controllers/admin/wmdkffqueuearticle_seo',
-        'article_stock' => 'wmdk/wmdkffexportqueue/controllers/admin/wmdkffqueuearticle_stock',
-        'article_variant' => 'wmdk/wmdkffexportqueue/controllers/admin/wmdkffqueuearticle_variant',
-        'module_main' => 'wmdk/wmdkffexportqueue/controllers/admin/wmdkffqueuearticle_module_main',
+        'OxidEsales\\Eshop\\Application\\Controller\\Admin\\ArticleExtend' => 'wmdkFfQueueArticle_Extend',
+        'OxidEsales\\Eshop\\Application\\Controller\\Admin\\ArticleFiles' => 'wmdkFfQueueArticle_Files',
+        'OxidEsales\\Eshop\\Application\\Controller\\Admin\\ArticleMain' => 'wmdkFfQueueArticle_Main',
+        'OxidEsales\\Eshop\\Application\\Controller\\Admin\\ArticlePictures' => 'wmdkFfQueueArticle_Pictures',
+        'OxidEsales\\Eshop\\Application\\Controller\\Admin\\ArticleSeo' => 'wmdkFfQueueArticle_Seo',
+        'OxidEsales\\Eshop\\Application\\Controller\\Admin\\ArticleStock' => 'wmdkFfQueueArticle_Stock',
+        'OxidEsales\\Eshop\\Application\\Controller\\Admin\\ArticleVariant' => 'wmdkFfQueueArticle_Variant',
+        'OxidEsales\\Eshop\\Application\\Controller\\Admin\\ModuleMain' => 'wmdkffqueuearticle_module_main',
     ),
 
     'blocks' => array(
