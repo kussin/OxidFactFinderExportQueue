@@ -5,6 +5,7 @@ use OxidEsales\Eshop\Core\Registry;
 use Wmdk\FactFinderQueue\Traits\ClonedAttributesTrait;
 use Wmdk\FactFinderQueue\Traits\ConverterTrait;
 use Wmdk\FactFinderQueue\Traits\FlourTrait;
+use Wmdk\FactFinderQueue\Traits\ProcessIpTrait;
 
 /**
  * Class wmdkffexport_queue
@@ -14,6 +15,7 @@ class wmdkffexport_queue extends oxubase
     use ClonedAttributesTrait;
     use ConverterTrait;
     use FlourTrait;
+    use ProcessIpTrait;
 
     CONST DEFAULT_TAX_RATE = 19;
 
@@ -54,8 +56,6 @@ class wmdkffexport_queue extends oxubase
         'validation_errors' => array(),
         'system_errors' => array(),
     );
-    
-    protected $_sProcessIp = NULL;
     
     protected $_sTemplate = 'wmdkffexport_queue.tpl';
     
@@ -776,25 +776,6 @@ class wmdkffexport_queue extends oxubase
     }
     
     
-    private function _getProcessIp($sIp = FALSE) {
-        if ($this->_sProcessIp == NULL) {
-            
-            if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-                $this->_sProcessIp = $_SERVER['HTTP_CLIENT_IP'];
-                
-            } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-                $this->_sProcessIp = $_SERVER['HTTP_X_FORWARDED_FOR'];
-                
-            } else {
-                $this->_sProcessIp = $_SERVER['REMOTE_ADDR'];
-            }
-            
-        }
-        
-        return ($sIp != FALSE) ? $sIp : $this->_sProcessIp;
-    }
-    
-    
     private function _getSqlUpdateString() {
         $aAttributes = array();
         
@@ -854,13 +835,6 @@ class wmdkffexport_queue extends oxubase
     
     private function _removeCronjobFlag() {
         return unlink($this->_sCronjobFlagname);
-    }
-    
-    
-    private function _isCron() {
-        $sIsCronjobOrg = in_array( $this->_getProcessIp(), explode(',', Registry::getConfig()->getConfigParam('sWmdkFFDebugCronjobIpList') ) );
-        
-        return ( (php_sapi_name() == 'cli') || $sIsCronjobOrg);
     }
     
     

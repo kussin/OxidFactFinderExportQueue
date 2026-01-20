@@ -2,6 +2,7 @@
 
 use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\Registry;
+use Wmdk\FactFinderQueue\Traits\ProcessIpTrait;
 use Wmdk\FactFinderQueue\Traits\Ajax\ResetTrait;
 
 /**
@@ -10,6 +11,7 @@ use Wmdk\FactFinderQueue\Traits\Ajax\ResetTrait;
 class wmdkffexport_ajax extends oxubase
 {
     use ResetTrait;
+    use ProcessIpTrait;
 
     protected $_aResponse = array(
         'success' => TRUE,
@@ -19,8 +21,6 @@ class wmdkffexport_ajax extends oxubase
         'validation_errors' => array(),
         'system_errors' => array(),
     );
-    
-    protected $_sProcessIp = NULL;
     
     protected $_sTemplate = 'wmdkffexport_ajax.tpl';
 
@@ -52,32 +52,6 @@ class wmdkffexport_ajax extends oxubase
         }
 
         return $this->_sTemplate;
-    }
-    
-    
-    private function _getProcessIp($sIp = FALSE) {
-        if ($this->_sProcessIp == NULL) {
-            
-            if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-                $this->_sProcessIp = $_SERVER['HTTP_CLIENT_IP'];
-                
-            } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-                $this->_sProcessIp = $_SERVER['HTTP_X_FORWARDED_FOR'];
-                
-            } else {
-                $this->_sProcessIp = $_SERVER['REMOTE_ADDR'];
-            }
-            
-        }
-        
-        return ($sIp != FALSE) ? $sIp : $this->_sProcessIp;
-    }
-    
-    
-    private function _isCron() {
-        $sIsCronjobOrg = in_array( $this->_getProcessIp(), explode(',', Registry::getConfig()->getConfigParam('sWmdkFFDebugCronjobIpList') ) );
-        
-        return ( (php_sapi_name() == 'cli') || $sIsCronjobOrg);
     }
     
     

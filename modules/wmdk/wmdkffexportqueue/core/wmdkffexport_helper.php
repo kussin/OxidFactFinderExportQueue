@@ -6,6 +6,8 @@ declare(strict_types=1);
  */
 class wmdkffexport_helper
 {
+    private const QUEUE_TABLE = 'wmdk_ff_export_queue';
+    private const NULL_DATE = '0000-00-00 00:00:00';
     
     public static function saveArticle(string $sOxid): void
     {
@@ -98,7 +100,7 @@ class wmdkffexport_helper
         $sQuery = 'SELECT 
             count(*)
         FROM 
-            `wmdk_ff_export_queue`
+            `' . self::QUEUE_TABLE . '`
         WHERE
             (`OXID` = ' . $oDb->quote($sOxid) . ')
             AND (`Channel` = ' . $oDb->quote($sChannel) . ')
@@ -119,7 +121,7 @@ class wmdkffexport_helper
     {
         $oDb = \OxidEsales\Eshop\Core\DatabaseProvider::getDb();
         $sQuery = 'INSERT INTO 
-            `wmdk_ff_export_queue` 
+            `' . self::QUEUE_TABLE . '` 
         ( 
             `OXID`,
             `Channel`,
@@ -136,9 +138,9 @@ class wmdkffexport_helper
             ' . $oDb->quote($sChannel) . ',
             ' . (int) $iShopId . ',
             ' . (int) $iLang . ',
-            "0000-00-00 00:00:00",
+            "' . self::NULL_DATE . '",
             ' . $oDb->quote(self::getClientIp()) . ',
-            "0000-00-00 00:00:00",
+            "' . self::NULL_DATE . '",
             "1"
         );';
         
@@ -163,11 +165,11 @@ class wmdkffexport_helper
     ): void {
         $oDb = \OxidEsales\Eshop\Core\DatabaseProvider::getDb();
         $sQuery = 'UPDATE 
-            `wmdk_ff_export_queue` 
+            `' . self::QUEUE_TABLE . '` 
         SET 
-            `LASTSYNC` = "0000-00-00 00:00:00",
+            `LASTSYNC` = "' . self::NULL_DATE . '",
             `ProcessIp` = ' . $oDb->quote(self::getClientIp()) . ',
-            `OXTIMESTAMP` = "0000-00-00 00:00:00",
+            `OXTIMESTAMP` = "' . self::NULL_DATE . '",
             `OXACTIVE` = "' . (int) $iActive . '"
         WHERE 
             (`OXID` = ' . $oDb->quote($sOxid) . ')
