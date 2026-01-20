@@ -63,6 +63,23 @@ the HTTP endpoints but avoids having to call `index.php` via HTTP.
    php source/bin/wmdkffexport.php flour --channel=wh1_live_de --shop-id=1 --lang=0 --flour-id=1
    ```
 
+## Testing (OXID Testing Library)
+
+The module ships with unit tests that use the OXID Testing Library. Run them from the shop
+root where the module is installed.
+
+1. Install the testing library (if it is not already available):
+
+   ```bash
+   composer require --dev oxid-esales/testing-library
+   ```
+
+2. Execute the module unit tests:
+
+   ```bash
+   vendor/bin/phpunit --bootstrap vendor/oxid-esales/testing-library/bootstrap.php modules/wmdk/wmdkffexportqueue/tests/Unit
+   ```
+
 ## Bash Commands (Modes)
 
 ### Queue (default)
