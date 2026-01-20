@@ -1,11 +1,12 @@
 <?php
-// INIT
+// Enable verbose error reporting for the maintenance script.
 error_reporting (E_ALL);
 ini_set ('display_errors', 'On');
 
-// INIT OXID
+// Bootstrap the OXID environment so database access is available.
 require_once '../../../bootstrap.php';
 
+// Reset LASTSYNC/OXTIMESTAMP for products with mismatched variant sizelist markup.
 $sQuery = 'UPDATE wmdk_ff_export_queue t1
 JOIN (
     SELECT MasterProductNumber
@@ -19,6 +20,7 @@ SET t1.LASTSYNC = "0000-00-00 00:00:00",
     t1.OXTIMESTAMP = "0000-00-00 00:00:00"
 WHERE t1.OXACTIVE = 1 AND t1.Stock > 0;';
 
+// Execute the maintenance query.
 $oResult = \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->execute($sQuery);
 
 //var_dump($oResult);

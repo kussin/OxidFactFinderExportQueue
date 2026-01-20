@@ -4,6 +4,9 @@ namespace Wmdk\FactFinderQueue\Traits;
 
 use OxidEsales\Eshop\Core\Registry;
 
+/**
+ * Converts export rows into third-party specific formats and structures.
+ */
 trait ThirdPartyConverterTrait
 {
     use ConverterTrait;
@@ -16,6 +19,15 @@ trait ThirdPartyConverterTrait
 
     private $_sBaseUrl = NULL;
 
+    /**
+     * Initialize conversion rules for the third-party export.
+     *
+     * @param array $aMapping Field mapping array.
+     * @param string $sCDataFields Comma-separated CDATA field list.
+     * @param string $sNumberFields Comma-separated numeric field list.
+     * @param string $sBooleanFields Comma-separated boolean field list.
+     * @param string $sDateFields Comma-separated date field list.
+     */
     private function _initThirdPartyConverter($aMapping, $sCDataFields, $sNumberFields, $sBooleanFields, $sDateFields)
     {
         $this->_aMapping = $aMapping;
@@ -25,6 +37,13 @@ trait ThirdPartyConverterTrait
         $this->_aDateFields = explode(',', $sDateFields);
     }
 
+    /**
+     * Convert header keys using the mapping list.
+     *
+     * @param array $Keys Raw header keys.
+     * @param bool $bQuoted Whether the keys are quoted.
+     * @return array
+     */
     private function _convertKeys($Keys, $bQuoted = false)
     {
         $aConvertedKeys = array();
@@ -47,6 +66,12 @@ trait ThirdPartyConverterTrait
 
         return $aConvertedKeys;
     }
+    /**
+     * Convert a product data array into third-party specific fields.
+     *
+     * @param array $aData Raw export data.
+     * @return array
+     */
     private function _convertData($aData)
     {
         $aConvertedData = array();
@@ -72,6 +97,12 @@ trait ThirdPartyConverterTrait
         return $aConvertedData;
     }
 
+    /**
+     * Map a single key to its configured output name.
+     *
+     * @param string $sKey Raw field key.
+     * @return string
+     */
     private function _mapKey($sKey)
     {
         // HOTFIX #66954
@@ -90,6 +121,13 @@ trait ThirdPartyConverterTrait
         return (isset($this->_aMapping[$sKey])) ? $this->_aMapping[$sKey] : $sKey;
     }
 
+    /**
+     * Convert a field value based on type configuration.
+     *
+     * @param string $sKey Field key.
+     * @param mixed $sValue Field value.
+     * @return mixed
+     */
     private function _convertValue($sKey, $sValue)
     {
         // URL
@@ -121,6 +159,12 @@ trait ThirdPartyConverterTrait
         return $sValue;
     }
 
+    /**
+     * Wrap a value in a CDATA structure.
+     *
+     * @param string $sValue Raw value.
+     * @return array
+     */
     private function _convertToCData($sValue)
     {
         return array(
@@ -128,11 +172,23 @@ trait ThirdPartyConverterTrait
         );
     }
 
+    /**
+     * Extract the raw value from a CDATA wrapper.
+     *
+     * @param mixed $sValue Value or CDATA wrapper.
+     * @return mixed
+     */
     private function _revertFromCData($sValue)
     {
         return (is_array($sValue) && isset($sValue['_cdata'])) ? $sValue['_cdata'] : $sValue;
     }
 
+    /**
+     * Normalize escaped CDATA blocks in the export output.
+     *
+     * @param string $sExportData XML export data.
+     * @return string
+     */
     // TODO: Remove FIX #61380
     private function _fixCDataWrapper($sExportData) {
         return str_replace(array(
@@ -144,6 +200,12 @@ trait ThirdPartyConverterTrait
         ), $sExportData);
     }
 
+    /**
+     * Convert a date string to the required export format.
+     *
+     * @param string $sValue Raw date value.
+     * @return string
+     */
     private function _convertToDate($sValue)
     {
         $iTimestamp = strtotime($sValue);
@@ -158,6 +220,12 @@ trait ThirdPartyConverterTrait
         }
     }
 
+    /**
+     * Ensure deeplinks include base URL when required.
+     *
+     * @param string $sDeeplink Relative deeplink.
+     * @return string
+     */
     private function _setDeeplink($sDeeplink)
     {
         if ($this->_sBaseUrl == NULL) {
@@ -175,6 +243,12 @@ trait ThirdPartyConverterTrait
         }
     }
 
+    /**
+     * Convert category paths for third-party formats.
+     *
+     * @param string $sCategoryPath Raw category path.
+     * @return string
+     */
     private function _setCategories($sCategoryPath)
     {
         switch (self::PROCESS_CODE) {
@@ -193,6 +267,13 @@ trait ThirdPartyConverterTrait
         }
     }
 
+    /**
+     * Expand attribute tuples into separate XML nodes.
+     *
+     * @param array $aProductData Export data array.
+     * @param string $sFieldName Attribute field name to expand.
+     * @return array
+     */
     private function _addAttributesAsNodes($aProductData, $sFieldName = 'Attributes')
     {
         $bAddAttributeNode = (bool) Registry::getConfig()->getConfigParam('blWmdkFFExportAddAttributeNode');
@@ -261,6 +342,12 @@ trait ThirdPartyConverterTrait
         return $aProductData;
     }
 
+    /**
+     * Parse a tuple string into a structured attribute array.
+     *
+     * @param string $sAttributes Tuple string of attributes.
+     * @return array
+     */
     protected function _getAttributes($sAttributes)
     {
         $aNodes = [];

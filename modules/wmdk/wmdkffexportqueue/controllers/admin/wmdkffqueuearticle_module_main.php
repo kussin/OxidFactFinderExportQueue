@@ -3,9 +3,16 @@
 use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\Registry;
 
+/**
+ * Admin module controller extension for queue module metadata.
+ */
 class wmdkffqueuearticle_module_main extends wmdkffqueuearticle_module_main_parent
 {
-
+    /**
+     * Render the module tab and inject the unprocessed-articles indicator.
+     *
+     * @return string
+     */
     public function render()
     {
         $sTpl   = parent::render();
@@ -15,6 +22,7 @@ class wmdkffqueuearticle_module_main extends wmdkffqueuearticle_module_main_pare
             return $sTpl;
         }
 
+        // Fetch queue statistics and language context for module description updates.
         $iCount = $this->getUnprocessedArticles();
         $aData = $oModule->getModuleData();
         $oLang    = Registry::getLang();
@@ -49,6 +57,11 @@ class wmdkffqueuearticle_module_main extends wmdkffqueuearticle_module_main_pare
         return $sTpl;
     }
 
+    /**
+     * Count queue entries that have not been processed yet.
+     *
+     * @return int
+     */
     protected function getUnprocessedArticles(): int
     {
         $sSql = "

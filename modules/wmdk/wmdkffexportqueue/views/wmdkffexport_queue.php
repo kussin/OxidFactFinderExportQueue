@@ -9,7 +9,7 @@ use Wmdk\FactFinderQueue\Traits\FlourTrait;
 use Wmdk\FactFinderQueue\Traits\ProcessIpTrait;
 
 /**
- * Class wmdkffexport_queue
+ * Builds and updates the export queue for FactFinder products.
  */
 class wmdkffexport_queue extends oxubase
 {
@@ -63,6 +63,8 @@ class wmdkffexport_queue extends oxubase
     
     
     /**
+     * Loads queued products, prepares updates, and returns the template name.
+     *
      * @return string
      */
     public function render() {        
@@ -184,9 +186,11 @@ class wmdkffexport_queue extends oxubase
         return $this->_sTemplate;
     }
     
-    
+    /**
+     * Populate update data for the current product/variant.
+     */
     private function _updateQueueData() {       
-        
+
         if (
             (strtotime($this->_oProduct->oxarticles__oxtimestamp->value) > $this->_iLastSync)
             || (
@@ -286,6 +290,11 @@ class wmdkffexport_queue extends oxubase
     }
     
     
+    /**
+     * Determine the hidden flag for the current product.
+     *
+     * @return int
+     */
     private function _getHidden() {
         $oArticle = ($this->_bIsVariant) ? $this->_oParent : $this->_oProduct;
         
@@ -293,6 +302,11 @@ class wmdkffexport_queue extends oxubase
     }
     
     
+    /**
+     * Check whether the product has a from-price value.
+     *
+     * @return int
+     */
     private function _getHasFromPrice() {
         $bWmdkFFQueueEnableFromPrice = (int) Registry::getConfig()->getConfigParam('bWmdkFFQueueEnableFromPrice');
 
@@ -309,6 +323,12 @@ class wmdkffexport_queue extends oxubase
     }
     
     
+    /**
+     * Resolve the active price for the current product.
+     *
+     * @param bool $bWmdkFFQueueEnableFromPrice Whether to allow from-price logic.
+     * @return float
+     */
     private function _getPrice($bWmdkFFQueueEnableFromPrice = false) {
         if ($this->_bIsParent || $this->_bIsVariant) {
 
@@ -329,6 +349,11 @@ class wmdkffexport_queue extends oxubase
     }
 	
     
+    /**
+     * Get the MSRP value for the current product.
+     *
+     * @return float
+     */
     private function _getMsrp() {
         if ($this->_bIsParent || $this->_bIsVariant) {
 
@@ -347,6 +372,12 @@ class wmdkffexport_queue extends oxubase
     }
 	
     
+    /**
+     * Build a formatted base price string for the current product.
+     *
+     * @param string $sCurrenySign Currency sign to append.
+     * @return string
+     */
     private function _getBasePrice($sCurrenySign = '€') {
         $oUnitPrice = $this->_oProduct->getUnitPrice();
 
@@ -361,6 +392,11 @@ class wmdkffexport_queue extends oxubase
     }
 
 
+    /**
+     * Resolve the tax rate for the current product.
+     *
+     * @return float
+     */
     private function _getTaxRate() {
         $dTaxRate = (double) $this->_oProduct->oxarticles__oxvat->value;
 
@@ -368,17 +404,32 @@ class wmdkffexport_queue extends oxubase
     }
 	
     
+    /**
+     * Get the stock value for the current product.
+     *
+     * @return int
+     */
     private function _getStock() {
         return  ($this->_bIsParent) ? $this->_oProduct->oxarticles__oxvarstock->value : $this->_oProduct->oxarticles__oxstock->value;
     }
     
     
+    /**
+     * Build a combined description for the current product.
+     *
+     * @return string
+     */
     private function _getDescription() {
         $sDescription = ($this->_bIsVariant) ? $this->_oParent->getLongDescription() : $this->_oProduct->getLongDescription();
         
         return $this->_removeHtml($sDescription);
     }
     
+    /**
+     * Resolve and cache the base shop URL for link building.
+     *
+     * @return string
+     */
     private function _getBaseUrl() {
 //        if ($this->_sBaseUrl == NULL) {
 //            $aBaseUrl = explode('?', \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('sShopURL'));
@@ -389,12 +440,22 @@ class wmdkffexport_queue extends oxubase
         return '';
     }    
     
+    /**
+     * Build the product detail URL.
+     *
+     * @return string
+     */
     private function _getDeeplink() {
         $bUseCategoryPath = (bool) Registry::getConfig()->getConfigParam('bWmdkFFQueueUseCategoryPath');
 
         return ($bUseCategoryPath) ? $this->_getMainCategoryLink() : $this->_getManufacturerLink();
     }
 
+    /**
+     * Build a link to the manufacturer listing.
+     *
+     * @return string
+     */
     private function _getManufacturerLink() {
         $oSeoEncoderArticle = oxNew(SeoEncoderArticle::class);
 
@@ -403,6 +464,11 @@ class wmdkffexport_queue extends oxubase
         return strtolower($this->_getBaseUrl() . $sManufacturerLink);
     }
 
+    /**
+     * Build a link to the main category for the product.
+     *
+     * @return string
+     */
     private function _getMainCategoryLink() {
         $oSeoEncoderArticle = oxNew(SeoEncoderArticle::class);
 
@@ -412,6 +478,12 @@ class wmdkffexport_queue extends oxubase
     }
     
     
+    /**
+     * Build a link to a subcategory.
+     *
+     * @param string $sCatId Category ID.
+     * @return string
+     */
     private function _getSubCategory($sCatId) {
         $sSubCategory = '';
         
@@ -432,6 +504,11 @@ class wmdkffexport_queue extends oxubase
     }
     
     
+    /**
+     * Build the category path string for the product.
+     *
+     * @return string
+     */
     private function _getCategoryPath() {
         $aCategoryPathes = array();
         
@@ -468,6 +545,11 @@ class wmdkffexport_queue extends oxubase
     }
     
     
+    /**
+     * Collect product attributes for export.
+     *
+     * @return string
+     */
     private function _getAttributes() {
         $aAttributes = array();
         
@@ -514,6 +596,11 @@ class wmdkffexport_queue extends oxubase
     }
 
 
+    /**
+     * Collect variant attributes for export.
+     *
+     * @return string
+     */
     private function _getVariantsAttributes() {
         $aAttributes = array();
 
@@ -535,11 +622,21 @@ class wmdkffexport_queue extends oxubase
     }
     
     
+    /**
+     * Collect numerical attributes to export.
+     *
+     * @return string
+     */
     private function _getNumericalAttributes() {
         return '';
     }
     
     
+    /**
+     * Collect searchable attributes for export.
+     *
+     * @return string
+     */
     private function _getSearchAttributes() {
         $aAttributes = array();
         
@@ -572,6 +669,12 @@ class wmdkffexport_queue extends oxubase
     }
     
     
+    /**
+     * Normalize gender-related attributes for export.
+     *
+     * @param array $aAttributes Attributes to inspect.
+     * @return array
+     */
     private function _hackAttributeGender($aAttributes) {
         $bHasNoGender = TRUE;
         
@@ -589,6 +692,12 @@ class wmdkffexport_queue extends oxubase
     }
     
     
+    /**
+     * Resolve the "new" flag value.
+     *
+     * @param int $bFalse Default value when not set.
+     * @return int
+     */
     private function _hasHasNewFlag($bFalse = 0) {
         $oArticle = ($this->_bIsVariant) ? $this->_oParent : $this->_oProduct;
 
@@ -599,6 +708,12 @@ class wmdkffexport_queue extends oxubase
     }
     
     
+    /**
+     * Resolve the "top" flag value.
+     *
+     * @param int $bFalse Default value when not set.
+     * @return int
+     */
     private function _hasHasTopFlag($bFalse = 0) {
         $oArticle = ($this->_bIsVariant) ? $this->_oParent : $this->_oProduct;
         
@@ -610,6 +725,12 @@ class wmdkffexport_queue extends oxubase
     }
     
     
+    /**
+     * Calculate the sale discount amount.
+     *
+     * @param string $sSign Percentage sign to append.
+     * @return string
+     */
     private function _getSaleAmount($sSign = '%') {
         $bWmdkFFQueueEnableFromPrice = (int) Registry::getConfig()->getConfigParam('bWmdkFFQueueEnableFromPrice');
 
@@ -626,6 +747,12 @@ class wmdkffexport_queue extends oxubase
     }
     
     
+    /**
+     * Build the size list markup for variants.
+     *
+     * @param string $sGlue Glue string between entries.
+     * @return string
+     */
     private function _getVariantsSizelistMarkup($sGlue = '') {
         $sMarkup = '';
         $aDesktopMarkup = array();
@@ -690,6 +817,15 @@ class wmdkffexport_queue extends oxubase
     
     
 
+    /**
+     * Load the first active variant for a product.
+     *
+     * @param string|null $sArticleId Parent article ID.
+     * @param int $iActive Active flag filter.
+     * @param int $iHidden Hidden flag filter.
+     * @param int $iMinStock Minimum stock filter.
+     * @return \OxidEsales\Eshop\Application\Model\Article|null
+     */
 	private function _getFirstActiveVariant($sArticleId = NULL, $iActive = 1, $iHidden = 0, $iMinStock = 0) {
         if ($this->_oFirstActiveVariant == NULL) {
             
@@ -715,6 +851,12 @@ class wmdkffexport_queue extends oxubase
 	}
     
     
+    /**
+     * Clean attribute titles for export.
+     *
+     * @param string $sTitle Raw title.
+     * @return string
+     */
     private function _cleanAttributeTitle($sTitle) { 
         if (
             ($this->_aCleanAttributeTitleSearchKeys == NULL)
@@ -728,6 +870,13 @@ class wmdkffexport_queue extends oxubase
     }
     
     
+    /**
+     * Translate a localized field value for the current language.
+     *
+     * @param object $oObject Source object with language fields.
+     * @param string $sKey Field key.
+     * @return string
+     */
     private function _translateString($oObject, $sKey) {
         /* HACK (Ticket: #33333) */
         $sDbTableFieldName = $sKey . $this->_sLanguageSuffix;
@@ -746,6 +895,13 @@ class wmdkffexport_queue extends oxubase
     }
     
     
+    /**
+     * Translate attribute values for the current language.
+     *
+     * @param string $sAttrId Attribute ID.
+     * @param bool $bVariant Whether to use variant values.
+     * @return string
+     */
     private function _translateAttributeValue($sAttrId, $bVariant = FALSE) {
         $sTranslatedString = '';
         $sObjectId = ($bVariant) ? $this->_oParent->oxarticles__oxid->value : $this->_oProduct->oxarticles__oxid->value;
@@ -764,6 +920,12 @@ class wmdkffexport_queue extends oxubase
     }
     
     
+    /**
+     * Escape a string for CSV output.
+     *
+     * @param string $sString Raw value.
+     * @return string
+     */
     private function _excapeString($sString) {
         return str_replace(array(
             '"',
@@ -773,6 +935,13 @@ class wmdkffexport_queue extends oxubase
     }
     
     
+    /**
+     * Format a price with a fixed number of decimals.
+     *
+     * @param float $dPrice Price value.
+     * @param int $iDecimals Number of decimals.
+     * @return string
+     */
     private function _formatPrice($dPrice, $iDecimals = 2) {
         if ($dPrice > 0) {
             return number_format($dPrice, $iDecimals, '.' , '');
@@ -782,11 +951,20 @@ class wmdkffexport_queue extends oxubase
     }
     
     
+    /**
+     * Remove HTML tags from a string for export.
+     *
+     * @param string $sHtmlText Input HTML.
+     * @return string
+     */
     private function _removeHtml($sHtmlText) {
         return strip_tags($sHtmlText, Registry::getConfig()->getConfigParam('sWmdkFFQueueAllowableTags'));
     }
     
     
+    /**
+     * Prepare the SQL update statement for queue updates.
+     */
     private function _prepareUpdateQuery() {
         if (
             count($this->_aUpdateData) > 0
@@ -820,6 +998,9 @@ class wmdkffexport_queue extends oxubase
     }
     
     
+    /**
+     * Execute queued update statements.
+     */
     private function _saveQueueData() {
         if (
             count($this->_aPreparedUpdateQueries) > 0
@@ -845,6 +1026,9 @@ class wmdkffexport_queue extends oxubase
     }
     
     
+    /**
+     * Log the queue run to file if configured.
+     */
     private function _log() {
         $sFilename  = str_replace('//', '/', $_SERVER['DOCUMENT_ROOT'] . Registry::getConfig()->getConfigParam('sWmdkFFDebugLogFileQueue'));
         
@@ -860,6 +1044,9 @@ class wmdkffexport_queue extends oxubase
     }
     
     
+    /**
+     * Diagnostic method for test runs.
+     */
     public function test() {
         $bIsVariant = FALSE;
         

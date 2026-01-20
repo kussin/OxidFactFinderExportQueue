@@ -5,10 +5,19 @@ namespace Wmdk\FactFinderQueue\Traits;
 use OxidEsales\Eshop\Core\Registry;
 use Spatie\ArrayToXml\ArrayToXml;
 
+/**
+ * Validates and cleans XML nodes for export.
+ */
 trait XmlValidatorTrait
 {
     use DebugTrait;
 
+    /**
+     * Validate a single XML node by attempting XML generation.
+     *
+     * @param array $aNode Node data to validate.
+     * @return bool
+     */
     private function _validateXmlNode($aNode)
     {
         try {
@@ -33,6 +42,13 @@ trait XmlValidatorTrait
         return true;
     }
 
+    /**
+     * Remove special characters from a node and optionally store the original value.
+     *
+     * @param array $aNode Node data.
+     * @param bool $bAddOriginValueParam Whether to store original value as attributes.
+     * @return array
+     */
     protected function _replaceSpecialChars($aNode, $bAddOriginValueParam = true)
     {
         if ($bAddOriginValueParam) {

@@ -3,18 +3,22 @@
 
 use Wmdk\FactFinderQueue\Traits\QueueArticleSaveTrait;
 
+/**
+ * Admin controller extension for stock updates with queue integration.
+ */
 class wmdkFfQueueArticle_Stock extends wmdkFfQueueArticle_Stock_parent
 {
     use QueueArticleSaveTrait;
 
     /**
-     * Saves changes of article parameters.
+     * Save stock changes and update the export queue.
      */
     public function save()
     {
+        // Persist stock changes first.
         parent::save();
-        
-        // ACTIVE OXID
+
+        // Queue the updated article for export processing.
         $this->saveQueueArticleFromRequest();
     }
 }

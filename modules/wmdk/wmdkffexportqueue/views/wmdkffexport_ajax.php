@@ -6,7 +6,7 @@ use Wmdk\FactFinderQueue\Traits\ProcessIpTrait;
 use Wmdk\FactFinderQueue\Traits\Ajax\ResetTrait;
 
 /**
- * Class wmdkffexport_ajax
+ * AJAX endpoint for queue operations.
  */
 class wmdkffexport_ajax extends oxubase
 {
@@ -25,6 +25,11 @@ class wmdkffexport_ajax extends oxubase
     protected $_sTemplate = 'wmdkffexport_ajax.tpl';
 
     
+    /**
+     * Execute the requested AJAX job and return the template name.
+     *
+     * @return string
+     */
     public function render() {
         // SET LIMITS
         ini_set('max_execution_time', (int) Registry::getConfig()->getConfigParam('sWmdkFFQueuePhpLimitTimeout'));
@@ -55,6 +60,11 @@ class wmdkffexport_ajax extends oxubase
     }
     
     
+    /**
+     * Append the AJAX response payload to the debug log file.
+     *
+     * @return bool
+     */
     private function _log() {
         $sFilename  = str_replace('//', '/', $_SERVER['DOCUMENT_ROOT'] . Registry::getConfig()->getConfigParam('sWmdkFFDebugLogFileQueue'));
         

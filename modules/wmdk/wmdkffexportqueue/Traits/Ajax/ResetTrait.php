@@ -4,10 +4,15 @@ namespace Wmdk\FactFinderQueue\Traits\Ajax;
 
 use OxidEsales\Eshop\Core\DatabaseProvider;
 
+/**
+ * Handles AJAX reset requests for queue entries.
+ */
 trait ResetTrait
 {
     /**
-     * Reset
+     * Reset queue timestamps for the requested article family.
+     *
+     * @return bool
      */
     protected function _reset()
     {

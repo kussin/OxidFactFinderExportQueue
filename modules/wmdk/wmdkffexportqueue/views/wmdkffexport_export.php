@@ -4,20 +4,35 @@ use OxidEsales\Eshop\Core\Registry;
 use Wmdk\FactFinderQueue\Traits\ExportTrait;
 
 /**
- * Class wmdkffexport_export
+ * Export controller for the standard FactFinder CSV.
  */
 class wmdkffexport_export extends oxubase
 {
     use ExportTrait;
 
+    /**
+     * Identifier for the export process type.
+     */
     const PROCESS_CODE = 'FACTFINDER';
 
+    /**
+     * Additional escaping characters for CSV output.
+     */
     const EXPORT_ADDITIONAL_ESCAPING = '"';
+    /**
+     * Field delimiter for CSV output.
+     */
     const EXPORT_DELIMITER = '|';
+    /**
+     * Delimiter for category path segments.
+     */
     const EXPORT_CATEGORY_DELIMITER = '|';
     
     private $_sTemplate = 'wmdkffexport_export.tpl';
 
+    /**
+     * Write the assembled CSV data to disk and update response metadata.
+     */
     private function _exportData() {
         // CONFIG
         $sExportFile = Registry::getConfig()->getShopConfVar('sShopDir') . Registry::getConfig()->getConfigParam('sWmdkFFExportDirectory') . $this->_sChannel . '.csv';

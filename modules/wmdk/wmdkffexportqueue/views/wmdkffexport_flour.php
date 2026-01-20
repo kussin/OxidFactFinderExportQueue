@@ -5,21 +5,36 @@ use Wmdk\FactFinderQueue\Traits\ExportTrait;
 use Wmdk\FactFinderQueue\Traits\ThirdPartyConverterTrait;
 
 /**
- * Class wmdkffexport_flour
+ * Export controller for the Flour CSV feed.
  */
 class wmdkffexport_flour extends oxubase
 {
     use ExportTrait;
     use ThirdPartyConverterTrait;
 
+    /**
+     * Identifier for the export process type.
+     */
     const PROCESS_CODE = 'FLOUR';
 
+    /**
+     * Additional escaping characters for CSV output.
+     */
     const EXPORT_ADDITIONAL_ESCAPING = '"';
+    /**
+     * Field delimiter for CSV output.
+     */
     const EXPORT_DELIMITER = ';';
+    /**
+     * Delimiter for category path segments.
+     */
     const EXPORT_CATEGORY_DELIMITER = '|';
 
     private $_sTemplate = 'wmdkffexport_flour.tpl';
 
+    /**
+     * Write the Flour CSV export to disk.
+     */
     private function _exportData() {
         // CONFIG
         $sExportFile = Registry::getConfig()->getShopConfVar('sShopDir') . Registry::getConfig()->getConfigParam('sWmdkFFExportDirectory') . $this->_sChannel . '.flour.csv';
@@ -57,6 +72,11 @@ class wmdkffexport_flour extends oxubase
 //        echo implode("\n", $this->_aCsvData);
     }
 
+    /**
+     * Build the Flour export data with converted headers.
+     *
+     * @return array
+     */
     protected function _getData() {
         if ($this->_aExportData === NULL) {
             $aKeys = NULL;

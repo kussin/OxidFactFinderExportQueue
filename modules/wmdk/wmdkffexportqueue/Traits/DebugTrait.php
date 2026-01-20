@@ -4,10 +4,15 @@ namespace Wmdk\FactFinderQueue\Traits;
 
 use OxidEsales\Eshop\Core\Registry;
 
+/**
+ * Provides debug logging helpers for the module.
+ */
 trait DebugTrait
 {
-/**
-     * @param string $sMessage
+    /**
+     * Write a debug message to the module log file.
+     *
+     * @param string $sMessage Log message.
      */
     public function log($sMessage)
     {

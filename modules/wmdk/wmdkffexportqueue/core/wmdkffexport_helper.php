@@ -2,13 +2,24 @@
 declare(strict_types=1);
 
 /**
- * Class wmdkffexport_helper
+ * Helper utilities for maintaining the export queue.
  */
 class wmdkffexport_helper
 {
+    /**
+     * Export queue table name.
+     */
     private const QUEUE_TABLE = 'wmdk_ff_export_queue';
+    /**
+     * Sentinel timestamp used for queue resets.
+     */
     private const NULL_DATE = '0000-00-00 00:00:00';
     
+    /**
+     * Save an article and its variants into the queue.
+     *
+     * @param string $sOxid Article OXID.
+     */
     public static function saveArticle(string $sOxid): void
     {
         $oArticle = oxNew(\OxidEsales\Eshop\Application\Model\Article::class);
@@ -22,6 +33,12 @@ class wmdkffexport_helper
     }
     
     
+    /**
+     * Touch the queue entry for a specific article across all channels.
+     *
+     * @param string $sOxid Article OXID.
+     * @param int $iActive Active flag for the queue entry.
+     */
     public static function touchArticle(string $sOxid, int $iActive = 1): void
     {
         
@@ -42,6 +59,11 @@ class wmdkffexport_helper
     }
     
     
+    /**
+     * Touch queue entries for all variants of a parent article.
+     *
+     * @param string $sOxid Parent article OXID.
+     */
     public static function touchVariants(string $sOxid): void
     {
         // LOAD VARIANTS
@@ -61,7 +83,9 @@ class wmdkffexport_helper
     
 
     /**
-     * Saves changes of article parameters.
+     * Parse configured channel list into structured entries.
+     *
+     * @return array
      */
     public static function getChannelList(): array
     {
@@ -94,6 +118,15 @@ class wmdkffexport_helper
     }
     
     
+    /**
+     * Check whether a queue entry already exists for the article.
+     *
+     * @param string $sOxid Article OXID.
+     * @param string $sChannel Channel code.
+     * @param int $iShopId Shop ID.
+     * @param int $iLang Language ID.
+     * @return bool
+     */
     private static function isInQueue(string $sOxid, string $sChannel, int $iShopId = 1, int $iLang = 0): bool
     {
         $oDb = \OxidEsales\Eshop\Core\DatabaseProvider::getDb();
@@ -117,6 +150,14 @@ class wmdkffexport_helper
     }
     
     
+    /**
+     * Insert a new queue entry for an article.
+     *
+     * @param string $sOxid Article OXID.
+     * @param string $sChannel Channel code.
+     * @param int $iShopId Shop ID.
+     * @param int $iLang Language ID.
+     */
     private static function insertArticle(string $sOxid, string $sChannel, int $iShopId = 1, int $iLang = 0): void
     {
         $oDb = \OxidEsales\Eshop\Core\DatabaseProvider::getDb();
@@ -167,6 +208,15 @@ class wmdkffexport_helper
     }
     
     
+    /**
+     * Update an existing queue entry for an article.
+     *
+     * @param string $sOxid Article OXID.
+     * @param string $sChannel Channel code.
+     * @param int $iShopId Shop ID.
+     * @param int $iLang Language ID.
+     * @param int $iActive Active flag.
+     */
     private static function updateArticle(
         string $sOxid,
         string $sChannel,
@@ -201,6 +251,12 @@ class wmdkffexport_helper
     }
     
     
+    /**
+     * Resolve the client IP address from request headers.
+     *
+     * @param string|null $sIp Optional override.
+     * @return string
+     */
     public static function getClientIp(?string $sIp = null): string
     {
         if ($sIp !== null) {
