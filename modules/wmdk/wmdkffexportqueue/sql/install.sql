@@ -70,6 +70,8 @@ CREATE TABLE IF NOT EXISTS `wmdk_ff_export_queue` (
     KEY `ProductNumber` (`ProductNumber`),
     KEY `MasterProductNumber` (`MasterProductNumber`),
     KEY `LASTSYNC` (`LASTSYNC`),
+    KEY `Stock` (`Stock`),
+    KEY `idx_queue_sync` (`OXACTIVE`, `Stock`, `LASTSYNC`),
     KEY `EAN` (`EAN`),
     KEY `idx_attributes` (`Attributes`(255)),
     KEY `idx_clonedattributes` (`ClonedAttributes`(255))

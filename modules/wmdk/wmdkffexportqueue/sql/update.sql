@@ -2,6 +2,11 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- Update data OXARTICLES
+ALTER TABLE `wmdk_ff_export_queue`
+	ADD INDEX `Stock` (`Stock`),
+	ADD INDEX `idx_queue_sync` (`OXACTIVE`, `Stock`, `LASTSYNC`);
+
+-- Update data OXARTICLES
 UPDATE
 	oxarticles a,
 	wmdk_ff_export_queue b

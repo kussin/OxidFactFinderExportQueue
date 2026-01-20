@@ -33,6 +33,8 @@ class wmdkffexport_ts extends oxubase
     protected $_aTSProductReviews = array();
     
     protected $_sTemplate = 'wmdkffexport_ts.tpl';
+    protected $_iApiTimeout = 10;
+    protected $_iApiMaxRetries = 3;
 
     
     public function render() {
@@ -69,7 +71,10 @@ class wmdkffexport_ts extends oxubase
     private function _loadReviews() {
         $this->_sApiUrl = Registry::getConfig()->getConfigParam('sWmdkFFImportTSApiUrl');
         
-        $oJson = json_decode( file_get_contents($this->_sApiUrl) );
+        $oJson = $this->_fetchTrustedShopsResponse();
+        if ($oJson === null) {
+            return false;
+        }
         
         if (
             isset($oJson->response->code)
@@ -97,6 +102,42 @@ class wmdkffexport_ts extends oxubase
         
         return FALSE;
     }
+
+    private function _fetchTrustedShopsResponse() {
+        $aOptions = array(
+            'http' => array(
+                'timeout' => $this->_iApiTimeout,
+            ),
+        );
+
+        $oContext = stream_context_create($aOptions);
+        $sResponse = null;
+
+        for ($iAttempt = 1; $iAttempt <= $this->_iApiMaxRetries; $iAttempt++) {
+            $sResponse = file_get_contents($this->_sApiUrl, false, $oContext);
+
+            if ($sResponse !== false) {
+                break;
+            }
+
+            usleep($iAttempt * 250000);
+        }
+
+        if ($sResponse === false) {
+            $this->_aResponse['success'] = FALSE;
+            $this->_aResponse['validation_errors'] = array('ERROR_TS_API_REQUEST_FAILED');
+            return null;
+        }
+
+        $oJson = json_decode($sResponse);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $this->_aResponse['success'] = FALSE;
+            $this->_aResponse['validation_errors'] = array('ERROR_TS_API_RESPONSE_INVALID');
+            return null;
+        }
+
+        return $oJson;
+    }
     
     
     private function _importReviews() { 
@@ -109,20 +150,28 @@ class wmdkffexport_ts extends oxubase
             $sQuery = 'UPDATE
                 wmdk_ff_export_queue
             SET
-                TrustedShopsRating = ' . $aData['rating'] . ',
-                TrustedShopsRatingCnt = ' . $aData['rating_count'] . ',
-                TrustedShopsRatingPercentage = ' . $aData['rating_percentage'] . ',
+                TrustedShopsRating = ?,
+                TrustedShopsRatingCnt = ?,
+                TrustedShopsRatingPercentage = ?,
                 LASTSYNC = LASTSYNC,
                 OXTIMESTAMP = OXTIMESTAMP
             WHERE
-                (ProductNumber LIKE "' . $sSku .'")
+                (ProductNumber LIKE ?)
                 AND (
-                    (TrustedShopsRating != ' . $aData['rating'] . ')
-                    OR (TrustedShopsRatingCnt != ' . $aData['rating_count'] . ')
-                    OR (TrustedShopsRatingPercentage != ' . $aData['rating_percentage'] . ')
+                    (TrustedShopsRating != ?)
+                    OR (TrustedShopsRatingCnt != ?)
+                    OR (TrustedShopsRatingPercentage != ?)
                 );';
             
-            \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->execute($sQuery);
+            \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->execute($sQuery, array(
+                $aData['rating'],
+                $aData['rating_count'],
+                $aData['rating_percentage'],
+                $sSku,
+                $aData['rating'],
+                $aData['rating_count'],
+                $aData['rating_percentage'],
+            ));
             
             // LOG
             $aReviewedArticles[] = $sSku;
@@ -138,6 +187,7 @@ class wmdkffexport_ts extends oxubase
     
     private function _combineReviews() {
         $this->_createTmpReviewData();
+        $iCombined = 0;
         
         $sQuery = 'SELECT
             ProductNumber,
@@ -165,15 +215,20 @@ class wmdkffexport_ts extends oxubase
                 $sQuery = 'UPDATE
                     wmdk_ff_export_queue
                 SET
-                    TrustedShopsRating = "' . $aRow['TrustedShopsRating'] . '",
-                    TrustedShopsRatingCnt = "' . $aRow['TrustedShopsRatingCnt'] . '",
-                    TrustedShopsRatingPercentage = "' . $aRow['TrustedShopsRatingPercentage'] . '",
+                    TrustedShopsRating = ?,
+                    TrustedShopsRatingCnt = ?,
+                    TrustedShopsRatingPercentage = ?,
                     LASTSYNC = LASTSYNC,
                     OXTIMESTAMP = OXTIMESTAMP
                 WHERE
-                    (ProductNumber = "' . $aRow['ProductNumber'] . '")';
+                    (ProductNumber = ?)';
         
-                $iCombined += \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->execute($sQuery);
+                $iCombined += \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->execute($sQuery, array(
+                    $aRow['TrustedShopsRating'],
+                    $aRow['TrustedShopsRatingCnt'],
+                    $aRow['TrustedShopsRatingPercentage'],
+                    $sProductNumber,
+                ));
                 
                 $oResult->fetchRow();
             }
@@ -205,29 +260,33 @@ class wmdkffexport_ts extends oxubase
                 
                 $sProductNumber = $aRow['ProductNumber'];
                 $aRelatedProducts = array();
+                $aParams = array($sProductNumber, $aRow['WMDKTRUSTEDSHOPSRELATEDPRODUCTS'], $this->_sChannel);
                 
                 foreach (explode(',', $aRow['WMDKTRUSTEDSHOPSRELATEDPRODUCTS']) as $iKey => $sRelatedProductNumber) {
-                    $aRelatedProducts[] = '(ProductNumber = "' . $sRelatedProductNumber . '")';
+                    $aRelatedProducts[] = '(ProductNumber = ?)';
+                    $aParams[] = $sRelatedProductNumber;
                 }
+
+                $aParams[] = $sProductNumber;
                 
                 $sQuery = 'INSERT IGNORE INTO wmdk_ff_export_queue_tmp_ts(ProductNumber, TrustedShopsRating, TrustedShopsRatingCnt, TrustedShopsRatingPercentage, RelatedProductNumbers)
                     SELECT DISTINCT
-                        "' . $sProductNumber . '",
+                        ?,
                         FORMAT(SUM(TrustedShopsRating) / COUNT(*), 2),
                         SUM(TrustedShopsRatingCnt),
                         (SUM(TrustedShopsRating) / COUNT(*)) / 5 * 100,
-                        "' . $aRow['WMDKTRUSTEDSHOPSRELATEDPRODUCTS'] . '"
+                        ?
                     FROM
                         wmdk_ff_export_queue
                     WHERE
-                        (`CHANNEL` = "' . $this->_sChannel . '")
+                        (`CHANNEL` = ?)
                         AND (
                             ' . implode(' OR ', $aRelatedProducts) . '
-                            OR (ProductNumber = "' . $sProductNumber . '")
+                            OR (ProductNumber = ?)
                         )
                         AND (TrustedShopsRatingCnt > 0)';
         
-                \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->execute($sQuery);
+                \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->execute($sQuery, $aParams);
                 
                 $oResult->fetchRow();
             }

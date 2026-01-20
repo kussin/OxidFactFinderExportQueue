@@ -4,6 +4,7 @@ use OxidEsales\Eshop\Application\Model\SeoEncoderArticle;
 use OxidEsales\Eshop\Core\Registry;
 use Wmdk\FactFinderQueue\Traits\ClonedAttributesTrait;
 use Wmdk\FactFinderQueue\Traits\ConverterTrait;
+use Wmdk\FactFinderQueue\Traits\CronLockTrait;
 use Wmdk\FactFinderQueue\Traits\FlourTrait;
 use Wmdk\FactFinderQueue\Traits\ProcessIpTrait;
 
@@ -14,6 +15,7 @@ class wmdkffexport_queue extends oxubase
 {
     use ClonedAttributesTrait;
     use ConverterTrait;
+    use CronLockTrait;
     use FlourTrait;
     use ProcessIpTrait;
 
@@ -59,8 +61,6 @@ class wmdkffexport_queue extends oxubase
     
     protected $_sTemplate = 'wmdkffexport_queue.tpl';
     
-    protected $_sCronjobFlagname = NULL;
-
     
     /**
      * @return string
@@ -77,6 +77,19 @@ class wmdkffexport_queue extends oxubase
             $iArticleMinStock = (int) Registry::getConfig()->getConfigParam('iArticleMinStock');
 
             // LOAD PRODUCTS
+            $aWhere = array(
+                '(`wmdk_ff_export_queue`.`OXID` = `oxarticles`.`OXID`)',
+            );
+            $aParams = array();
+
+            if ($iArticleStatus !== '') {
+                $aWhere[] = '(`wmdk_ff_export_queue`.`OXACTIVE` = ?)';
+                $aParams[] = (int) $iArticleStatus;
+            }
+
+            $aWhere[] = '(`wmdk_ff_export_queue`.`Stock` >= ?)';
+            $aParams[] = $iArticleMinStock;
+
             $sQuery = 'SELECT 
                 `wmdk_ff_export_queue`.`OXID`, 
                 `wmdk_ff_export_queue`.`Channel`, 
@@ -87,14 +100,12 @@ class wmdkffexport_queue extends oxubase
                 `wmdk_ff_export_queue`,
                 `oxarticles`
             WHERE
-                (`wmdk_ff_export_queue`.`OXID` = `oxarticles`.`OXID`)
-                ' . ( ($iArticleStatus != '') ? 'AND (`wmdk_ff_export_queue`.`OXACTIVE` = ' . $iArticleStatus . ')' : '' ) . '
-				AND (`wmdk_ff_export_queue`.`Stock` >= ' . $iArticleMinStock . ')
+                ' . implode(' AND ', $aWhere) . '
             ORDER BY 
                 `wmdk_ff_export_queue`.`LASTSYNC` ASC, 
                 `wmdk_ff_export_queue`.`Stock` DESC
             LIMIT ' . $iQueueLimit . ';';
-            $oResult = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(FALSE)->select($sQuery);
+            $oResult = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(FALSE)->select($sQuery, $aParams);
 
             if ($oResult != FALSE && $oResult->count() > 0) {
                 while (!$oResult->EOF) {
@@ -776,30 +787,35 @@ class wmdkffexport_queue extends oxubase
     }
     
     
-    private function _getSqlUpdateString() {
-        $aAttributes = array();
-        
-        foreach ($this->_aUpdateData as $sAttribute => $sValue) {
-            $aAttributes[] = $sAttribute . '="' . $this->_excapeString($sValue) . '"';
-        }
-        
-        return implode(', ', $aAttributes);
-    }
-    
-    
     private function _prepareUpdateQuery() {
         if (
             count($this->_aUpdateData) > 0
         ) {
-            $this->_aPreparedUpdateQueries[] = 'UPDATE IGNORE
-                `wmdk_ff_export_queue` 
-            SET 
-                ' . $this->_getSqlUpdateString() . '
-            WHERE
-                (`OXID` = "' . $this->_sOxid . '")
-                AND (`Channel` = "' . $this->_sChannel . '")
-                AND (`OXSHOPID` = "' . $this->_iShopId . '")
-                AND (`LANG` = "' . $this->_iLang . '");';
+            $aSetFragments = array();
+            $aParams = array();
+
+            foreach ($this->_aUpdateData as $sAttribute => $sValue) {
+                $aSetFragments[] = $sAttribute . ' = ?';
+                $aParams[] = $sValue;
+            }
+
+            $aParams[] = $this->_sOxid;
+            $aParams[] = $this->_sChannel;
+            $aParams[] = (int) $this->_iShopId;
+            $aParams[] = (int) $this->_iLang;
+
+            $this->_aPreparedUpdateQueries[] = array(
+                'sql' => 'UPDATE IGNORE
+                    `wmdk_ff_export_queue` 
+                SET 
+                    ' . implode(', ', $aSetFragments) . '
+                WHERE
+                    (`OXID` = ?)
+                    AND (`Channel` = ?)
+                    AND (`OXSHOPID` = ?)
+                    AND (`LANG` = ?);',
+                'params' => $aParams,
+            );
         }
     }
     
@@ -809,32 +825,23 @@ class wmdkffexport_queue extends oxubase
             count($this->_aPreparedUpdateQueries) > 0
         ) {
             try {
-                $sQuery = implode("\n", $this->_aPreparedUpdateQueries);
-                \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->Execute($sQuery);
+                $oDb = \OxidEsales\Eshop\Core\DatabaseProvider::getDb();
+                $iBatchSize = 100;
+                $iCount = count($this->_aPreparedUpdateQueries);
+
+                for ($i = 0; $i < $iCount; $i += $iBatchSize) {
+                    $aBatch = array_slice($this->_aPreparedUpdateQueries, $i, $iBatchSize);
+
+                    foreach ($aBatch as $aQueryData) {
+                        $oDb->execute($aQueryData['sql'], $aQueryData['params']);
+                    }
+                }
                 
             } catch (Exception $oException) {
                 // ERROR
                 $this->_aResponse['system_errors'][] = 'ERROR: ' . $oException->getMessage();
             }
         }
-    }
-    
-    
-    private function _hasCronjobFlag($sFlagname = '/tmp/wmdk_ff_cron.flag') {
-        $this->_sCronjobFlagname = str_replace('//', '/', $_SERVER['DOCUMENT_ROOT'] . $sFlagname);
-        
-        return file_exists($this->_sCronjobFlagname);
-    }
-    
-    
-    private function _setCronjobFlag() {
-        $rFile = fopen($this->_sCronjobFlagname, 'w'); 
-        fclose($rFile);
-    }
-    
-    
-    private function _removeCronjobFlag() {
-        return unlink($this->_sCronjobFlagname);
     }
     
     
