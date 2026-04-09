@@ -5,6 +5,8 @@
  */
 class wmdkffexport_helper
 {
+    private const DB_RETRY_ATTEMPTS = 4;
+    private const DB_RETRY_BASE_DELAY_US = 100000;
     
     public function saveArticle($sOxid) {
         $oArticle = oxNew(\OxidEsales\Eshop\Application\Model\Article::class);
@@ -99,7 +101,7 @@ class wmdkffexport_helper
     
     
     private function insertArticle($sOxid, $sChannel, $iShopId = 1, $iLang = 0) {
-        $sQuery = 'INSERT INTO 
+        $sQuery = 'INSERT IGNORE INTO 
             `wmdk_ff_export_queue` 
         ( 
             `OXID`,
@@ -122,16 +124,18 @@ class wmdkffexport_helper
             "0000-00-00 00:00:00",
             "1"
         );';
-        
-        // UPDATE oxarticles.WMDK_FFQUEUE   
-        $sQuery .= 'UPDATE
+
+        self::executeWithRetry($sQuery);
+
+        // UPDATE oxarticles.WMDK_FFQUEUE
+        $sQuery = 'UPDATE
             oxarticles
         SET
             WMDK_FFQUEUE = "1"
         WHERE
             OXID = "' . $sOxid . '";';
-        
-        \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->execute($sQuery);
+
+        self::executeWithRetry($sQuery);
     }
     
     
@@ -148,8 +152,8 @@ class wmdkffexport_helper
             AND (`Channel` = "' . $sChannel . '")
             AND (`OXSHOPID` = "' . $iShopId . '")
             AND (`LANG` = "' . $iLang . '");';
-        
-        \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->execute($sQuery);
+
+        self::executeWithRetry($sQuery);
     }
     
     
@@ -167,6 +171,38 @@ class wmdkffexport_helper
         }
         
         return ($sIp != FALSE) ? $sIp : $sClientIp;
+    }
+
+
+    private function executeWithRetry($sQuery)
+    {
+        $iAttempt = 0;
+
+        while (TRUE) {
+            try {
+                return \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->execute($sQuery);
+            } catch (\Throwable $oException) {
+                if (!self::isRetryableDbError($oException) || $iAttempt >= self::DB_RETRY_ATTEMPTS - 1) {
+                    throw $oException;
+                }
+
+                $iAttempt++;
+                usleep((self::DB_RETRY_BASE_DELAY_US * $iAttempt) + random_int(0, 50000));
+            }
+        }
+    }
+
+
+    private function isRetryableDbError($oException)
+    {
+        $sMessage = strtolower($oException->getMessage());
+
+        return (
+            strpos($sMessage, '1205') !== FALSE
+            || strpos($sMessage, '1213') !== FALSE
+            || strpos($sMessage, 'lock wait timeout exceeded') !== FALSE
+            || strpos($sMessage, 'deadlock found') !== FALSE
+        );
     }
     
 }
