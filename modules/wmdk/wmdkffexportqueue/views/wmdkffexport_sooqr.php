@@ -48,12 +48,20 @@ class wmdkffexport_sooqr extends oxubase
                 'rootElementName' => 'sooqr',
             ));
 
+            if ((bool) Registry::getConfig()->getConfigParam('bWmdkFFExportPrettifyXml')) {
+                $oXML->prettify();
+            }
+
             // EXPORT
             $rXmlFile = fopen($sExportFile, 'w');
 
             fwrite($rXmlFile, $oXML->toXml());
 
             fclose($rXmlFile);
+
+            if (!$this->_validateXmlFile($sExportFile)) {
+                $this->_aResponse['success'] = FALSE;
+            }
             
         } catch (Exception $oException) {
             // ERROR

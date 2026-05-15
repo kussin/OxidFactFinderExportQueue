@@ -12,7 +12,7 @@ $aModule = array(
     'title'        => 'Kussin | OXID 6 FACT Finder Export Queue',
     'description'  => file_get_contents(__DIR__ . '/description.inc.php', true),
     'thumbnail'    => 'module.png',
-    'version'      => '1.11.5',
+    'version'      => '1.11.6',
     'author'       => 'Daniel Kussin',
     'url'          => 'https://www.kussin.de',
     'email'        => 'daniel.kussin@kussin.de',
@@ -41,6 +41,8 @@ $aModule = array(
         'article_stock' => 'wmdk/wmdkffexportqueue/controllers/admin/wmdkffqueuearticle_stock',
         'article_variant' => 'wmdk/wmdkffexportqueue/controllers/admin/wmdkffqueuearticle_variant',
         'module_main' => 'wmdk/wmdkffexportqueue/controllers/admin/wmdkffqueuearticle_module_main',
+        'article_attribute' => 'wmdk/wmdkffexportqueue/controllers/admin/wmdkffqueuearticle_attribute',
+        'article_attribute_ajax' => 'wmdk/wmdkffexportqueue/controllers/admin/wmdkffqueuearticle_attribute_ajax'
     ),
 
     'blocks' => array(
@@ -104,6 +106,8 @@ $aModule = array(
 
         array('group' => 'sWmdkFFExportSettings', 'name' => 'sWmdkFFExportCsvAttributes', 'type' => 'str', 'value' => 'Terrain,Schwung,Speed'),
 
+        array('group' => 'sWmdkFFExportSettings', 'name' => 'bWmdkFFExportPrettifyXml', 'type' => 'bool', 'value' => 0),
+
         // QUEUE
 		array('group' => 'sWmdkFFQueueSettings', 'name' => 'sWmdkFFQueueLimit', 'type' => 'str', 'value' => 150),
 		array('group' => 'sWmdkFFQueueSettings', 'name' => 'iArticleStatus', 'type' => 'str', 'value' => 1),
@@ -116,7 +120,7 @@ $aModule = array(
 		array('group' => 'sWmdkFFQueueSettings', 'name' => 'sWmdkFFQueuePhpLimitTimeout', 'type' => 'str', 'value' => 900),
 		array('group' => 'sWmdkFFQueueSettings', 'name' => 'sWmdkFFQueuePhpLimitMemory', 'type' => 'str', 'value' => '512M'),
 		array('group' => 'sWmdkFFQueueSettings', 'name' => 'sWmdkFFQueueResetLimit', 'type' => 'str', 'value' => 75),
-		
+
         array('group' => 'sWmdkFFQueueSettings', 'name' => 'bWmdkFFQueueEnableFromPrice', 'type' => 'bool', 'value' => 1),
 		
 		array('group' => 'sWmdkFFQueueSettings', 'name' => 'bWmdkFFQueueUpdateSiblings', 'type' => 'bool', 'value' => 0),
@@ -292,5 +296,8 @@ $aModule = array(
 
         // INCLUDES
         'admin_article_variant_listitem_mapping_select.tpl' => 'wmdk/wmdkffexportqueue/views/tpl/admin/inc/admin_article_variant_listitem_mapping_select.tpl',
+
+        // POPUPS
+        'popups/wmdk_article_attribute.tpl' => 'wmdk/wmdkffexportqueue/views/tpl/admin/popups/wmdkffqueuearticle_attribute.tpl',
     ),
 );

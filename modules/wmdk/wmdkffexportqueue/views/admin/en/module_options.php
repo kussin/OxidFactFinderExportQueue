@@ -29,6 +29,7 @@ $aLang = array(
     'SHOP_MODULE_sWmdkFFExportDataLengthMax'	        => 'Max. dataset length incl. delimiter and enclosure',
     'SHOP_MODULE_sWmdkFFExportDataLengthMin'	        => 'Min. dataset length incl. delimiter and enclosure',
     'SHOP_MODULE_blWmdkFFExportAddAttributeNode'	    => 'Add attribute node',
+    'SHOP_MODULE_bWmdkFFExportPrettifyXml'              => 'Output formatted XML',
     'SHOP_MODULE_sWmdkFFExportTmpDelimiter' 	        => 'Tmp. delimiter',
     'SHOP_MODULE_sWmdkFFExportCsvDelimiter' 	        => 'CSV delimiter',
     'SHOP_MODULE_sWmdkFFExportCsvEnclosure' 	        => 'CSV enclosure',

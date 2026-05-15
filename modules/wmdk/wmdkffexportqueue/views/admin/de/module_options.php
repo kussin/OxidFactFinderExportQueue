@@ -29,6 +29,7 @@ $aLang = array(
     'SHOP_MODULE_sWmdkFFExportDataLengthMax'	        => 'Max. Datensatzlänge inkl. Trennzeichen und Text-Wrapper',
     'SHOP_MODULE_sWmdkFFExportDataLengthMin'	        => 'Min. Datensatzlänge inkl. Trennzeichen und Text-Wrapper',
     'SHOP_MODULE_blWmdkFFExportAddAttributeNode'	    => 'Attribut-Node hinzufügen',
+    'SHOP_MODULE_bWmdkFFExportPrettifyXml'              => 'XML formatiert ausgeben',
     'SHOP_MODULE_sWmdkFFExportTmpDelimiter' 	        => 'Tmp. Trennzeichen',
     'SHOP_MODULE_sWmdkFFExportCsvDelimiter' 	        => 'CSV Trennzeichen',
     'SHOP_MODULE_sWmdkFFExportCsvEnclosure' 	        => 'CSV Text-Wrapper',
