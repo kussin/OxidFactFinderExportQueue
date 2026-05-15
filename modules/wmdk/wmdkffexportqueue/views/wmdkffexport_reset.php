@@ -524,6 +524,11 @@ class wmdkffexport_reset extends oxubase
     
     private function _log() {
         $sFilename  = str_replace('//', '/', $_SERVER['DOCUMENT_ROOT'] . Registry::getConfig()->getConfigParam('sWmdkFFDebugLogFileQueue'));
+        $sLogDirectory = dirname($sFilename);
+
+        if (!is_dir($sLogDirectory)) {
+            mkdir($sLogDirectory, 0775, true);
+        }
         
         // SET ADDITIONAL DATA
         $this->_aResponse['template'] = $this->_sTemplate;
@@ -532,6 +537,10 @@ class wmdkffexport_reset extends oxubase
         $this->_aResponse['cronjob'] = $this->_isCron();
                 
 		$rFile = fopen($sFilename, 'a');
+        if (!$rFile) {
+            return false;
+        }
+
 		fputs($rFile, json_encode($this->_aResponse) . PHP_EOL);			
 		return fclose($rFile);
     }
