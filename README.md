@@ -1,87 +1,76 @@
-# Kussin | OXID 6 FACT Finder Export Queue 6.2++
+# WMDK FACT Finder Export Queue
 
-Kussin | OXID 6 FACT Finder Export Queue provides real-time CSV Exports for FACT Finder NG. It also
-supports [Spotler](https://spotler.com/sooqr-is-now-spotler) and [Doofinder](https://www.doofinder.com/) and since 10/2024 also [flour POS](https://www.flour.io/).
+Kussin | OXID 6 FACT Finder Export Queue provides real-time CSV Exports for [FACT Finder](https://www.fact-finder.com/). It also supports [Spotler](https://spotler.com/sooqr-is-now-spotler) and [Doofinder](https://www.doofinder.com/) and [flour POS](https://www.flour.io/).
 
-**The following configuration options are available:**
+This package contains the FACT Finder export queue from the former WMDK namespace. The WMDK namespace is Kussin-owned and must be treated as custom development.
 
-TODO: Will follow soon
+## Current Context
 
-## Requirement
+- Composer package name: `wmdk/wmdkffexportqueue`
+- Package root: `html/source/packages/wmdk/wmdkffexportqueue/`
+- Active target platform: OXID eShop PE 7.4
+- Source baseline before runtime migration: upstream `1.11.6`
+- Local migration package version: `2.0.0`
+- Migration status: copied OXID 6 package updated to upstream `1.11.6`, console commands and database installer added for OXID 7.4 migration
 
-1. OXID eSales CE/PE/EE v6.2.5 or newer
-2. PHP 7.4 or newer
-3. [FACT Finder NG v3.1.149 or newer](https://www.fact-finder.com/)
+## Migration Goal
 
-## Installation Guide
+Migrate the package to OXID eShop PE 7.4 while keeping the Composer package name `wmdk/wmdkffexportqueue` for the first migration step.
 
-### Initial Installation
+The package must remain compatible with `kussin/factfinder-integration` because the storefront module depends on the queue table and field semantics.
 
-TODO: Will follow soon
+## Required OXID 7.4 Changes
 
-### Configuration
+- Browser-facing cron views are mapped to OXID console commands for Bash execution.
+- Module-owned database installation logic creates the required queue tables and article extension columns.
+- Use `db/sql/wmdk_ff_export_queue.sql` as the current table-structure and data reference because the old package SQL is not current.
+- Keep browser/admin views only where they remain useful for human administration.
+- Use OXID eShop PE 7.4 conventions for module metadata, services, autoloading, and templates.
+- Use Twig for new or migrated templates.
 
-#### Step 1: Database
+## Current Data Reference
 
-1. Log into your OXID eShop database interface (e.g. [phpMyAdmin](https://www.phpmyadmin.net/))
-2. Select OXID eShop database
-3. Execute the following SQL file: [`modules/wmdk/wmdkffexportqueue/sql/install.sql`](modules/wmdk/wmdkffexportqueue/sql/install.sql)
-4. Refresh [OXID eShop database views](https://docs.oxid-esales.com/eshop/en/6.2/installation/update/standard-update.html#schritt-optional-generating-views)
-5. Clear [OXID eShop eShop cache](https://docs.oxid-esales.com/eshop/en/6.2/configuration/caching/caching.html)
+The current queue database dump with structure and data is stored at:
 
-#### Step 2: Module
+```text
+db/sql/wmdk_ff_export_queue.sql
+```
 
-To install the module, please execute the following commands in OXID eShop root directory:
+This dump is large and should not be treated as a normal deployment migration file. Extract the required table definitions into module-owned installation or migration logic during implementation.
 
-   ```bash
-   composer config repositories.kussin_ffqueue vcs https://github.com/kussin/OxidFactFinderExportQueue.git
-   composer require wmdk/wmdkffexportqueue --no-update
-   composer clearcache
-   composer update --no-interaction
-   vendor/bin/oe-console oe:module:install-configuration source/modules/wmdk/wmdkffexportqueue/
-   vendor/bin/oe-console oe:module:apply-configuration
-   ```
+## Installation During Migration
 
-**NOTE:** If you are using VCS like GIT for your project, you should add the following path to your `.gitignore` file:
-`/source/modules/wmdk/`
+Run Composer commands from the OXID Composer project root:
 
-#### Step 3: Export Directories
+```bash
+cd html/source
+composer require wmdk/wmdkffexportqueue
+```
 
-1. Connect to your OXID eShop server via SSH or FTP
-2. Upload the directory [`export/`](export/) to `/path/to/oxid/source/`.
-3. Set the permissions to `755` for the directory `/path/to/oxid/source/export/`
+Do not activate the module before the OXID 7.4 runtime migration has been reviewed.
 
-#### Step 4: Cronjob
+## Console Commands
 
-TODO: Will follow soon
+Run commands from the OXID Composer project root:
 
-## User Guide
+```bash
+cd html/source
+vendor/bin/oe-console wmdkffexport:install:db
+vendor/bin/oe-console wmdkffexport:cron:queue
+vendor/bin/oe-console wmdkffexport:cron:reset
+vendor/bin/oe-console wmdkffexport:export:factfinder --channel=kussin_live_de --shop-id=1 --lang=0
+vendor/bin/oe-console wmdkffexport:import:trusted-shops --channel=kussin_live_de
+vendor/bin/oe-console wmdkffexport:export:sooqr --channel=kussin_live_de --shop-id=1 --lang=0
+vendor/bin/oe-console wmdkffexport:export:doofinder --channel=kussin_live_de --shop-id=1 --lang=0
+vendor/bin/oe-console wmdkffexport:export:flour --channel=kussin_live_de --shop-id=1 --lang=0 --flour-id=1
+vendor/bin/oe-console wmdkffexport:maintenance:cleanup --dry-run
+vendor/bin/oe-console wmdkffexport:maintenance:reset --lastsync-from="2026-06-03 08:30:00" --title-like="%T-Shirt%" --dry-run
+```
 
-[User Guide](USER_GUIDE.md)
+The commands currently execute the migrated OXID 6 view logic directly to keep behavior comparable during the first OXID 7.4 migration step. The old browser-facing entry points must not be used for new cron definitions.
 
-## CLI Commands
+For operational details, command explanations, expected JSON output, and troubleshooting notes, see the [FACT Finder Export Queue User Guide](USER_GUIDE.md).
 
-The module ships with CLI commands for queue, reset, and export workflows. See the
-User Guide for full usage and examples.
+---
 
-## Bugtracker and Feature Requests
-
-Please use the [Github Issues](https://github.com/kussin/OxidFactFinderExportQueue/issues) for bug reports and feature requests.
-
-## Support
-
-Kussin | eCommerce und Online-Marketing GmbH<br>
-Fahltskamp 3<br>
-25421 Pinneberg<br>
-Germany
-
-Fon: +49 (4101) 85868 - 0<br>
-Email: info@kussin.de
-
-## Licence
-
-[End-User Software License Agreement](LICENSE.md)
-
-## Copyright
-
-&copy; 2006-2026 Kussin | eCommerce und Online-Marketing GmbH
+&copy; 2006-2026 [Kussin | eCommerce und Online-Marketing GmbH](https://www.kussin.de/). All rights reserved.

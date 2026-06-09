@@ -1,0 +1,44 @@
+services:
+  _defaults:
+    public: false
+    autowire: true
+
+  Wmdk\FactFinderQueue\Command\ProcessQueueCommand:
+    tags:
+      - { name: 'console.command', command: 'wmdkffexport:cron:queue' }
+
+  Wmdk\FactFinderQueue\Command\ResetQueueCommand:
+    tags:
+      - { name: 'console.command', command: 'wmdkffexport:cron:reset' }
+
+  Wmdk\FactFinderQueue\Command\ExportFactFinderCommand:
+    tags:
+      - { name: 'console.command', command: 'wmdkffexport:export:factfinder' }
+
+  Wmdk\FactFinderQueue\Command\ImportTrustedShopsCommand:
+    tags:
+      - { name: 'console.command', command: 'wmdkffexport:import:trusted-shops' }
+
+  Wmdk\FactFinderQueue\Command\ExportSooqrCommand:
+    tags:
+      - { name: 'console.command', command: 'wmdkffexport:export:sooqr' }
+
+  Wmdk\FactFinderQueue\Command\ExportDoofinderCommand:
+    tags:
+      - { name: 'console.command', command: 'wmdkffexport:export:doofinder' }
+
+  Wmdk\FactFinderQueue\Command\ExportFlourCommand:
+    tags:
+      - { name: 'console.command', command: 'wmdkffexport:export:flour' }
+
+  Wmdk\FactFinderQueue\Command\InstallDatabaseCommand:
+    tags:
+      - { name: 'console.command', command: 'wmdkffexport:install:db' }
+
+  Wmdk\FactFinderQueue\Command\CleanupQueueCommand:
+    tags:
+      - { name: 'console.command', command: 'wmdkffexport:maintenance:cleanup' }
+
+  Wmdk\FactFinderQueue\Command\ResetQueueRecordsCommand:
+    tags:
+      - { name: 'console.command', command: 'wmdkffexport:maintenance:reset' }

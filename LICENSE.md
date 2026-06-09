@@ -1,8 +1,8 @@
 # End-User Software License Agreement ("Agreement")
 
-Last updated: July 12, 2023
+Last updated: 2026-06-09
 
-Please read this End-User License Agreement carefully before downloading or using Kussin | OXID 6 FACT Finder Export Queue.
+Please read this End-User License Agreement carefully before downloading or using Kussin | FACT Finder Export Queue.
 
 # Interpretation and Definitions
 
@@ -16,7 +16,7 @@ For the purposes of this End-User License Agreement:
 
 - __Agreement__ means this End-User License Agreement that forms the entire agreement between You and the Company regarding the use of the Application. 
 
-- __Application__ means the software program provided by the Company downloaded by You to a Device, named Kussin | OXID 6 FACT Finder Export Queue
+- __Application__ means the software program provided by the Company downloaded by You to a Device, named Kussin | FACT Finder Export Queue
 
 
 - __Company__ (referred to as either "the Company", "We", "Us" or "Our" in this Agreement) refers to Kussin | eCommerce und Online-Marketing GmbH, Fahltskamp 3, 25421 Pinneberg.

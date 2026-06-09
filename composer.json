@@ -1,9 +1,9 @@
 {
-    "name":        "wmdk/wmdkffexportqueue",
-    "version":     "1.11.6",
-    "description": "Kussin | OXID 6 FACT Finder Export Queue",
-    "type":        "oxideshop-module",
-    "keywords":    [
+    "name": "wmdk/wmdkffexportqueue",
+    "version": "2.0.0",
+    "description": "Kussin | FACT Finder Export Queue for OXID eShop",
+    "type": "oxideshop-module",
+    "keywords": [
         "wmdk",
         "kussin",
         "oxid",
@@ -11,11 +11,11 @@
         "factfinder",
         "omikron"
     ],
-    "homepage":    "https://www.kussin.de/",
-    "license":     [
+    "homepage": "https://www.kussin.de/",
+    "license": [
         "EULA"
     ],
-    "authors":     [
+    "authors": [
         {
             "name": "Daniel Kussin",
             "email": "daniel.kussin@kussin.de",
@@ -27,10 +27,10 @@
         "email": "info@kussin.eu",
         "issues": "https://github.com/kussin/magento2-akeneo-connector-addon-assets/issues"
     },
-    "extra":       {
+    "extra": {
         "oxideshop": {
             "target-directory": "wmdk/wmdkffexportqueue",
-            "source-directory": "modules/wmdk/wmdkffexportqueue",
+            "source-directory": ".",
             "blacklist-filter": [
                 "build/**/*.*",
                 "grunt/**/*.*",
@@ -38,15 +38,15 @@
             ]
         }
     },
-    "require":     {
-        "php": ">=7.4",
-        "oxid-esales/oxideshop-ce": "^6.0",
+    "require": {
+        "php": "^8.2",
+        "oxid-esales/oxideshop-ce": "^7.4",
         "spatie/array-to-xml": "^2.7",
         "ext-zlib": "*"
     },
-    "autoload":    {
+    "autoload": {
         "psr-4": {
-            "Wmdk\\FactFinderQueue\\": "../../../source/modules/wmdk/wmdkffexportqueue"
+            "Wmdk\\FactFinderQueue\\": "src/"
         }
     }
 }
