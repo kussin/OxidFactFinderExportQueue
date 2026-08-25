@@ -39,7 +39,7 @@ trait FlourTrait
         $sMsrp = $this->_getMsrp();
 
         if ( ($dPrice > 0) && ($sMsrp > 0) ){
-            $dSaleAmount = round(($dPrice / $sMsrp) * 100, 0);
+            $dSaleAmount = round(100 - ( ($dPrice * 100) / $sMsrp ), 0);
 
             return ($bSign) ? $dSaleAmount . '%' : $dSaleAmount;
         }
