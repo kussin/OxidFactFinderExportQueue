@@ -629,7 +629,7 @@ class wmdkffexport_queue extends oxubase
         $dOxTPrice = $this->_getMsrp();
         
         if ($dOxPrice < $dOxTPrice) {
-            $dDiscount = 100 - ( ($dOxPrice * 100) / $dOxTPrice );
+            $dDiscount = round(100 - ( ($dOxPrice * 100) / $dOxTPrice ), 0);
             
             return floor($dDiscount) . $sSign;
         }
