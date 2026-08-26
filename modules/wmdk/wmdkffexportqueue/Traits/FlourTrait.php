@@ -22,8 +22,8 @@ trait FlourTrait
 
     private function _getFlourPrice()
     {
-        if ($this->_bIsParent || $this->_bIsVariant) {
-            $oFirstActiveVariant = ($this->_bIsVariant) ? $this->_getFirstActiveVariant($this->_oProduct->oxarticles__oxparentid->value) : $this->_getFirstActiveVariant();
+        if ($this->_bIsParent) {
+            $oFirstActiveVariant = $this->_getFirstActiveVariant();
 
             if ($oFirstActiveVariant) {
                 return (double) $oFirstActiveVariant->oxarticles__wmdkflourwarehouseprice->value;
