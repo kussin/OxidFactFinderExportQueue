@@ -38,15 +38,22 @@ trait FlourTrait
     private function _getFlourSaleAmount($bSign = false)
     {
         $dPrice = $this->_getFlourPrice();
-        $sMsrp = $this->_getMsrp();
+        $dMsrp = $this->_getFlourMsrp();
 
-        if ( ($dPrice > 0) && ($sMsrp > 0) ){
-            $dSaleAmount = round(100 - ( ($dPrice * 100) / $sMsrp ), 0);
+        if ( ($dPrice > 0) && ($dMsrp > 0) ){
+            $dSaleAmount = round(100 - ( ($dPrice * 100) / $dMsrp ), 0);
 
             return ($bSign) ? $dSaleAmount . '%' : $dSaleAmount;
         }
 
         return '';
+    }
+
+    private function _getFlourMsrp()
+    {
+        $dMsrp = (double) $this->_getMsrp();
+
+        return ($dMsrp > 0) ? $dMsrp : $this->_getPrice();
     }
 
     private function _getFlourShortUrl()
@@ -75,6 +82,9 @@ trait FlourTrait
         // GET FIELDS
         $sPreparedExportFields = $this->_getPreparedExportFields($this->_aExportFields);
 
+        // USE PRICE AS MSRP FALLBACK FOR FLOUR EXPORT ONLY
+        $sPreparedExportFields = $this->_getFlourExportSelectionMsrpFallback($sPreparedExportFields);
+
         // PREPARE DEEPLINK
         $sPreparedExportFields = $this->_getFlourExportSelectionAddUtmTracking($sPreparedExportFields);
 
@@ -83,7 +93,9 @@ trait FlourTrait
 
         // REMOVE % SIGN
         $sPreparedExportFields = $this->_removeFlourExportSelectionPercentageSign($sPreparedExportFields);
-        $sPreparedExportFields = $this->_removeFlourExportSelectionPercentageSign($sPreparedExportFields, '`FlourSaleAmount`');
+
+        // CALCULATE FLOUR DISCOUNT FROM THE EXPORTED PRICE BASIS
+        $sPreparedExportFields = $this->_getFlourExportSelectionSaleAmount($sPreparedExportFields);
 
         // CONVERT STOCK TO BOOLEAN
         $sPreparedExportFields = $this->_getFlourExportSelectionStockFlag($sPreparedExportFields);
@@ -148,6 +160,48 @@ trait FlourTrait
         }
 
         return $sPreparedExportFields;
+    }
+
+    private function _getFlourExportSelectionMsrpFallback(
+        $sPreparedExportFields,
+        $sMsrpField = '`MSRP`',
+        $sPriceField = '`Price`',
+        $sFlourMsrpField = '`FlourMsrp`'
+    ) {
+        $sUnquotedMsrpField = trim($sMsrpField, '`');
+        $sPattern = '/(?:' . preg_quote($sMsrpField, '/') . '|(?<![`A-Za-z0-9_])'
+            . preg_quote($sUnquotedMsrpField, '/') . ')\s+AS\s+'
+            . preg_quote($sFlourMsrpField, '/') . '(?=\s*,|$)/';
+        $sReplacement = 'IF(' . $sMsrpField . ' > 0, ' . $sMsrpField . ', ' . $sPriceField . ')';
+
+        return preg_replace(
+            $sPattern,
+            $sReplacement . ' AS ' . $sFlourMsrpField,
+            $sPreparedExportFields
+        );
+    }
+
+    private function _getFlourExportSelectionSaleAmount(
+        $sPreparedExportFields,
+        $sSaleAmountField = '`FlourSaleAmount`',
+        $sFlourPriceField = '`FlourPrice`',
+        $sMsrpField = '`MSRP`',
+        $sPriceField = '`Price`'
+    ) {
+        $sPattern = '/' . preg_quote($sSaleAmountField, '/') . '(?:\s+AS\s+(`[^`]+`))?(?=\s*,|$)/';
+        $sReferencePrice = 'IF(' . $sMsrpField . ' > 0, ' . $sMsrpField . ', ' . $sPriceField . ')';
+        $sReplacement = 'IF(' . $sFlourPriceField . ' > 0 AND ' . $sReferencePrice . ' > 0, '
+            . 'ROUND(100 - ((' . $sFlourPriceField . ' * 100) / ' . $sReferencePrice . '), 0), "EMPTY")';
+
+        return preg_replace_callback(
+            $sPattern,
+            function ($aMatches) use ($sReplacement, $sSaleAmountField) {
+                $sAlias = isset($aMatches[1]) ? $aMatches[1] : $sSaleAmountField;
+
+                return $sReplacement . ' AS ' . $sAlias;
+            },
+            $sPreparedExportFields
+        );
     }
 
     private function _getFlourExportSelectionMapTax($sPreparedExportFields, $sTaxField = '`Tax`')

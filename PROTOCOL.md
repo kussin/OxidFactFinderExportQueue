@@ -100,3 +100,7 @@ This document records agreements and implementation decisions for `wmdk/wmdkffex
 - Removed inactive OXID 6 leftovers after command validation: the old package CLI script, unregistered `core/*` helpers, unregistered legacy `controllers/admin/*` classes, inactive browser-only `wmdkffexport_ajax` and `wmdkffexport_mapping` views, unused AJAX/popup template registrations, the obsolete attribute popup template, and stale package-local SQL files. The active installation path is `DatabaseInstaller`; the current SQL reference stays in root `db/sql/`.
 - Kept `views/admin/*` language source files for now because the OXID 7 `views/admin_twig/*` language entry points still include them. They are legacy-structured but still used.
 - Rewrote `USER_GUIDE.md` as an operational user guide and documented `wmdkffexport:cron:reset` counters, expected zero-reset scenarios, relevant settings, and SQL checks. Linked the guide from `README.md`.
+
+### 2026-08-26
+
+- Ported the flour MSRP fallback from the OXID 6 module: the regular `MSRP` export remains unchanged, `FlourMsrp` falls back to `Price`, and `FlourSaleAmount` uses the same flour-specific reference price without affecting other export channels.
