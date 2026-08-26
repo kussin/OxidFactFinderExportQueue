@@ -1,16 +1,16 @@
-# WMDK FACT Finder Export Queue for OXID 6
+# KUSSIN | FACT Finder Export Queue for OXID 6
 
-The WMDK FACT Finder Export Queue prepares OXID eShop article data in a dedicated queue and creates product feeds for [FACT Finder](https://www.fact-finder.com/). It also supports [Spotler/Sooqr](https://spotler.com/sooqr-is-now-spotler), [Doofinder](https://www.doofinder.com/), [flour POS](https://www.flour.io/), and Trusted Shops product rating imports.
+The KUSSIN | FACT Finder Export Queue for OXID 6 prepares OXID eShop article data in a dedicated queue and creates product feeds for [FACT Finder](https://www.fact-finder.com/). It also supports [Spotler/Sooqr](https://spotler.com/sooqr-is-now-spotler), [Doofinder](https://www.doofinder.com/), [flour POS](https://www.flour.io/), and Trusted Shops product rating imports.
 
-This package contains custom Kussin development from the former WMDK namespace.
+This package contains KUSSIN custom development. Some technical identifiers retain the former WMDK namespace for backward compatibility.
 
 ## Supported OXID Versions and Branches
 
-| OXID eShop version | Branch                                                                                                                                                                               | Status |
-| --- |--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| --- |
-| 6.2.5 through 6.5.x | [`main`]([[https://github.com/kussin/OxidFactFinderExportQueue/tree/dev](https://github.com/kussin/OxidFactFinderExportQueue)](https://github.com/kussin/OxidFactFinderExportQueue)) | Current OXID 6 branch; last tested with OXID eShop 6.5.5 |
-| 6.0 through 6.2 | [`bwc/oxid60`](https://github.com/kussin/OxidFactFinderExportQueue/tree/bwc/oxid60)                                                                                                  | Backward-compatibility branch for older OXID 6 installations |
-| 7.4 and later 7.x releases | [`update/69446_oxid7`](https://github.com/kussin/OxidFactFinderExportQueue/tree/update/69446_oxid7)                                                                                  | OXID 7 migration branch; see its documentation for the current status |
+| OXID eShop version | Branch                                                                                             | Status |
+| --- |----------------------------------------------------------------------------------------------------| --- |
+| 6.2.5 through 6.5.x | [`main`](https://github.com/kussin/OxidFactFinderExportQueue) | Current OXID 6 branch; last tested with OXID eShop 6.5.5 |
+| 6.0 through 6.2 | [`bwc/oxid60`](https://github.com/kussin/OxidFactFinderExportQueue/tree/bwc/oxid60) | Backward-compatibility branch for older OXID 6 installations |
+| 7.4 and later 7.x releases | [`update/69446_oxid7`](https://github.com/kussin/OxidFactFinderExportQueue/tree/update/69446_oxid7) | OXID 7 migration branch; see its documentation for the current status |
 
 The `main` branch declares `oxid-esales/oxideshop-ce:^6.0`, but its maintained target starts at OXID 6.2.5. Use `bwc/oxid60` for older shops instead of relying on the broad Composer constraint. OXID 6 versions other than 6.5.5 have not been verified against the current `dev` revision unless stated separately.
 
@@ -79,7 +79,7 @@ php source/bin/wmdkffexport.php flour --channel=kussin_live_de --shop-id=1 --lan
 
 Use the CLI wrapper for new cron definitions. Browser-facing controller URLs remain available for legacy OXID 6 integrations but should not be exposed publicly without access restrictions.
 
-See the [FACT Finder Export Queue User Guide](USER_GUIDE.md) for setup, settings, command parameters, cron examples, output files, and troubleshooting.
+See the [KUSSIN | FACT Finder Export Queue User Guide](USER_GUIDE.md) for setup, settings, command parameters, cron examples, output files, and troubleshooting.
 
 ## Bug Reports and Feature Requests
 
@@ -93,7 +93,7 @@ Fahltskamp 3<br>
 Germany
 
 Phone: +49 (4101) 85868 - 0<br>
-Email: info@kussin.de
+Email: info@kussin.eu
 
 The module is distributed under the [End-User Software License Agreement](LICENSE.md).
 

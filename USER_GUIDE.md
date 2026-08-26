@@ -1,4 +1,4 @@
-# FACT Finder Export Queue User Guide for OXID 6
+# KUSSIN | FACT Finder Export Queue for OXID 6 - User Guide
 
 This guide explains the operational use of `wmdk/wmdkffexportqueue` on the `dev` branch. The last tested shop version is OXID eShop 6.5.5. For OXID 6.0 through 6.2, use [`bwc/oxid60`](https://github.com/kussin/OxidFactFinderExportQueue/tree/bwc/oxid60). For OXID 7.4 and later 7.x releases, use [`update/69446_oxid7`](https://github.com/kussin/OxidFactFinderExportQueue/tree/update/69446_oxid7) and follow that branch's documentation.
 
@@ -190,7 +190,7 @@ Schedule reset before queue processing and export only after queue processing ha
 Redirect command output when cron diagnostics are required:
 
 ```bash
-php source/bin/wmdkffexport.php queue >> source/log/WMDK_FF_QUEUE_CONSOLE.log 2>&1
+php source/bin/wmdkffexport.php queue >> source/log/KUSSIN_FF_QUEUE_CONSOLE.log 2>&1
 ```
 
 ## Legacy Browser Entry Points
@@ -249,7 +249,7 @@ Fahltskamp 3<br>
 Germany
 
 Phone: +49 (4101) 85868 - 0<br>
-Email: info@kussin.de
+Email: info@kussin.eu
 
 ---
 
