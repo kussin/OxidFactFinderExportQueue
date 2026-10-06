@@ -3,6 +3,7 @@
 namespace Wmdk\FactFinderQueue\Traits;
 
 use OxidEsales\Eshop\Core\Registry;
+use Wmdk\FactFinderQueue\Service\FlourSaleAmountCalculator;
 
 trait FlourTrait
 {
@@ -40,13 +41,9 @@ trait FlourTrait
         $dPrice = $this->_getFlourPrice();
         $dMsrp = $this->_getFlourMsrp();
 
-        if ( ($dPrice > 0) && ($dMsrp > 0) ){
-            $dSaleAmount = round(100 - ( ($dPrice * 100) / $dMsrp ), 0);
+        $sSaleAmount = FlourSaleAmountCalculator::calculate($dPrice, $dMsrp, $this->_getPrice());
 
-            return ($bSign) ? $dSaleAmount . '%' : $dSaleAmount;
-        }
-
-        return '';
+        return ($bSign && $sSaleAmount !== '') ? $sSaleAmount . '%' : $sSaleAmount;
     }
 
     private function _getFlourMsrp()

@@ -2,6 +2,7 @@
 $aLang = array(
     'charset' => 'utf-8',
 	
+    'SHOP_MODULE_GROUP_sKussinFFMonitorSettings'        => 'KUSSIN | FACT Finder Export Queue - Monitor',
     'SHOP_MODULE_GROUP_sWmdkFFGeneralSettings'   	    => 'General settings',
     'SHOP_MODULE_GROUP_sWmdkFFExportSettings'	        => 'Export settings',
     'SHOP_MODULE_GROUP_sWmdkFFQueueSettings'	        => 'Queue settings',
@@ -15,6 +16,14 @@ $aLang = array(
     'SHOP_MODULE_GROUP_sWmdkFFCronSettings'	            => 'Cron settings',
     'SHOP_MODULE_GROUP_sWmdkFFImportTSSettings'	        => 'Trusted Shops settings',
     'SHOP_MODULE_GROUP_sWmdkFFDebugSettings'	        => 'Debug settings',
+
+    // FACT FINDER MONITOR
+    'SHOP_MODULE_sKussinFFMonitorRefreshInterval'       => 'Process indicator refresh interval',
+    'SHOP_MODULE_sKussinFFMonitorRefreshInterval_5'     => '5 seconds',
+    'SHOP_MODULE_sKussinFFMonitorRefreshInterval_10'    => '10 seconds',
+    'SHOP_MODULE_sKussinFFMonitorRefreshInterval_15'    => '15 seconds',
+    'SHOP_MODULE_sKussinFFMonitorRefreshInterval_20'    => '20 seconds',
+    'SHOP_MODULE_sKussinFFMonitorRefreshInterval_30'    => '30 seconds',
 
     // GENERAL
     'SHOP_MODULE_sWmdkFFGeneralChannelList'             => 'Channel list',

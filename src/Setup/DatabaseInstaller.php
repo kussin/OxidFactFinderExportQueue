@@ -3,15 +3,18 @@
 namespace Wmdk\FactFinderQueue\Setup;
 
 use OxidEsales\Eshop\Core\DatabaseProvider;
+use OxidEsales\Eshop\Core\DbMetaDataHandler;
 
 class DatabaseInstaller
 {
     public function install(): void
     {
         $this->createQueueTable();
+        $this->removeObsoleteQueueColumns();
         $this->createTrustedShopsTempTable();
         $this->addArticleColumns();
         $this->addArticleIndexes();
+        $this->regenerateViews();
     }
 
     private function createQueueTable(): void
@@ -65,9 +68,6 @@ CREATE TABLE IF NOT EXISTS `wmdk_ff_export_queue` (
   `HasTopFlag` varchar(1) NOT NULL COMMENT 'Top seller flag',
   `HasSaleFlag` varchar(1) NOT NULL COMMENT 'Sale flag',
   `SaleAmount` varchar(4) NOT NULL COMMENT 'Sale percentage',
-  `HasSaleOfTheDayFlag` varchar(1) NOT NULL COMMENT 'Sale of the day flag',
-  `SaleOfTheDayDate` varchar(10) NOT NULL COMMENT 'Sale of the day date',
-  `HasKidsFlag` varchar(1) NOT NULL COMMENT 'Kids article flag',
   `HasVariantsSizelist` varchar(1) NOT NULL COMMENT 'Variant size list flag',
   `VariantsSizelistMarkup` text NOT NULL COMMENT 'Variant size list HTML markup',
   `Season` varchar(10) DEFAULT NULL COMMENT 'Season',
@@ -90,6 +90,18 @@ CREATE TABLE IF NOT EXISTS `wmdk_ff_export_queue` (
   KEY `EAN` (`EAN`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Articles information'
 SQL);
+    }
+
+    private function removeObsoleteQueueColumns(): void
+    {
+        foreach (['HasSaleOfTheDayFlag', 'SaleOfTheDayDate', 'HasKidsFlag'] as $columnName) {
+            if ($this->columnExists('wmdk_ff_export_queue', $columnName)) {
+                $this->execute(sprintf(
+                    'ALTER TABLE `wmdk_ff_export_queue` DROP COLUMN `%s`',
+                    $columnName
+                ));
+            }
+        }
     }
 
     private function createTrustedShopsTempTable(): void
@@ -117,6 +129,10 @@ SQL);
             'WMDK_FFQUEUE' => "ENUM('1','0') NOT NULL DEFAULT '0' COMMENT 'WMDK flag if product is added to FF queue'",
             'WMDKMODIFIED' => "DATE NULL DEFAULT '0000-00-00' COMMENT 'WMDK date for product order in FF'",
             'WMDKTRUSTEDSHOPSRELATEDPRODUCTS' => "TEXT NULL COMMENT 'Trusted Shops related product numbers'",
+            'WMDKFLOURID' => "CHAR(32) NULL DEFAULT NULL COMMENT 'WMDK flour POS id'",
+            'WMDKFLOURACTIVE' => "TINYINT(4) NULL DEFAULT '1' COMMENT 'WMDK flour POS active flag'",
+            'WMDKFLOURWAREHOUSEPRICE' => "DOUBLE NULL DEFAULT '0' COMMENT 'WMDK flour POS warehouse sale price'",
+            'WMDKFLOURSHORTURL' => "MEDIUMTEXT NULL DEFAULT NULL COMMENT 'WMDK flour POS short URL with parameters'",
         ];
 
         foreach ($columns as $columnName => $definition) {
@@ -149,6 +165,11 @@ SQL);
         );
 
         return $result !== false && $result->count() > 0;
+    }
+
+    private function regenerateViews(): void
+    {
+        oxNew(DbMetaDataHandler::class)->updateViews();
     }
 
     private function execute(string $sql): void

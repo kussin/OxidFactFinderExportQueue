@@ -8,7 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Wmdk\FactFinderQueue\Service\ExportDirectoryManager;
-use Wmdk\FactFinderQueue\Service\ModuleSettingsReader;
+use Wmdk\FactFinderQueue\Service\LegacyConfigBridge;
 
 abstract class AbstractLegacyViewCommand extends Command
 {
@@ -119,39 +119,13 @@ abstract class AbstractLegacyViewCommand extends Command
         $this->applyLegacyConfigDefaults();
     }
 
+    /**
+     * Shared with the `cl=wmdkffexport_*` controllers, so both surfaces run the
+     * legacy views against identical configuration.
+     */
     private function applyLegacyConfigDefaults(): void
     {
-        $config = Registry::getConfig();
-
-        foreach ((new ModuleSettingsReader())->getAllSettings() as $name => $value) {
-            $config->setConfigParam($name, $value);
-        }
-
-        $defaults = [
-            'sWmdkFFQueueLimit' => '150',
-            'iArticleStatus' => '1',
-            'iArticleMinStock' => '0',
-            'sWmdkFFQueueAttributeGlue' => '|',
-            'sWmdkFFQueueFlagTopseller' => '10',
-            'sWmdkFFQueuePhpLimitTimeout' => '900',
-            'sWmdkFFQueuePhpLimitMemory' => '512M',
-            'sWmdkFFQueueResetLimit' => '75',
-            'bWmdkFFQueueEnableFromPrice' => '1',
-            'bWmdkFFQueueUpdateSiblings' => '0',
-            'bWmdkFFQueueUseCategoryPath' => '0',
-            'sWmdkFFDebugCronjobIpList' => '',
-            'sWmdkFFDebugLogFileQueue' => 'log/KUSSIN_FACTFINDER_QUEUE.log',
-            'sWmdkFFDebugLogFileExport' => 'log/KUSSIN_FACTFINDER_EXPORT.log',
-            'sWmdkFFDebugLogFileStock' => 'log/KUSSIN_FACTFINDER_STOCK.log',
-            'sWmdkFFDebugLogFileClonedAttributes' => 'log/KUSSIN_FACTFINDER_CLONED_ATTRIBUTES.log',
-            'sWmdkFFDebugLogFileCleanup' => 'log/KUSSIN_FACTFINDER_CLEANUP.log',
-        ];
-
-        foreach ($defaults as $name => $value) {
-            if ((string) $config->getConfigParam($name) === '') {
-                $config->setConfigParam($name, $value);
-            }
-        }
+        (new LegacyConfigBridge())->apply();
     }
 
     private function normalizeResponse(array $response, InputInterface $input): array

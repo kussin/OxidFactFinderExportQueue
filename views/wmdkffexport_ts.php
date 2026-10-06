@@ -16,6 +16,7 @@ class wmdkffexport_ts extends oxubase
         
         'reviews_imported' => 0,
         'reviews_combined' => 0,
+        'reviews_combined_siblings' => 0,
         'reviews_copied' => 0,
         
         'process_ip' => '',
@@ -62,6 +63,7 @@ class wmdkffexport_ts extends oxubase
         if ($this->_loadReviews()) {
             $this->_importReviews();
             $this->_combineReviews();
+            $this->_combineSiblingReviews();
             $this->_copyReviews();
         }
     }
@@ -117,14 +119,13 @@ class wmdkffexport_ts extends oxubase
         $this->_resetReviewsInQueue();
         
         foreach ($this->_aTSProductReviews as $sSku => $aData) {
-            $sQuery = 'UPDATE
+            $sQuery = 'UPDATE IGNORE
                 wmdk_ff_export_queue
             SET
                 TrustedShopsRating = ' . $aData['rating'] . ',
                 TrustedShopsRatingCnt = ' . $aData['rating_count'] . ',
                 TrustedShopsRatingPercentage = ' . $aData['rating_percentage'] . ',
-                LASTSYNC = LASTSYNC,
-                OXTIMESTAMP = OXTIMESTAMP
+                ' . $this->_keepSyncTimestamps() . '
             WHERE
                 (ProductNumber LIKE "' . $sSku .'")
                 AND (
@@ -174,14 +175,13 @@ class wmdkffexport_ts extends oxubase
                 
                 $sProductNumber = $aRow['ProductNumber'];
                 
-                $sQuery = 'UPDATE
+                $sQuery = 'UPDATE IGNORE
                     wmdk_ff_export_queue
                 SET
                     TrustedShopsRating = "' . $aRow['TrustedShopsRating'] . '",
                     TrustedShopsRatingCnt = "' . $aRow['TrustedShopsRatingCnt'] . '",
                     TrustedShopsRatingPercentage = "' . $aRow['TrustedShopsRatingPercentage'] . '",
-                    LASTSYNC = LASTSYNC,
-                    OXTIMESTAMP = OXTIMESTAMP
+                    ' . $this->_keepSyncTimestamps() . '
                 WHERE
                     (ProductNumber = "' . $aRow['ProductNumber'] . '")';
         
@@ -195,6 +195,80 @@ class wmdkffexport_ts extends oxubase
         $this->_aResponse['reviews_combined'] = $iCombined;
     }
     
+    /**
+     * Keep both automatic timestamp columns unchanged while importing ratings. UPDATE IGNORE lets
+     * legacy zero markers be assigned back to themselves under the strict OXID 7 database mode.
+     */
+    private function _keepSyncTimestamps($sAlias = '') {
+        $sPrefix = ($sAlias !== '') ? ($sAlias . '.') : '';
+
+        return $sPrefix . 'LASTSYNC = ' . $sPrefix . 'LASTSYNC,
+            ' . $sPrefix . 'OXTIMESTAMP = ' . $sPrefix . 'OXTIMESTAMP';
+    }
+
+    /**
+     * Redmine #69552 - a rating that Trusted Shops returned for one variant never reached the
+     * variant's siblings.
+     *
+     * _combineReviews() only aggregates products whose oxarticles.WMDKTRUSTEDSHOPSRELATEDPRODUCTS
+     * column is maintained by hand, and _copyReviews() below fans a rating out from the row where
+     * ProductNumber = MasterProductNumber. So when Trusted Shops attached the review to a variant
+     * and the master row itself had none - the ordinary case, since a reviewer buys a size, not a
+     * master - there was nothing on the master to fan out, and every sibling stayed unrated while
+     * the product detail page (which reads Trusted Shops directly) showed the stars.
+     *
+     * This step fills that gap: for every master row still without a rating, the ratings its own
+     * siblings carry are aggregated onto it, using the same arithmetic _createTmpReviewData()
+     * already uses for the hand-maintained groups. _copyReviews() then distributes it as before.
+     *
+     * Masters that already carry a rating are left untouched, so neither a rating Trusted Shops
+     * gave the master directly nor the hand-maintained aggregate above is ever overwritten.
+     */
+    private function _combineSiblingReviews() {
+        $oDb = \OxidEsales\Eshop\Core\DatabaseProvider::getDb();
+        $sChannel = $oDb->quote($this->_sChannel);
+
+        $sQuery = 'UPDATE IGNORE
+            wmdk_ff_export_queue master
+            INNER JOIN (
+                SELECT
+                    `CHANNEL`,
+                    MasterProductNumber,
+                    FORMAT(SUM(TrustedShopsRating) / COUNT(*), 2) AS SiblingRating,
+                    SUM(TrustedShopsRatingCnt) AS SiblingRatingCnt,
+                    (SUM(TrustedShopsRating) / COUNT(*)) / ' . (float) $this->_dTSProductReviewStarsMax . ' * 100 AS SiblingRatingPercentage
+                FROM
+                    wmdk_ff_export_queue
+                WHERE
+                    (`CHANNEL` = ' . $sChannel . ')
+                    AND (TrustedShopsRating > 0)
+                    AND (TrustedShopsRatingCnt > 0)
+                GROUP BY
+                    `CHANNEL`,
+                    MasterProductNumber
+            ) siblings
+                ON (siblings.`CHANNEL` = master.`CHANNEL`)
+                AND (siblings.MasterProductNumber = master.MasterProductNumber)
+        SET
+            master.TrustedShopsRating = siblings.SiblingRating,
+            master.TrustedShopsRatingCnt = siblings.SiblingRatingCnt,
+            master.TrustedShopsRatingPercentage = siblings.SiblingRatingPercentage,
+            ' . $this->_keepSyncTimestamps('master') . '
+        WHERE
+            (master.`CHANNEL` = ' . $sChannel . ')
+            AND (master.ProductNumber = master.MasterProductNumber)
+            AND (
+                (master.TrustedShopsRatingCnt IS NULL)
+                OR (master.TrustedShopsRatingCnt = "")
+                OR (master.TrustedShopsRatingCnt = 0)
+            );';
+
+        $iCombined = $oDb->execute($sQuery);
+
+        // LOG
+        $this->_aResponse['reviews_combined_siblings'] = $iCombined;
+    }
+
     private function _createTmpReviewData() {
         // TRUNCATE
         \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->execute('TRUNCATE `wmdk_ff_export_queue_tmp_ts`;');
@@ -247,12 +321,11 @@ class wmdkffexport_ts extends oxubase
     }
 
     private function _resetReviewsInQueue() {
-        $sQuery = 'UPDATE 
+        $sQuery = 'UPDATE IGNORE
             wmdk_ff_export_queue
         SET
             TrustedShopsRatingCnt = "",
-            LASTSYNC = LASTSYNC,
-            OXTIMESTAMP = OXTIMESTAMP
+            ' . $this->_keepSyncTimestamps() . '
         WHERE
             TrustedShopsRatingCnt != "";';
 
@@ -263,7 +336,7 @@ class wmdkffexport_ts extends oxubase
     }
     
     private function _copyReviews() {
-        $sQuery = 'UPDATE
+        $sQuery = 'UPDATE IGNORE
             wmdk_ff_export_queue a,
             (
                 SELECT
@@ -285,14 +358,13 @@ class wmdkffexport_ts extends oxubase
             a.TrustedShopsRating = b.TrustedShopsRating,
             a.TrustedShopsRatingCnt = b.TrustedShopsRatingCnt,
             a.TrustedShopsRatingPercentage = b.TrustedShopsRatingPercentage,
-            a.LASTSYNC = a.LASTSYNC,
-            a.OXTIMESTAMP = a.OXTIMESTAMP
+            ' . $this->_keepSyncTimestamps('a') . '
         WHERE
             (a.MasterProductNumber = b.ProductNumber)
             AND (
                  (a.TrustedShopsRating != b.TrustedShopsRating)
-                 OR (a.TrustedShopsRatingCnt != b.TrustedShopsRating)
-                 OR (a.TrustedShopsRatingPercentage != b.TrustedShopsRating)
+                 OR (a.TrustedShopsRatingCnt != b.TrustedShopsRatingCnt)
+                 OR (a.TrustedShopsRatingPercentage != b.TrustedShopsRatingPercentage)
              );';
         
         $iCopied = \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->execute($sQuery);
@@ -366,7 +438,7 @@ class wmdkffexport_ts extends oxubase
             }
         }
 
-        return 'kussin_live_de';
+        return 'wh1_live_de';
     }
 
 }

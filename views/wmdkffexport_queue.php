@@ -6,6 +6,7 @@ use Wmdk\FactFinderQueue\Traits\ClonedAttributesTrait;
 use Wmdk\FactFinderQueue\Traits\ConverterTrait;
 use Wmdk\FactFinderQueue\Traits\FlourTrait;
 use Wmdk\FactFinderQueue\Service\LogFilePathResolver;
+use Wmdk\FactFinderQueue\Service\QueueFieldCalculator;
 
 /**
  * Class wmdkffexport_queue
@@ -627,17 +628,11 @@ class wmdkffexport_queue extends oxubase
 
         $dOxPrice = $this->_getPrice($bWmdkFFQueueEnableFromPrice == 1);
         $dOxTPrice = $this->_getMsrp();
-        
-        if ($dOxPrice < $dOxTPrice) {
-            $dDiscount = round(100 - ( ($dOxPrice * 100) / $dOxTPrice ), 0);
-            
-            return floor($dDiscount) . $sSign;
-        }
-        
-        return '';
+
+        return QueueFieldCalculator::saleAmount($dOxPrice, $dOxTPrice, $sSign);
     }
-    
-    
+
+
     private function _getVariantsSizelistMarkup($sGlue = '') {
         $sMarkup = '';
         $aDesktopMarkup = array();
@@ -753,8 +748,8 @@ class wmdkffexport_queue extends oxubase
 
         return $oArticle->{$sProperty}->value ?? $mDefault;
     }
-    
-    
+
+
     private function _translateString($oObject, $sKey) {
         /* HACK (Ticket: #33333) */
         $sDbTableFieldName = $sKey . $this->_sLanguageSuffix;
@@ -789,8 +784,8 @@ class wmdkffexport_queue extends oxubase
 
         return ( (trim($sTranslatedString) != '') || !$bVariant) ? trim($sTranslatedString) : $this->_translateAttributeValue($sAttrId);
     }
-    
-    
+
+
     private function _excapeString($sString) {
         return str_replace(array(
             '"',

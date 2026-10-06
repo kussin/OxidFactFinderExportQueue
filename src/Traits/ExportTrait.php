@@ -303,6 +303,15 @@ trait ExportTrait
                 $aExportFields,
                 explode(',', Registry::getConfig()->getConfigParam('sWmdkFFExportFields'))
             );
+
+            $aExportFields = array_values(array_filter(
+                $aExportFields,
+                static fn ($field): bool => !in_array(
+                    trim((string) $field, " \t\n\r\0\x0B`"),
+                    ['HasSaleOfTheDayFlag', 'SaleOfTheDayDate', 'HasKidsFlag'],
+                    true
+                )
+            ));
         }
 
         return (bool) Registry::getConfig()->getConfigParam('bWmdkFFClonedAttributeEnabled')

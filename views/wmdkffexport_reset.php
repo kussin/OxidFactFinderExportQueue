@@ -28,6 +28,23 @@ class wmdkffexport_reset extends oxubase
     );
     
     protected $_sProcessIp = NULL;
+
+    /**
+     * OXID 6 uses the SQL zero datetime as its "needs re-export" marker. The migrated database
+     * accepts it when the affected statement uses IGNORE, which is deliberately limited to the
+     * queue writes in this class.
+     */
+    const UNSYNCED_DATETIME = '0000-00-00 00:00:00';
+    const UNSYNCED_TIMESTAMP = '0000-00-00 00:00:00';
+    const TRANSITIONAL_DATETIME = '1000-01-01 00:00:00';
+    const TRANSITIONAL_TIMESTAMP = '1970-01-01 00:00:01';
+
+    /**
+     * SQL predicate: is this row still flagged for export, in either spelling of the sentinel?
+     */
+    private function _isUnsyncedSql($sColumn) {
+        return 'CAST(' . $sColumn . ' AS CHAR) IN ("' . self::UNSYNCED_DATETIME . '", "' . self::TRANSITIONAL_DATETIME . '", "' . self::TRANSITIONAL_TIMESTAMP . '")';
+    }
     
     protected $_sTemplate = 'wmdkffexport_reset.tpl';
 
@@ -92,18 +109,18 @@ class wmdkffexport_reset extends oxubase
     private function _resetExistingProducts() {
         $sResetExistingArticlesSinceDays = Registry::getConfig()->getConfigParam('sWmdkFFCronResetExistingArticlesSinceDays');
 
-        $sQuery = 'UPDATE
+        $sQuery = 'UPDATE IGNORE
             oxarticles a,
             wmdk_ff_export_queue b
         SET
-            b.LASTSYNC = "0000-00-00 00:00:00",
+            b.LASTSYNC = 0,
             b.ProcessIp = "' . $this->_getProcessIp() . '",
-            b.OXTIMESTAMP = "0000-00-00 00:00:00"
+            b.OXTIMESTAMP = 0
         WHERE
             (a.OXID = b.OXID)
             AND (a.OXTIMESTAMP > b.OXTIMESTAMP)
             AND (a.OXTIMESTAMP > "' . date('Y-m-d H:i:s', strtotime($sResetExistingArticlesSinceDays)) . '")
-            AND (b.OXTIMESTAMP != "0000-00-00 00:00:00");';
+            AND (NOT ' . $this->_isUnsyncedSql('b.OXTIMESTAMP') . ');';
         
         $iReseted = DatabaseProvider::getDb()->execute($sQuery);
         
@@ -128,19 +145,19 @@ class wmdkffexport_reset extends oxubase
                 )
             )
         ) {
-            $sQuery = 'UPDATE
+            $sQuery = 'UPDATE IGNORE
                 oxarticles a,
                 wmdk_ff_export_queue b
             SET
-                b.LASTSYNC = "0000-00-00 00:00:00",
+                b.LASTSYNC = 0,
                 b.ProcessIp = "' . $this->_getProcessIp() . '",
-                b.OXTIMESTAMP = "0000-00-00 00:00:00"
+                b.OXTIMESTAMP = 0
             WHERE
                 (a.OXARTNUM = b.MasterProductNumber)
                 AND (b.ProductNumber != b.MasterProductNumber)
                 AND (a.OXTIMESTAMP > b.OXTIMESTAMP)
                 AND (a.OXTIMESTAMP > "' . date('Y-m-d H:i:s', strtotime($sResetExistingArticlesSinceDays)) . '")
-                AND (b.OXTIMESTAMP != "0000-00-00 00:00:00");';
+                AND (NOT ' . $this->_isUnsyncedSql('b.OXTIMESTAMP') . ');';
 
             $iReseted = DatabaseProvider::getDb()->execute($sQuery);
 
@@ -151,12 +168,12 @@ class wmdkffexport_reset extends oxubase
     
     
     private function _resetVariantsWithoutVarname() {
-        $sQuery = 'UPDATE
+        $sQuery = 'UPDATE IGNORE
             wmdk_ff_export_queue
         SET
-            LASTSYNC = "0000-00-00 00:00:00",
+            LASTSYNC = 0,
             ProcessIp = "' . $this->_getProcessIp() . '",
-            OXTIMESTAMP = "0000-00-00 00:00:00"
+            OXTIMESTAMP = 0
         WHERE
             (Attributes LIKE "=%");';
         
@@ -215,7 +232,7 @@ class wmdkffexport_reset extends oxubase
             while (!$oResult->EOF) {
                 
                 foreach ($aChannelList as $aChannel) {
-                    $aSqlQueries[] = 'REPLACE INTO 
+                    $aSqlQueries[] = 'INSERT IGNORE INTO
                         `wmdk_ff_export_queue` 
                     ( 
                         `OXID`,
@@ -232,10 +249,14 @@ class wmdkffexport_reset extends oxubase
                         "' . $aChannel['code'] . '",
                         "' . $aChannel['shop_id'] . '",
                         "' . $aChannel['lang_id'] . '",
-                        "0000-00-00 00:00:00",
+                        "' . self::UNSYNCED_DATETIME . '",
                         "' . $this->_getProcessIp() . '",
-                        "0000-00-00 00:00:00"
-                    );';
+                        "' . self::UNSYNCED_TIMESTAMP . '"
+                    )
+                    ON DUPLICATE KEY UPDATE
+                        LASTSYNC = VALUES(LASTSYNC),
+                        ProcessIp = VALUES(ProcessIp),
+                        OXTIMESTAMP = VALUES(OXTIMESTAMP);';
                 }
                 
                 $aSqlQueries[] = 'UPDATE
@@ -298,13 +319,13 @@ class wmdkffexport_reset extends oxubase
     
     
     private function _updateStatus() {
-        $sQuery = 'UPDATE
+        $sQuery = 'UPDATE IGNORE
             oxarticles a,
             wmdk_ff_export_queue b
         SET
-            b.LASTSYNC = "0000-00-00 00:00:00",
+            b.LASTSYNC = 0,
             b.ProcessIp = "' . $this->_getProcessIp() . '",
-            b.OXTIMESTAMP = "0000-00-00 00:00:00",
+            b.OXTIMESTAMP = 0,
             b.OXACTIVE = a.OXACTIVE
         WHERE
             (a.OXID = b.OXID)
@@ -327,26 +348,26 @@ class wmdkffexport_reset extends oxubase
     
     
     private function _updateStock() {
-        $sArticles = 'UPDATE
+        $sArticles = 'UPDATE IGNORE
             oxarticles a,
             wmdk_ff_export_queue b
         SET
-            b.LASTSYNC = "0000-00-00 00:00:00",
+            b.LASTSYNC = 0,
             b.ProcessIp = "' . $this->_getProcessIp() . '",
-            b.OXTIMESTAMP = "0000-00-00 00:00:00",
+            b.OXTIMESTAMP = 0,
             b.Stock = a.OXSTOCK
         WHERE
             (a.OXID = b.OXID)
             AND (a.OXVARCOUNT = 0)
             AND (a.OXSTOCK != b.Stock)';
         
-        $sParents = 'UPDATE
+        $sParents = 'UPDATE IGNORE
             oxarticles a,
             wmdk_ff_export_queue b
         SET
-            b.LASTSYNC = "0000-00-00 00:00:00",
+            b.LASTSYNC = 0,
             b.ProcessIp = "' . $this->_getProcessIp() . '",
-            b.OXTIMESTAMP = "0000-00-00 00:00:00",
+            b.OXTIMESTAMP = 0,
             b.Stock = a.OXVARSTOCK
         WHERE
             (a.OXID = b.OXID)
@@ -370,13 +391,13 @@ class wmdkffexport_reset extends oxubase
     
     
     private function _resetVariantsWithParentsModifiedWithinTheLastHour($sTimeBack = '-90 minutes') {
-        $sArticles = 'UPDATE
+        $sArticles = 'UPDATE IGNORE
             oxarticles a,
             wmdk_ff_export_queue b
         SET
-            b.LASTSYNC = "0000-00-00 00:00:00",
+            b.LASTSYNC = 0,
             b.ProcessIp = "' . $this->_getProcessIp() . '",
-            b.OXTIMESTAMP = "0000-00-00 00:00:00"
+            b.OXTIMESTAMP = 0
         WHERE
             (a.OXARTNUM = b.MasterProductNumber)
             AND (a.OXTIMESTAMP >= "' . date('Y-m-d H:i:s', strtotime($sTimeBack)) . '")
@@ -401,12 +422,12 @@ class wmdkffexport_reset extends oxubase
         $bUpdateSiblings = Registry::getConfig()->getConfigParam('bWmdkFFQueueUpdateSiblings');
 
         if ($bUpdateSiblings) {
-            $sQuery = 'UPDATE 
+            $sQuery = 'UPDATE IGNORE
                 wmdk_ff_export_queue AS a
             SET
-                a.LASTSYNC = "0000-00-00 00:00:00",
+                a.LASTSYNC = 0,
                 a.ProcessIp = "' . $this->_getProcessIp() . '",
-                a.OXTIMESTAMP = "0000-00-00 00:00:00"
+                a.OXTIMESTAMP = 0
             WHERE
                 (a.MasterProductNumber IN (
                     SELECT MasterProductNumber FROM (
@@ -447,12 +468,12 @@ class wmdkffexport_reset extends oxubase
                 && ($this->_iCurrentHour <= $this->_getTimePart($sTo, 'hour'))
             )
         ) {
-            $sArticles = 'UPDATE
+            $sArticles = 'UPDATE IGNORE
                 wmdk_ff_export_queue b
             SET
-                b.LASTSYNC = "0000-00-00 00:00:00",
+                b.LASTSYNC = 0,
                 b.ProcessIp = "' . $this->_getProcessIp() . '",
-                b.OXTIMESTAMP = "0000-00-00 00:00:00"
+                b.OXTIMESTAMP = 0
             WHERE
                 (b.ImageURL LIKE "%nopic.jpg%")
                 AND (b.OXACTIVE = 1) 
@@ -476,14 +497,14 @@ class wmdkffexport_reset extends oxubase
 
 
     private function _disableMissingOriginOxid() {
-        $sArticles = 'UPDATE
+        $sArticles = 'UPDATE IGNORE
             wmdk_ff_export_queue b
         SET
-            b.LASTSYNC = "0000-00-00 00:00:00",
+            b.LASTSYNC = 0,
             b.ProcessIp = "' . $this->_getProcessIp() . '",
             b.OXACTIVE = 0,
             b.OXHIDDEN = 1,
-            b.OXTIMESTAMP = "0000-00-00 00:00:00"
+            b.OXTIMESTAMP = 0
         WHERE
             (b.OXACTIVE != 0)
             AND b.OXID NOT IN (

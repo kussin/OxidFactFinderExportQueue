@@ -1,4 +1,4 @@
-# FACT Finder Export Queue User Guide
+# KUSSIN | FACT Finder Export Queue User Guide
 
 This guide explains the operational use of the `wmdk/wmdkffexportqueue` module in the OXID eShop PE 7.4 migration context.
 
@@ -78,6 +78,70 @@ Typical result:
 ```
 
 The command selects rows from `wmdk_ff_export_queue` and updates their export data if the OXID article data is newer than the queue row.
+
+### KUSSIN | FACT Finder Export Queue - Monitor
+
+Open **KUSSIN | FACT Finder Export Queue - Monitor** in the OXID admin. The grid shows at most 100 queue records per
+page and supports sorting plus type-aware filters. Numeric values are intentionally not filterable,
+except for `Stock`, which offers All, Yes (`Stock > 0`), and No (`Stock <= 0`);
+`LASTSYNC` and `OXTIMESTAMP` are sort-only as well; boolean flags use Yes/No selectors. The counter
+above the grid counts distinct article OXIDs whose
+`LASTSYNC` and `OXTIMESTAMP` contain the OXID 6 zero-date marker and which satisfy the configured
+`sWmdkFFExportOnlyActive`, `sWmdkFFExportHidden`, and `sWmdkFFExportStockMin` export settings. The
+temporary 1000/1970 migration markers are recognized as well. The counter refreshes itself without
+reloading the grid or the page. Configure the interval under **KUSSIN | FACT Finder Export Queue - Monitor** with
+`sKussinFFMonitorRefreshInterval`; the available values are 5, 10, 15, 20, and 30 seconds, and the
+default is 15 seconds.
+
+The Estimated completion card shows an approximate finish time and remaining duration. Its
+calculation uses the exact same distinct article OXID count as the waiting counter, so additional
+channels, shops, and languages do not inflate either value. It divides that count by
+`sWmdkFFQueueLimit`, assumes one queue run every two minutes, and uses the configured monitor refresh
+interval.
+Manually running the queue more frequently shortens the actual completion time accordingly.
+
+On the initial page load and whenever no valid sorting is supplied, records are ordered by
+`LASTSYNC DESC`.
+
+Pressing Enter while focused on any filter field applies the current filter selection immediately.
+This always invokes the regular filter action and never the adjacent CSV export or reset action.
+
+The most recently applied filters are retained for the current admin session, including when the
+monitor is reopened. Use Clear filters to delete the stored filters and return to the unfiltered
+first page.
+
+The monitor uses the same visual language as the other Kussin admin modules. A loading overlay is
+shown immediately while filters, sorting, pagination, CSV export, filter clearing, or a manual reset
+is being processed. During a CSV download it disappears automatically after the download has been
+triggered, because the current page itself is not reloaded.
+
+The grid shows `FlourMSRP` instead of `FlourSaleAmount`. Like the flour export, this calculated
+sort-only column uses `MSRP` when it is greater than zero and falls back to `Price` otherwise. The
+CSV still exports every physical database field, including `FlourSaleAmount`.
+
+The final column is named Preview and opens the PDP in a new browser tab. Relative queue deeplinks
+are resolved against the current storefront URL, for example `elvine/product.html` becomes
+`https://dev1.warehouse-one.de/elvine/product.html` in the development shop.
+
+Click an `OXID` value to open the corresponding article directly on the OXID article master-data tab
+in a new browser tab. The existing monitor remains open. This link requires the Composer dependency
+and active OXID module `kussin/oxid-base`, which supplies the shared authenticated admin shell.
+
+The article master-data tab's bottom Actions bar (`body > div.actions`) contains an **Open in FACT
+Finder Monitor** link between the new-article and article-preview actions. Like the preview action, it
+is shown only when an article is selected. It opens the monitor in a new browser tab with its OXID
+filter set to the complete article family. The new tab uses an explicit authenticated admin URL with
+the current challenge token and admin session; it does not reuse the article frame's
+`admin_start`/`#kussinshare` address. The parent and every variant are shown regardless of which family
+member was open. The OXID filter also accepts several complete 32-character OXIDs separated by commas,
+whitespace, semicolons, pipes, or SQL-like `OR` notation.
+
+The CSV button exports all database fields and every record matching the active filters, not only the
+visible page. Selecting one or more rows and using the reset button resets the complete selected
+article OXIDs. All queue records for those OXIDs are re-queued across channels, shops, and languages.
+The reset uses the OXID 6 values `LASTSYNC = 0` and `OXTIMESTAMP = 0`. The narrowly scoped queue
+write uses `UPDATE IGNORE`, allowing MariaDB/MySQL to store both as `0000-00-00 00:00:00` even when
+the connection enables strict or `NO_ZERO_DATE` modes.
 
 ### Queue Reset
 
@@ -187,21 +251,25 @@ WHERE WMDK_FFQUEUE = '0'
 LIMIT 100;
 ```
 
-Check queue rows waiting for processing:
+Check article OXIDs waiting for processing (the shown active, hidden, and stock values are the module
+defaults and must match the current export settings):
 
 ```sql
-SELECT OXID, Channel, ProductNumber, MasterProductNumber, LASTSYNC, OXTIMESTAMP, ProcessIp
+SELECT COUNT(*)
 FROM wmdk_ff_export_queue
-WHERE LASTSYNC = '0000-00-00 00:00:00'
-   OR OXTIMESTAMP = '0000-00-00 00:00:00'
-LIMIT 100;
+WHERE CAST(LASTSYNC AS CHAR) = '0000-00-00 00:00:00'
+  AND OXACTIVE = 1
+  AND OXHIDDEN = 0
+  AND CAST(OXTIMESTAMP AS CHAR) = '0000-00-00 00:00:00'
+  AND Stock >= 1
+GROUP BY OXID;
 ```
 
 ### FACT Finder Export
 
 ```bash
-vendor/bin/oe-console wmdkffexport:export:factfinder --channel=kussin_live_de --shop-id=1 --lang=0 --cron
-vendor/bin/oe-console wmdkffexport:export:factfinder --channel=kussin_live_en --shop-id=1 --lang=1 --cron
+vendor/bin/oe-console wmdkffexport:export:factfinder --channel=wh1_live_de --shop-id=1 --lang=0 --cron
+vendor/bin/oe-console wmdkffexport:export:factfinder --channel=wh1_live_en --shop-id=1 --lang=1 --cron
 ```
 
 Creates the FACT Finder product export for the selected channel, shop, and language.
@@ -209,7 +277,7 @@ Creates the FACT Finder product export for the selected channel, shop, and langu
 ### Spotler/Sooqr Export
 
 ```bash
-vendor/bin/oe-console wmdkffexport:export:sooqr --channel=kussin_live_de --shop-id=1 --lang=0 --cron
+vendor/bin/oe-console wmdkffexport:export:sooqr --channel=wh1_live_de --shop-id=1 --lang=0 --cron
 ```
 
 Creates the Spotler/Sooqr export for the selected channel, shop, and language.
@@ -217,7 +285,7 @@ Creates the Spotler/Sooqr export for the selected channel, shop, and language.
 ### Doofinder Export
 
 ```bash
-vendor/bin/oe-console wmdkffexport:export:doofinder --channel=kussin_live_de --shop-id=1 --lang=0 --cron
+vendor/bin/oe-console wmdkffexport:export:doofinder --channel=wh1_live_de --shop-id=1 --lang=0 --cron
 ```
 
 Creates the Doofinder export for the selected channel, shop, and language.
@@ -225,7 +293,7 @@ Creates the Doofinder export for the selected channel, shop, and language.
 ### flour POS Export
 
 ```bash
-vendor/bin/oe-console wmdkffexport:export:flour --channel=kussin_live_de --shop-id=1 --lang=0 --cron
+vendor/bin/oe-console wmdkffexport:export:flour --channel=wh1_live_de --shop-id=1 --lang=0 --cron
 ```
 
 Creates the flour POS export.
@@ -233,13 +301,53 @@ Creates the flour POS export.
 Optional:
 
 ```bash
-vendor/bin/oe-console wmdkffexport:export:flour --channel=kussin_live_de --shop-id=1 --lang=0 --flour-id=1 --cron
+vendor/bin/oe-console wmdkffexport:export:flour --channel=wh1_live_de --shop-id=1 --lang=0 --flour-id=1 --cron
+```
+
+### flour POS Queue Synchronization
+
+Preview queue differences without writing data:
+
+```bash
+vendor/bin/oe-console wmdkffexport:maintenance:sync-flour --dry-run
+```
+
+Synchronize the queue:
+
+```bash
+vendor/bin/oe-console wmdkffexport:maintenance:sync-flour
+```
+
+The command copies the flour ID, active flag, warehouse price, and short URL from `oxarticles`.
+`FlourSaleAmount` is calculated as the OXID 6 runtime discount percentage:
+
+```text
+100 - (WMDKFLOURWAREHOUSEPRICE * 100 / reference price)
+```
+
+The reference price is `OXTPRICE`, with `OXPRICE` as the fallback. Only rows whose flour values
+differ are updated. Updated rows receive the OXID 6 unsynchronized markers `LASTSYNC = 0` and
+`OXTIMESTAMP = 0` through an `UPDATE IGNORE` statement.
+
+Example output:
+
+```json
+{
+  "success": true,
+  "command": "wmdkffexport:maintenance:sync-flour",
+  "dry_run": false,
+  "matched_records": 1200,
+  "changed_records": 42,
+  "updated_records": 42,
+  "lastsync": "0000-00-00 00:00:00",
+  "oxtimestamp": "0000-00-00 00:00:00"
+}
 ```
 
 ### Trusted Shops Import
 
 ```bash
-vendor/bin/oe-console wmdkffexport:import:trusted-shops --channel=kussin_live_de --cron
+vendor/bin/oe-console wmdkffexport:import:trusted-shops --channel=wh1_live_de --cron
 ```
 
 Imports Trusted Shops product ratings into the queue.
@@ -293,8 +401,8 @@ A typical operational sequence is:
 ```bash
 vendor/bin/oe-console wmdkffexport:cron:reset --cron
 vendor/bin/oe-console wmdkffexport:cron:queue --cron
-vendor/bin/oe-console wmdkffexport:export:factfinder --channel=kussin_live_de --shop-id=1 --lang=0 --cron
-vendor/bin/oe-console wmdkffexport:export:factfinder --channel=kussin_live_en --shop-id=1 --lang=1 --cron
+vendor/bin/oe-console wmdkffexport:export:factfinder --channel=wh1_live_de --shop-id=1 --lang=0 --cron
+vendor/bin/oe-console wmdkffexport:export:factfinder --channel=wh1_live_en --shop-id=1 --lang=1 --cron
 ```
 
 Add third-party exports only if they are used in the current shop setup.
@@ -315,9 +423,30 @@ vendor/bin/oe-console wmdkffexport:cron:queue --cron >> 69002_console.log 2>&1
 
 ## Legacy Browser Entry Points
 
-The old browser URLs such as `index.php?cl=wmdkffexport_queue` are migration references only.
+The cron-oriented browser URLs such as `index.php?cl=wmdkffexport_queue` are compatibility shims for schedules carried over from OXID 6.
 
 Do not use them for new cron definitions. Use OXID console commands instead.
+
+Worker Mode still needs the article-family reset endpoint:
+
+```text
+index.php?cl=wmdkffexport_ajax&job=reset&oxid=<article-oxid>
+```
+
+The `oxid` may identify a parent or a variant. The endpoint finds the related queue rows and resets their synchronization timestamps so that the regular queue process rebuilds them. It does not export to FACT Finder immediately. Like the OXID 6 endpoint, it does not require an OXID storefront session, so Worker Mode and operational cURL clients can use the same URL. Protect non-public environments at the web-server or reverse-proxy layer, for example with HTTP Basic authentication.
+
+A successful response keeps the historical `reseted` property for client compatibility:
+
+```json
+{
+  "success": true,
+  "validation_errors": [],
+  "system_errors": [],
+  "reseted": ["6dc08f0bbfb24185de1f712dcee36337"]
+}
+```
+
+An empty `reseted` list means that the supplied OXID has no matching row in `wmdk_ff_export_queue`. Invalid or missing parameters return HTTP 400; database failures return HTTP 500. Responses are not cacheable and are appended to the configured queue log.
 
 ## Migration Status
 
@@ -333,7 +462,7 @@ Fahltskamp 3<br>
 Germany
 
 Phone: +49 (4101) 85868 - 0<br>
-Email: info@kussin.de
+Email: info@kussin.eu
 
 ---
 

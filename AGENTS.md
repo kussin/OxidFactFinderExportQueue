@@ -7,7 +7,7 @@ This file defines package-specific instructions for AI/code agents working on `w
 - Package root: `html/source/packages/wmdk/wmdkffexportqueue/`
 - OXID Composer project root: `html/source/`
 - OXID shop root: `html/source/source/`
-- Active target platform: OXID eShop PE 7.4
+- Active project platform: OXID eShop PE 7.5; package compatibility begins at OXID 7.4
 
 ## Ownership
 
@@ -22,13 +22,15 @@ This file defines package-specific instructions for AI/code agents working on `w
 ## Migration Rules
 
 - Treat copied OXID 6, Smarty, Flow, and browser-facing cron patterns as migration input only.
-- Use OXID eShop PE 7.4 conventions for new or migrated code.
+- Use OXID eShop PE 7.5 conventions for new or migrated code without needlessly breaking the declared `^7.4` compatibility range.
 - Use Twig for new or migrated templates.
 - Replace cron-facing views with OXID console commands that can be executed by Bash crontabs.
 - Add module-owned database installation or migration logic for all required queue tables.
 - Use `db/sql/wmdk_ff_export_queue.sql` as the current table-structure and data reference during migration.
 - Keep Composer work in `html/source/`.
 - Do not edit vendor copies directly when this local package source exists.
+- Keep `kussin/oxid-base` as the declared runtime dependency for shared admin article links; do not
+  copy the Magnalister-specific frameset implementation back into this package.
 
 ## Documentation Rules
 

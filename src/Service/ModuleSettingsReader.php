@@ -51,6 +51,31 @@ class ModuleSettingsReader
         return $default;
     }
 
+    public function getBool(string $settingName, bool $default = false): bool
+    {
+        $configValue = Registry::getConfig()->getConfigParam($settingName);
+
+        if (is_bool($configValue)) {
+            return $configValue;
+        }
+
+        if (is_scalar($configValue) && (string) $configValue !== '') {
+            return filter_var($configValue, FILTER_VALIDATE_BOOL);
+        }
+
+        $yamlValue = $this->getYamlSettingValue($settingName);
+
+        if (is_bool($yamlValue)) {
+            return $yamlValue;
+        }
+
+        if (is_scalar($yamlValue) && (string) $yamlValue !== '') {
+            return filter_var($yamlValue, FILTER_VALIDATE_BOOL);
+        }
+
+        return $default;
+    }
+
     private function getYamlSettingValue(string $settingName): mixed
     {
         $path = $this->getProjectConfigurationPath();

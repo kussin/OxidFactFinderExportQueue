@@ -80,7 +80,7 @@ SQL);
     private function markEmptyProductNumberRecords(): void
     {
         DatabaseProvider::getDb()->execute(<<<'SQL'
-UPDATE `wmdk_ff_export_queue`
+UPDATE IGNORE `wmdk_ff_export_queue`
 SET
     `OXACTIVE` = 0,
     `OXHIDDEN` = 1,

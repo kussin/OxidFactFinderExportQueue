@@ -9,13 +9,13 @@ $sMetadataVersion = '2.1';
  */
 $aModule = array(
     'id'           => 'wmdkffexportqueue',
-    'title'        => 'Kussin | FACT Finder Export Queue for OXID eShop',
+    'title'        => 'KUSSIN | FACT Finder Export Queue for OXID eShop',
     'description'  => [
         'de' => file_get_contents(__DIR__ . '/description-de.inc.php', true),
         'en' => file_get_contents(__DIR__ . '/description-en.inc.php', true),
     ],
     'thumbnail'    => 'module.png',
-    'version'      => '2.0.0',
+    'version'      => '2.1.3',
     'author'       => 'Daniel Kussin',
     'url'          => 'https://www.kussin.de',
     'email'        => 'daniel.kussin@kussin.de',
@@ -31,6 +31,30 @@ $aModule = array(
         \OxidEsales\Eshop\Application\Controller\Admin\ArticleSeo::class => \Wmdk\FactFinderQueue\Extension\Controller\Admin\ArticleSeo::class,
         \OxidEsales\Eshop\Application\Controller\Admin\ArticleStock::class => \Wmdk\FactFinderQueue\Extension\Controller\Admin\ArticleStock::class,
         \OxidEsales\Eshop\Application\Controller\Admin\ArticleVariant::class => \Wmdk\FactFinderQueue\Extension\Controller\Admin\ArticleVariant::class,
+    ),
+
+    // ---------------------------------------------------------------------
+    // Export/queue crons. Every cron job is available on BOTH surfaces:
+    //   - CLI  : `vendor/bin/oe-console wmdkffexport:*` (services.yaml) — the target runtime
+    //   - HTTP : the OXID 6 `index.php?cl=<key>` URLs below
+    // The cron HTTP keys exist because OXID 6 had no CLI entry points and the
+    // production crontab calls these URLs over curl; keeping them lets that
+    // crontab survive the cutover unchanged. Both surfaces run the same legacy
+    // view through the same LegacyConfigBridge. Unlike OXID 6, the HTTP surface
+    // is IP-gated (see AbstractLegacyViewController::assertCronAccessOrExit).
+    // `wmdkffexport_ajax` is the separate Worker Mode article-family reset
+    // endpoint and intentionally retains its historical URL contract.
+    // ---------------------------------------------------------------------
+    'controllers' => array(
+        'wmdkffexport_ajax'      => \Wmdk\FactFinderQueue\Controller\AjaxResetController::class,
+        'wmdkffexport_queue'     => \Wmdk\FactFinderQueue\Controller\QueueController::class,
+        'wmdkffexport_export'    => \Wmdk\FactFinderQueue\Controller\ExportController::class,
+        'wmdkffexport_flour'     => \Wmdk\FactFinderQueue\Controller\FlourController::class,
+        'wmdkffexport_reset'     => \Wmdk\FactFinderQueue\Controller\ResetController::class,
+        'wmdkffexport_ts'        => \Wmdk\FactFinderQueue\Controller\TrustedShopsController::class,
+        'wmdkffexport_sooqr'     => \Wmdk\FactFinderQueue\Controller\SooqrController::class,
+        'wmdkffexport_doofinder' => \Wmdk\FactFinderQueue\Controller\DoofinderController::class,
+        'wmdkffexport_monitor'    => \Wmdk\FactFinderQueue\Controller\Admin\FactFinderMonitorController::class,
     ),
 
     'blocks' => array(
@@ -63,6 +87,15 @@ $aModule = array(
     ),
 
     'settings' => array(
+        // FACT FINDER MONITOR
+        array(
+            'group' => 'sKussinFFMonitorSettings',
+            'name' => 'sKussinFFMonitorRefreshInterval',
+            'type' => 'select',
+            'value' => '15',
+            'constraints' => '5|10|15|20|30',
+        ),
+
         // GENERAL
 		array('group' => 'sWmdkFFGeneralSettings', 'name' => 'sWmdkFFGeneralChannelList', 'type' => 'str', 'value' => 'demo::1::0'),
 
@@ -102,7 +135,6 @@ $aModule = array(
 		array('group' => 'sWmdkFFQueueSettings', 'name' => 'iArticleMinStock', 'type' => 'str', 'value' => 0),
 		array('group' => 'sWmdkFFQueueSettings', 'name' => 'sWmdkFFQueueAttributeGlue', 'type' => 'str', 'value' => '|'),
 		array('group' => 'sWmdkFFQueueSettings', 'name' => 'sWmdkFFQueueAllowableTags', 'type' => 'str', 'value' => ''),
-
 		array('group' => 'sWmdkFFQueueSettings', 'name' => 'sWmdkFFQueueFlagTopseller', 'type' => 'str', 'value' => 10),
 
 		array('group' => 'sWmdkFFQueueSettings', 'name' => 'sWmdkFFQueuePhpLimitTimeout', 'type' => 'str', 'value' => 900),
@@ -131,16 +163,16 @@ $aModule = array(
             'dunkelblau',
             'dunkelbraun',
             'dunkelgrau',
-            'dunkelgrÃ¼n',
+            'dunkelgrün',
             'fuchsia',
             'gelb',
             'gold',
             'grau',
-            'grÃ¼n',
+            'grün',
             'hellblau',
             'hellbraun',
             'hellgrau',
-            'hellgrÃ¼n',
+            'hellgrün',
             'koralle',
             'lachs',
             'leinen',
@@ -159,9 +191,9 @@ $aModule = array(
             'schwarz',
             'senf',
             'silber',
-            'tÃ¼rkis',
+            'türkis',
             'violett',
-            'weiÃŸ',
+            'weiß',
         )),
 
         // Product Name Builder
@@ -171,7 +203,7 @@ $aModule = array(
         // CONVERTER
         array('group' => 'sWmdkFFConverterSettings', 'name' => 'sWmdkFFConverterFieldlistDouble', 'type' => 'str', 'value' => 'Terrain,Schwung,Speed'),
         array('group' => 'sWmdkFFConverterSettings', 'name' => 'aWmdkFFConverterRenameAttributes', 'type' => 'aarr', 'value' => array(
-            'Step On GrÃ¶ÃŸe' => 'GrÃ¶ÃŸe',
+            'Step On Größe' => 'Größe',
             'Step On Size' => 'Size',
         )),
 
@@ -245,7 +277,7 @@ $aModule = array(
         array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourNumberFields', 'type' => 'str', 'value' => 'Price,MSRP,BasePrice,Stock,Weight,Rating,RatingCnt,SaleAmount,SoldAmount,TrustedShopsRating,TrustedShopsRatingCnt,TrustedShopsRatingPercentage'),
         array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourBooleanFields', 'type' => 'str', 'value' => 'HasProductImage,HasCustomAsnRestrictions,HasNewFlag,HasTopFlag,HasSaleFlag,HasVariantsSizelist'),
         array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourDateFields', 'type' => 'str', 'value' => 'DateInsert,DateModified'),
-        array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourShortUrlDomain', 'type' => 'str', 'value' => 'https://kussin.de/'),
+        array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourShortUrlDomain', 'type' => 'str', 'value' => 'https://wh1.de/'),
         array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourShortUrlPrefix', 'type' => 'str', 'value' => 'SR-'),
         array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourDeeplinkUtmKey', 'type' => 'str', 'value' => '`Deeplink`'),
         array('group' => 'sWmdkFFFlourSettings', 'name' => 'sWmdkFFFlourDeeplinkUtmParams', 'type' => 'str', 'value' => 'showroom-customer=1&utm_source=Showroom+Item+QR&utm_medium=Flyer&utm_campaign=showroom_item_qr&utm_id=showroom-item-qr'),

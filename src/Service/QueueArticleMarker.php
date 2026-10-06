@@ -126,7 +126,7 @@ class QueueArticleMarker
             'INSERT IGNORE INTO wmdk_ff_export_queue
                 (OXID, Channel, OXSHOPID, LANG, LASTSYNC, ProcessIp, OXTIMESTAMP, OXACTIVE)
              VALUES
-                (?, ?, ?, ?, "0000-00-00 00:00:00", ?, "0000-00-00 00:00:00", "1")',
+                (?, ?, ?, ?, "' . QueueSyncSentinel::DATETIME . '", ?, "' . QueueSyncSentinel::TIMESTAMP . '", "1")',
             [$articleId, $channel, $shopId, $languageId, $this->getClientIp()]
         );
 
@@ -139,10 +139,10 @@ class QueueArticleMarker
     private function resetExistingQueueRecords(string $articleId, string $articleNumber, int $isActive = 1): void
     {
         $this->executeWithRetry(
-            'UPDATE wmdk_ff_export_queue
-             SET LASTSYNC = "0000-00-00 00:00:00",
+            'UPDATE IGNORE wmdk_ff_export_queue
+             SET LASTSYNC = "' . QueueSyncSentinel::DATETIME . '",
                  ProcessIp = ?,
-                 OXTIMESTAMP = "0000-00-00 00:00:00",
+                 OXTIMESTAMP = "' . QueueSyncSentinel::TIMESTAMP . '",
                  OXACTIVE = ?
              WHERE OXID = ?
                 OR ProductNumber = ?
@@ -165,10 +165,10 @@ class QueueArticleMarker
         int $isActive = 1
     ): void {
         $this->executeWithRetry(
-            'UPDATE wmdk_ff_export_queue
-             SET LASTSYNC = "0000-00-00 00:00:00",
+            'UPDATE IGNORE wmdk_ff_export_queue
+             SET LASTSYNC = "' . QueueSyncSentinel::DATETIME . '",
                  ProcessIp = ?,
-                 OXTIMESTAMP = "0000-00-00 00:00:00",
+                 OXTIMESTAMP = "' . QueueSyncSentinel::TIMESTAMP . '",
                  OXACTIVE = ?
              WHERE OXID = ? AND Channel = ? AND OXSHOPID = ? AND LANG = ?',
             [$this->getClientIp(), $isActive, $articleId, $channel, $shopId, $languageId]

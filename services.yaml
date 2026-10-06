@@ -42,3 +42,7 @@ services:
   Wmdk\FactFinderQueue\Command\ResetQueueRecordsCommand:
     tags:
       - { name: 'console.command', command: 'wmdkffexport:maintenance:reset' }
+
+  Wmdk\FactFinderQueue\Command\SyncFlourFieldsCommand:
+    tags:
+      - { name: 'console.command', command: 'wmdkffexport:maintenance:sync-flour' }
