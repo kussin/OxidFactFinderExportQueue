@@ -1,6 +1,14 @@
 # KUSSIN | FACT Finder Export Queue for OXID 6 - User Guide
 
-This guide explains the operational use of `wmdk/wmdkffexportqueue` on the `dev` branch. The last tested shop version is OXID eShop 6.5.5. For OXID 6.0 through 6.2, use [`bwc/oxid60`](https://github.com/kussin/OxidFactFinderExportQueue/tree/bwc/oxid60). For OXID 7.4 and later 7.x releases, use [`update/69446_oxid7`](https://github.com/kussin/OxidFactFinderExportQueue/tree/update/69446_oxid7) and follow that branch's documentation.
+This guide documents package version `1.11.6.1` on `main`, the final OXID 6 version of
+`wmdk/wmdkffexportqueue`. The last tested shop version is OXID eShop 6.5.5. For OXID 6.0 through
+6.2, use [`bwc/oxid60`](https://github.com/kussin/OxidFactFinderExportQueue/tree/bwc/oxid60).
+
+The OXID 6 line is retained for existing installations and no longer receives regular development or
+proactive maintenance. Bug fixes are reviewed and implemented only upon explicit request. OXID 7 is
+the officially supported version from now on. For OXID 7.4 and later 7.x releases, use
+[`update/69446_oxid7`](https://github.com/kussin/OxidFactFinderExportQueue/tree/update/69446_oxid7)
+and follow that branch's documentation.
 
 ## Purpose and Data Flow
 
@@ -242,6 +250,10 @@ WHERE ProductNumber = 'example-product-number'
 When troubleshooting, also inspect the configured queue/export log files, PHP error log, writable directory permissions, channel configuration, and the generated file timestamp.
 
 ## Support
+
+Regular support and ongoing development target the OXID 7 version. When requesting an OXID 6 bug
+fix, provide the exact OXID version, module version, affected legacy branch, reproduction steps, and
+relevant logs. OXID 6 fixes are considered only upon explicit request.
 
 Kussin | eCommerce und Online-Marketing GmbH<br>
 Fahltskamp 3<br>

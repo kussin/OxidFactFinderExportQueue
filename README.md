@@ -4,15 +4,29 @@ The KUSSIN | FACT Finder Export Queue for OXID 6 prepares OXID eShop article dat
 
 This package contains KUSSIN custom development. Some technical identifiers retain the former WMDK namespace for backward compatibility.
 
+## Maintenance Status
+
+Package version `1.11.6.1` on `main` is the final OXID 6 version of this module. It remains available
+for existing OXID 6 installations, but it no longer receives regular development or proactive
+maintenance. OXID 6 bug fixes are reviewed and implemented only upon explicit request.
+
+OXID 7 is the officially supported version from now on. Active maintenance, compatibility work, and
+further development target OXID 7.4 and later 7.x releases on the
+[`update/69446_oxid7`](https://github.com/kussin/OxidFactFinderExportQueue/tree/update/69446_oxid7)
+branch.
+
 ## Supported OXID Versions and Branches
 
 | OXID eShop version | Branch                                                                                             | Status |
 | --- |----------------------------------------------------------------------------------------------------| --- |
-| 6.2.5 through 6.5.x | [`main`](https://github.com/kussin/OxidFactFinderExportQueue) | Current OXID 6 branch; last tested with OXID eShop 6.5.5 |
-| 6.0 through 6.2 | [`bwc/oxid60`](https://github.com/kussin/OxidFactFinderExportQueue/tree/bwc/oxid60) | Backward-compatibility branch for older OXID 6 installations |
-| 7.4 and later 7.x releases | [`update/69446_oxid7`](https://github.com/kussin/OxidFactFinderExportQueue/tree/update/69446_oxid7) | OXID 7 migration branch; see its documentation for the current status |
+| 6.2.5 through 6.5.x | [`main`](https://github.com/kussin/OxidFactFinderExportQueue) | Final OXID 6 version (`1.11.6.1`); bug fixes only upon explicit request |
+| 6.0 through 6.2 | [`bwc/oxid60`](https://github.com/kussin/OxidFactFinderExportQueue/tree/bwc/oxid60) | Legacy compatibility branch; no regular maintenance |
+| 7.4 and later 7.x releases | [`update/69446_oxid7`](https://github.com/kussin/OxidFactFinderExportQueue/tree/update/69446_oxid7) | Officially supported and actively maintained version |
 
-The `main` branch declares `oxid-esales/oxideshop-ce:^6.0`, but its maintained target starts at OXID 6.2.5. Use `bwc/oxid60` for older shops instead of relying on the broad Composer constraint. OXID 6 versions other than 6.5.5 have not been verified against the current `dev` revision unless stated separately.
+The `main` branch declares `oxid-esales/oxideshop-ce:^6.0`, but its final verified target starts at
+OXID 6.2.5 and was last tested with OXID eShop 6.5.5. Use `bwc/oxid60` for older shops instead of
+relying on the broad Composer constraint. New installations and upgrades should use the officially
+supported OXID 7 version. The OXID 6 branches are retained for existing installations only.
 
 ## Architecture
 
@@ -83,7 +97,10 @@ See the [KUSSIN | FACT Finder Export Queue User Guide](USER_GUIDE.md) for setup,
 
 ## Bug Reports and Feature Requests
 
-Use [GitHub Issues](https://github.com/kussin/OxidFactFinderExportQueue/issues) for bug reports and feature requests.
+Use [GitHub Issues](https://github.com/kussin/OxidFactFinderExportQueue/issues) for bug reports and
+feature requests. Requests target the officially supported OXID 7 version by default. For an OXID 6
+bug-fix request, explicitly state the affected OXID version and legacy branch; such fixes are handled
+only upon request.
 
 ## Support
 
