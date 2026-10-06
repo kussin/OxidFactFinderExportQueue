@@ -1,32 +1,17 @@
-# KUSSIN | FACT Finder Export Queue for OXID 6
+# KUSSIN | FACT Finder Export Queue
 
-The KUSSIN | FACT Finder Export Queue for OXID 6 prepares OXID eShop article data in a dedicated queue and creates product feeds for [FACT Finder](https://www.fact-finder.com/). It also supports [Spotler/Sooqr](https://spotler.com/sooqr-is-now-spotler), [Doofinder](https://www.doofinder.com/), [flour POS](https://www.flour.io/), and Trusted Shops product rating imports.
+The KUSSIN | FACT Finder Export Queue prepares OXID eShop article data in a dedicated queue and creates product feeds for [FACT Finder](https://www.fact-finder.com/). It also supports [Spotler/Sooqr](https://spotler.com/sooqr-is-now-spotler), [Doofinder](https://www.doofinder.com/), [flour POS](https://www.flour.io/), and Trusted Shops product rating imports.
 
 This package contains KUSSIN custom development. Some technical identifiers retain the former WMDK namespace for backward compatibility.
 
-## Maintenance Status
+## Current Context
 
-Package version `1.11.6.1` on `main` is the final OXID 6 version of this module. It remains available
-for existing OXID 6 installations, but it no longer receives regular development or proactive
-maintenance. OXID 6 bug fixes are reviewed and implemented only upon explicit request.
-
-OXID 7 is the officially supported version from now on. Active maintenance, compatibility work, and
-further development target OXID 7.4 and later 7.x releases on the
-[`update/69446_oxid7`](https://github.com/kussin/OxidFactFinderExportQueue/tree/update/69446_oxid7)
-branch.
-
-## Supported OXID Versions and Branches
-
-| OXID eShop version | Branch                                                                                             | Status |
-| --- |----------------------------------------------------------------------------------------------------| --- |
-| 6.2.5 through 6.5.x | [`main`](https://github.com/kussin/OxidFactFinderExportQueue) | Final OXID 6 version (`1.11.6.1`); bug fixes only upon explicit request |
-| 6.0 through 6.2 | [`bwc/oxid60`](https://github.com/kussin/OxidFactFinderExportQueue/tree/bwc/oxid60) | Legacy compatibility branch; no regular maintenance |
-| 7.4 and later 7.x releases | [`update/69446_oxid7`](https://github.com/kussin/OxidFactFinderExportQueue/tree/update/69446_oxid7) | Officially supported and actively maintained version |
-
-The `main` branch declares `oxid-esales/oxideshop-ce:^6.0`, but its final verified target starts at
-OXID 6.2.5 and was last tested with OXID eShop 6.5.5. Use `bwc/oxid60` for older shops instead of
-relying on the broad Composer constraint. New installations and upgrades should use the officially
-supported OXID 7 version. The OXID 6 branches are retained for existing installations only.
+- Composer package name: `wmdk/wmdkffexportqueue`
+- Package root: `html/source/packages/wmdk/wmdkffexportqueue/`
+- Active project platform: OXID eShop PE 7.5
+- Source baseline before runtime migration: upstream `1.11.6`
+- Local migration package version: `2.1.3`
+- Migration status: copied OXID 6 package updated to upstream `1.11.6`; console commands and database installer are present for OXID 7 and the package is used on the 7.5 project baseline
 
 ## Architecture
 
@@ -37,70 +22,156 @@ The module does not export directly from `oxarticles`. It uses `wmdk_ff_export_q
 3. Export processes create CSV or XML files from those rows.
 4. The reset process detects changed, missing, or inconsistent rows and schedules them for processing again.
 
-The OXID 6 implementation registers classic module controllers and Smarty templates. A CLI wrapper invokes the same controllers for server-side execution without an HTTP request.
+## Migration Goal
 
-## Requirements
+Maintain the migrated package on OXID eShop PE 7.5 while keeping the Composer package name `wmdk/wmdkffexportqueue` as a compatibility boundary.
 
-- OXID eShop CE, PE, or EE 6.2.5 or newer within the 6.x series
-- PHP 7.4 or newer, according to the package metadata
-- `ext-zlib`
-- A writable export directory below the OXID shop source directory
-- FACT Finder NG 3.1.149 or newer when the FACT Finder export is used
+The package must remain compatible with `kussin/oxid-factfinder-integration` because the storefront module depends on the queue table and field semantics.
 
-## Installation
+The package requires `kussin/oxid-base:0.1.0` for shared authenticated links that open queue articles
+in a complete OXID admin editor tab. The base module must be active so its controller routes and Twig
+templates are registered.
+
+## Required OXID 7 Changes
+
+- Browser-facing cron views are mapped to OXID console commands for Bash execution.
+- Module-owned database installation logic creates the required queue tables and article extension columns.
+- The installer restores the legacy Flour POS source columns `WMDKFLOURID`, `WMDKFLOURACTIVE`,
+  `WMDKFLOURWAREHOUSEPRICE`, and `WMDKFLOURSHORTURL` on `oxarticles` when they are missing. Existing
+  columns and data are preserved, and the OXID database views are regenerated. Run
+  `wmdkffexport:install:db` after updating an already installed module.
+- Use `db/sql/wmdk_ff_export_queue.sql` as the current table-structure and data reference because the old package SQL is not current.
+- Keep browser/admin views only where they remain useful for human administration.
+- Use OXID eShop PE 7.5 conventions for module metadata, services, autoloading, and templates. The Composer `^7.4` constraint remains intentional cross-minor compatibility.
+- Use Twig for new or migrated templates.
+
+## Current Data Reference
+
+The current queue database dump with structure and data is stored at:
+
+```text
+db/sql/wmdk_ff_export_queue.sql
+```
+
+This dump is large and should not be treated as a normal deployment migration file. Extract the required table definitions into module-owned installation or migration logic during implementation.
+
+## Installation During Migration
 
 Run Composer commands from the OXID Composer project root:
 
 ```bash
-composer config repositories.kussin_ffqueue vcs https://github.com/kussin/OxidFactFinderExportQueue.git
-composer require wmdk/wmdkffexportqueue:dev-main --no-update
-composer clear-cache
-composer update --no-interaction
-vendor/bin/oe-console oe:module:install-configuration source/modules/wmdk/wmdkffexportqueue/
-vendor/bin/oe-console oe:module:apply-configuration
+cd html/source
+composer require wmdk/wmdkffexportqueue
 ```
 
-Before activating the module, complete these deployment steps:
+Do not activate the module before the OXID 7.4 runtime migration has been reviewed.
 
-1. Back up the OXID database.
-2. Review and adapt [`modules/wmdk/wmdkffexportqueue/sql/install.sql`](modules/wmdk/wmdkffexportqueue/sql/install.sql) for the target shop, then execute it only for an initial installation.
-3. Refresh the OXID database views and clear the shop cache.
-4. Copy the repository's `export/` structure to `source/export/` and make it writable by the shop and cron user.
-5. Deploy `bin/wmdkffexport.php` as `source/bin/wmdkffexport.php` if the deployment does not already place the wrapper there.
-6. Activate the module and configure its channel list and export settings in the OXID admin.
+## Console Commands
 
-The legacy installation SQL is destructive: it drops and recreates both queue tables. It also contains a fixed channel enum and shop-specific schema assumptions. Do not run it as an update script, and validate its `ALTER TABLE oxarticles` block before execution.
-
-## Initial Queue Population
-
-Edit the channel, shop, and language variables in [`modules/wmdk/wmdkffexportqueue/sql/initialize.sql`](modules/wmdk/wmdkffexportqueue/sql/initialize.sql) before running it.
-
-The script truncates both queue tables and resets the article queue flags. Use it only for a deliberate full initialization, never as routine maintenance. For operational details and multi-channel processing, see the [User Guide](USER_GUIDE.md).
-
-## CLI Operations
-
-Run the wrapper from the OXID Composer project root:
+Run commands from the OXID Composer project root:
 
 ```bash
-php source/bin/wmdkffexport.php reset
-php source/bin/wmdkffexport.php queue
-php source/bin/wmdkffexport.php export --channel=kussin_live_de --shop-id=1 --lang=0
-php source/bin/wmdkffexport.php ts --channel=kussin_live_de
-php source/bin/wmdkffexport.php sooqr --channel=kussin_live_de --shop-id=1 --lang=0
-php source/bin/wmdkffexport.php doofinder --channel=kussin_live_de --shop-id=1 --lang=0
-php source/bin/wmdkffexport.php flour --channel=kussin_live_de --shop-id=1 --lang=0 --flour-id=1
+cd html/source
+vendor/bin/oe-console wmdkffexport:install:db
+vendor/bin/oe-console wmdkffexport:cron:queue
+vendor/bin/oe-console wmdkffexport:cron:reset
+vendor/bin/oe-console wmdkffexport:export:factfinder --channel=wh1_live_de --shop-id=1 --lang=0
+vendor/bin/oe-console wmdkffexport:import:trusted-shops --channel=wh1_live_de
+vendor/bin/oe-console wmdkffexport:export:sooqr --channel=wh1_live_de --shop-id=1 --lang=0
+vendor/bin/oe-console wmdkffexport:export:doofinder --channel=wh1_live_de --shop-id=1 --lang=0
+vendor/bin/oe-console wmdkffexport:export:flour --channel=wh1_live_de --shop-id=1 --lang=0 --flour-id=1
+vendor/bin/oe-console wmdkffexport:maintenance:sync-flour --dry-run
+vendor/bin/oe-console wmdkffexport:maintenance:cleanup --dry-run
+vendor/bin/oe-console wmdkffexport:maintenance:reset --lastsync-from="2026-06-03 08:30:00" --title-like="%T-Shirt%" --dry-run
 ```
 
-Use the CLI wrapper for new cron definitions. Browser-facing controller URLs remain available for legacy OXID 6 integrations but should not be exposed publicly without access restrictions.
+Run `wmdkffexport:install:db` once after upgrading an existing installation. Besides applying the
+current schema, it removes the obsolete fields introduced by legacy patch `62637` from the queue
+table. Persisted legacy export-field settings are filtered at runtime so the schema cleanup cannot
+break exports.
 
-See the [KUSSIN | FACT Finder Export Queue User Guide](USER_GUIDE.md) for setup, settings, command parameters, cron examples, output files, and troubleshooting.
+The commands currently execute the migrated OXID 6 view logic directly to keep behavior comparable during the first OXID 7.4 migration step.
+
+The flour POS maintenance command synchronizes `WMDKFLOURID`, `WMDKFLOURACTIVE`,
+`WMDKFLOURWAREHOUSEPRICE`, and `WMDKFLOURSHORTURL` from `oxarticles` into their queue columns.
+`FlourSaleAmount` uses the OXID 6 runtime discount formula (`100 - flour price / MSRP * 100`) and
+falls back to `OXPRICE` when `OXTPRICE` is zero. Only differing rows are updated and re-queued.
+
+Isolated field verification:
+
+```bash
+php packages/wmdk/wmdkffexportqueue/tests/flour-sale-amount.test.php
+php packages/wmdk/wmdkffexportqueue/tests/queue-field-calculator.test.php
+php packages/wmdk/wmdkffexportqueue/tests/queue-monitor-query.test.php
+```
+
+The OXID admin menu contains **KUSSIN | FACT Finder Export Queue - Monitor**. It lists queue records with type-aware
+filters, sorting, and pages of at most 100 rows. The CSV action exports every database column for all
+records matching the active filters. Selecting a row and resetting it re-queues every record carrying
+that `OXID`, across all channels, shops, and languages.
+
+`LASTSYNC` and `OXTIMESTAMP` remain sortable but intentionally have no grid filter.
+The initial and fallback ordering is `LASTSYNC DESC`.
+`Stock` provides the three choices All, Yes (`Stock > 0`), and No (`Stock <= 0`).
+The active filter set is retained in the current admin session. The Clear filters button removes the
+stored selection and returns to the unfiltered first page.
+The monitor follows the visual conventions of the other Kussin admin modules with a blue information
+panel, bordered summary cards, and consistently styled action buttons. Submitting filters, clearing
+filters, exporting, resetting records, sorting, or changing pages immediately displays an accessible
+loading overlay. For CSV downloads the overlay closes automatically because the browser does not
+navigate away from the current page.
+The sort-only `FlourMSRP` grid column mirrors the flour export fallback: it shows `MSRP` when it is
+greater than zero and otherwise shows `Price`. It replaces `FlourSaleAmount` in the monitor only;
+the CSV export continues to contain all physical queue-table columns.
+The final grid column is labelled Preview and opens the storefront PDP in a new tab. Relative queue
+deeplinks are prefixed with the current shop URL; existing absolute HTTP(S) links are retained.
+Each value in the `OXID` column links to the corresponding `oxarticles` record and opens the standard
+OXID article master-data editor in a separate browser tab. The authenticated full-admin shell is
+provided centrally by `kussin/oxid-base`, not by duplicated monitor or Magnalister code. Both the
+article-editor link and storefront-preview link carry localized tooltips; the OXID link uses the same
+external-link icon as the preview column so both link targets are visually recognizable.
+
+The OXID article master-data tab provides the reverse navigation as well: its bottom Actions bar
+(`body > div.actions`) places an "Open in FACT Finder Monitor" link between the new-article and
+article-preview actions. It appears only for a selected, persisted article and opens the monitor in a
+new browser tab through an explicit authenticated admin URL, prefiltered to the complete product
+family. The URL carries the current OXID challenge token and admin session instead of reusing the
+article frame's `admin_start`/`#kussinshare` URL. For a parent or a variant, the filter includes the
+parent and every sibling variant from `oxarticles`. The monitor's OXID filter accepts multiple complete
+32-character OXIDs separated by commas, whitespace, semicolons, pipes, or SQL-like `OR` notation;
+multiple values are matched with one parameterized `IN` condition.
+
+The waiting-article card counts one result per `OXID`. Its timestamp, active, hidden, and stock
+conditions mirror the operational export selection; the latter three values come from
+`sWmdkFFExportOnlyActive`, `sWmdkFFExportHidden`, and `sWmdkFFExportStockMin` through the OXID 7
+module-settings reader. Only this card is
+refreshed through the monitor's JSON action; the grid and page remain unchanged. The interval is
+configured with `sKussinFFMonitorRefreshInterval` and accepts 5, 10, 15, 20, or 30 seconds, with 15
+seconds as the default and invalid-value fallback.
+The ETA card uses the exact same distinct `OXID` count as the waiting-article card, divides it by the
+configured `sWmdkFFQueueLimit`, and assumes the documented production schedule of one queue run every
+two minutes. It shows both the approximate completion time and remaining duration and refreshes with
+the article counter. Manual or delayed cron execution naturally makes this estimate finish sooner or
+later.
+Unsynchronized timestamps use the OXID 6 zero-date marker. The module writes it only through scoped
+`INSERT IGNORE`/`UPDATE IGNORE` statements and reads it through text casts for strict-mode safety;
+temporary 1000/1970 markers created during migration remain readable until rewritten.
+
+The old browser-facing entry points (`index.php?cl=wmdkffexport_*`) are **also registered again** as of 2026-08-05: the OXID 6 production crontab calls them over curl — the queue every 2 minutes, the FACT-Finder export twice every half hour, flour every 2 hours, the reset every 3 — and OXID 6 has no CLI entry points, so removing the URLs would have broken those entries at cutover. They are a compatibility shim, not the target runtime: prefer the console commands for new cron definitions. Both surfaces run the same legacy view through the same `LegacyConfigBridge`, and unlike OXID 6 the HTTP surface is IP-gated (`sWmdkFFDebugCronjobIpList`; CLI and localhost always pass).
+
+The Worker Mode shortcut uses a separate compatibility endpoint:
+
+```text
+index.php?cl=wmdkffexport_ajax&job=reset&oxid=<article-oxid>
+```
+
+It immediately marks the selected product's related queue rows (the selected product and, where applicable, its variants or sibling variants) as unsynchronized. This does not run a FACT Finder export itself; it makes the normal queue worker pick up the family again. The endpoint keeps the historical JSON field `reseted` for existing clients, validates the OXID, uses parameterized database queries, emits non-cacheable JSON, and writes the response to the configured queue log. Access protection remains an infrastructure concern (for example HTTP Basic authentication on non-public environments), matching the historical endpoint contract and allowing non-session cURL clients.
+
+For operational details, command explanations, expected JSON output, and troubleshooting notes, see the [KUSSIN | FACT Finder Export Queue User Guide](USER_GUIDE.md).
 
 ## Bug Reports and Feature Requests
 
-Use [GitHub Issues](https://github.com/kussin/OxidFactFinderExportQueue/issues) for bug reports and
-feature requests. Requests target the officially supported OXID 7 version by default. For an OXID 6
-bug-fix request, explicitly state the affected OXID version and legacy branch; such fixes are handled
-only upon request.
+Use [GitHub Issues](https://github.com/kussin/OxidFactFinderExportQueue/issues) for bug reports and feature requests.
 
 ## Support
 

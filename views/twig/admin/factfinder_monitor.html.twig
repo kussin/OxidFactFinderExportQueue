@@ -1,0 +1,389 @@
+{% include 'headitem.html.twig' with { title: 'WMDK_FF_MONITOR_TITLE'|translate } %}
+
+<style>
+    .ff-monitor { padding: 16px 20px 32px; font-family: "Segoe UI", Arial, sans-serif; font-size: 12px; color: #1f2933; }
+    .ff-monitor-header h1 { margin: 0 0 4px; font-size: 20px; font-weight: 600; }
+    .ff-monitor-intro { margin: 16px 0; padding: 12px 16px; border: 1px solid #b6d4ea; border-left: 4px solid #21618c; border-radius: 6px; background: #edf6fc; color: #173f5f; line-height: 1.5; }
+    .ff-monitor-summary { display: grid; grid-template-columns: repeat(4, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px; }
+    .ff-monitor-card { min-width: 0; background: #fff; border: 1px solid #d9e2ec; border-radius: 8px; padding: 12px 16px; }
+    .ff-monitor-card strong { display: block; margin-bottom: 3px; color: #1c4e80; font-size: 20px; font-weight: 600; }
+    .ff-monitor-card.waiting { background: #fffaf0; border-color: #e3ca78; }
+    .ff-monitor-card.waiting strong { color: #8a5b00; }
+    .ff-monitor-card-hint { margin-top: 4px; color: #627d98; font-size: 10px; line-height: 1.35; }
+    .ff-monitor-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 0 0 12px; padding: 12px; background: #fafbfc; border: 1px solid #d9e2ec; border-radius: 8px; }
+    .ff-monitor-btn { padding: 7px 14px; border: 1px solid #1c4e80; border-radius: 6px; background: #1c4e80; color: #fff; font: inherit; font-weight: 600; cursor: pointer; }
+    .ff-monitor-btn:hover { background: #163d63; }
+    .ff-monitor-btn.secondary { border-color: #cbd2d9; background: #fff; color: #334e68; }
+    .ff-monitor-btn.secondary:hover { background: #f0f4f8; }
+    .ff-monitor-btn.export { border-color: #209174; background: #25a685; }
+    .ff-monitor-btn.export:hover { background: #209174; }
+    .ff-monitor-btn.reset { border-color: #ac3c38; background: #c14541; }
+    .ff-monitor-btn.reset:hover { background: #ac3c38; }
+    .ff-monitor-message { background: #e3f9e5; border: 1px solid #a3d9a5; border-radius: 6px; color: #0e5814; padding: 10px 14px; margin-bottom: 12px; }
+    .ff-monitor-message.warning { background: #fff3cd; border-color: #e3ca78; color: #825600; }
+    .ff-monitor-table-wrap { max-width: 100%; overflow: auto; background: #fff; border: 1px solid #d9e2ec; border-radius: 8px; box-shadow: 0 1px 2px rgba(31, 41, 51, .06); }
+    .ff-monitor-table { border-collapse: collapse; min-width: 2450px; width: 100%; }
+    .ff-monitor-table th, .ff-monitor-table td { border-right: 1px solid #e1e5e9; border-bottom: 1px solid #e1e5e9; padding: 7px 9px; text-align: left; white-space: nowrap; }
+    .ff-monitor-table thead th { position: sticky; top: 0; z-index: 2; background: #3c4e55; color: #fff; }
+    .ff-monitor-table thead tr.filters th { top: 33px; background: #f0f4f8; color: #52606d; }
+    .ff-monitor-table th a { color: inherit; text-decoration: none; }
+    .ff-monitor-table th a:hover { text-decoration: underline; }
+    .ff-monitor-table tbody tr:nth-child(even) { background: #fafbfc; }
+    .ff-monitor-table tbody tr:hover { background: #edf6fc; }
+    .ff-monitor-table input[type=text], .ff-monitor-table select { box-sizing: border-box; min-width: 76px; width: 100%; height: 30px; padding: 4px 7px; border: 1px solid #cbd2d9; border-radius: 4px; background: #fff; color: #1f2933; font: inherit; }
+    .ff-monitor-table .selection { min-width: 34px; text-align: center; width: 34px; }
+    .ff-monitor-title { max-width: 310px; overflow: hidden; text-overflow: ellipsis; }
+    .ff-monitor-oxid { font-family: monospace; font-size: 10px; }
+    .ff-monitor-oxid-link { display: inline-flex; gap: 5px; align-items: center; color: #1c4e80; font-weight: 600; text-decoration: none; }
+    .ff-monitor-oxid-link:hover { text-decoration: underline; }
+    .ff-monitor-bool { display: inline-block; min-width: 16px; border-radius: 8px; padding: 1px 5px; text-align: center; }
+    .ff-monitor-bool.yes { background: #d9efdc; color: #176328; }
+    .ff-monitor-bool.no { background: #eee; color: #666; }
+    .ff-monitor-preview, .ff-monitor-oxid-icon { display: inline-flex; flex: 0 0 26px; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: #edf6fc; color: #1c4e80; font-family: Arial, sans-serif; font-size: 16px; text-decoration: none; }
+    .ff-monitor-preview:hover, .ff-monitor-oxid-link:hover .ff-monitor-oxid-icon { background: #d8ebf8; }
+    .ff-monitor-pagination { display: flex; gap: 4px; align-items: center; margin: 12px 0; }
+    .ff-monitor-pagination a, .ff-monitor-pagination span { min-width: 16px; border: 1px solid #cbd2d9; border-radius: 4px; padding: 5px 8px; color: #1c4e80; text-align: center; text-decoration: none; }
+    .ff-monitor-pagination a:hover { background: #edf6fc; }
+    .ff-monitor-pagination .active { background: #1c4e80; border-color: #1c4e80; color: #fff; }
+    .ff-monitor-reset { margin-top: 12px; }
+    .ff-monitor-loading { position: fixed; inset: 0; z-index: 9999; align-items: center; justify-content: center; background: rgba(255, 255, 255, .78); backdrop-filter: blur(1px); }
+    .ff-monitor-loading:not([hidden]) { display: flex; }
+    .ff-monitor-loading-box { display: flex; align-items: center; gap: 12px; padding: 14px 18px; border: 1px solid #b6d4ea; border-radius: 8px; background: #fff; color: #173f5f; box-shadow: 0 8px 24px rgba(31, 41, 51, .18); font-size: 14px; font-weight: 600; }
+    .ff-monitor-spinner { width: 22px; height: 22px; border: 3px solid #d9e2ec; border-top-color: #21618c; border-radius: 50%; animation: ff-monitor-spin .75s linear infinite; }
+    @keyframes ff-monitor-spin { to { transform: rotate(360deg); } }
+    @media (max-width: 900px) { .ff-monitor-summary { grid-template-columns: 1fr; } }
+    @media (prefers-reduced-motion: reduce) { .ff-monitor-spinner { animation-duration: 1.5s; } }
+</style>
+
+<div class="ff-monitor" id="ff-monitor-page">
+    <div class="ff-monitor-header">
+        <h1>{{ 'WMDK_FF_MONITOR_TITLE'|translate }}</h1>
+    </div>
+
+    <div class="ff-monitor-intro">{{ 'WMDK_FF_MONITOR_INTRO'|translate }}</div>
+
+    <div class="ff-monitor-summary">
+        <div class="ff-monitor-card waiting">
+            <strong id="monitor-waiting-count" data-url="{{ oViewConf.getSelfLink()|raw }}&amp;cl=wmdkffexport_monitor&amp;fnc=waitingCount">{{ monitorWaiting }}</strong>
+            {{ 'WMDK_FF_MONITOR_WAITING'|translate }}
+        </div>
+        <div class="ff-monitor-card">
+            <strong>{{ monitorTotal }}</strong>
+            {{ 'WMDK_FF_MONITOR_FILTERED'|translate }}
+        </div>
+        <div class="ff-monitor-card">
+            <strong>{{ monitorPage }} / {{ monitorPageCount }}</strong>
+            {{ 'WMDK_FF_MONITOR_PAGE'|translate }}
+        </div>
+        <div class="ff-monitor-card">
+            <strong
+                id="monitor-queue-eta"
+                data-seconds="{{ monitorEtaSeconds }}"
+                data-prefix="{{ 'WMDK_FF_MONITOR_ETA_PREFIX'|translate }}"
+                data-done="{{ 'WMDK_FF_MONITOR_ETA_DONE'|translate }}"
+                data-hour="{{ 'WMDK_FF_MONITOR_ETA_HOUR'|translate }}"
+                data-minute="{{ 'WMDK_FF_MONITOR_ETA_MINUTE'|translate }}"
+            >—</strong>
+            {{ 'WMDK_FF_MONITOR_ETA'|translate }}
+            <div class="ff-monitor-card-hint" id="monitor-queue-eta-basis">
+                <span id="monitor-waiting-articles">{{ monitorWaiting }}</span> {{ 'WMDK_FF_MONITOR_ETA_RECORDS'|translate }} · {{ 'WMDK_FF_MONITOR_ETA_BASIS'|translate }}
+            </div>
+        </div>
+    </div>
+
+    {% if monitorResetResult %}
+        {% if monitorResetResult.articles > 0 %}
+            <div class="ff-monitor-message">
+                {{ 'WMDK_FF_MONITOR_RESET_SUCCESS'|translate }}:
+                {{ monitorResetResult.articles }} / {{ monitorResetResult.records }}
+            </div>
+        {% else %}
+            <div class="ff-monitor-message warning">{{ 'WMDK_FF_MONITOR_RESET_EMPTY'|translate }}</div>
+        {% endif %}
+    {% endif %}
+
+    <form id="monitor-clear-filter-form" action="{{ oViewConf.getSelfLink()|raw }}" method="get">
+        {{ oViewConf.getHiddenSid()|raw }}
+        <input type="hidden" name="cl" value="wmdkffexport_monitor">
+        <input type="hidden" name="fnc" value="clearFilters">
+    </form>
+
+    <form id="monitor-filter-form" action="{{ oViewConf.getSelfLink()|raw }}" method="get">
+        {{ oViewConf.getHiddenSid()|raw }}
+        <input type="hidden" name="cl" value="wmdkffexport_monitor">
+        <input type="hidden" name="monitorSort" value="{{ monitorSort }}">
+        <input type="hidden" name="monitorDir" value="{{ monitorDirection }}">
+        <div class="ff-monitor-actions">
+            <button type="submit" class="ff-monitor-btn" id="monitor-filter-submit">{{ 'WMDK_FF_MONITOR_FILTER'|translate }}</button>
+            <button type="submit" form="monitor-clear-filter-form" class="ff-monitor-btn secondary">{{ 'WMDK_FF_MONITOR_CLEAR_FILTER'|translate }}</button>
+            <button type="submit" class="ff-monitor-btn export" name="fnc" value="exportCsv" data-monitor-download>{{ 'WMDK_FF_MONITOR_EXPORT'|translate }}</button>
+        </div>
+    </form>
+
+    <form id="monitor-reset-form" action="{{ oViewConf.getSelfLink()|raw }}" method="post">
+        {{ oViewConf.getHiddenSid()|raw }}
+        <input type="hidden" name="cl" value="wmdkffexport_monitor">
+        <input type="hidden" name="fnc" value="resetSelected">
+        <input type="hidden" name="monitorSort" value="{{ monitorSort }}">
+        <input type="hidden" name="monitorDir" value="{{ monitorDirection }}">
+        <input type="hidden" name="monitorPage" value="{{ monitorPage }}">
+        {% for name, value in monitorFilters %}
+            <input type="hidden" name="monitorFilter[{{ name }}]" value="{{ value }}">
+        {% endfor %}
+
+        <div class="ff-monitor-table-wrap">
+            <table class="ff-monitor-table">
+                <thead>
+                    <tr>
+                        <th class="selection">
+                            <input type="checkbox" id="monitor-select-all" title="{{ 'WMDK_FF_MONITOR_SELECT_ALL'|translate }}">
+                        </th>
+                        {% for column in monitorColumns %}
+                            <th>
+                                <a href="{{ oViewConf.getSelfLink()|raw }}&amp;{{ column.sortUrl }}" data-monitor-navigation>
+                                    {{ column.name == 'Deeplink' ? 'WMDK_FF_MONITOR_PREVIEW_COLUMN'|translate : column.name }}{% if column.active %} {{ column.direction == 'ASC' ? '▲' : '▼' }}{% endif %}
+                                </a>
+                            </th>
+                        {% endfor %}
+                    </tr>
+                    <tr class="filters">
+                        <th class="selection"></th>
+                        {% for column in monitorColumns %}
+                            <th>
+                                {% if column.filterType == 'text' %}
+                                    <input
+                                        form="monitor-filter-form"
+                                        type="text"
+                                        name="monitorFilter[{{ column.name }}]"
+                                        value="{{ column.filterValue }}"
+                                        {% if column.name == 'OXID' %}
+                                            title="{{ 'KUSSIN_FF_EXPORT_QUEUE_OXID_FILTER_HINT'|translate }}"
+                                            placeholder="OXID1, OXID2, …"
+                                        {% endif %}
+                                    >
+                                {% elseif column.filterType == 'boolean' %}
+                                    <select form="monitor-filter-form" name="monitorFilter[{{ column.name }}]">
+                                        <option value="">{{ 'WMDK_FF_MONITOR_ALL'|translate }}</option>
+                                        <option value="1"{% if column.filterValue == '1' %} selected{% endif %}>{{ 'WMDK_FF_MONITOR_TRUE'|translate }}</option>
+                                        <option value="0"{% if column.filterValue == '0' %} selected{% endif %}>{{ 'WMDK_FF_MONITOR_FALSE'|translate }}</option>
+                                    </select>
+                                {% elseif column.filterType == 'stock' %}
+                                    <select form="monitor-filter-form" name="monitorFilter[{{ column.name }}]">
+                                        <option value="">{{ 'WMDK_FF_MONITOR_ALL'|translate }}</option>
+                                        <option value="1"{% if column.filterValue == '1' %} selected{% endif %}>{{ 'WMDK_FF_MONITOR_TRUE'|translate }}</option>
+                                        <option value="0"{% if column.filterValue == '0' %} selected{% endif %}>{{ 'WMDK_FF_MONITOR_FALSE'|translate }}</option>
+                                    </select>
+                                {% elseif column.filterType == 'enum' %}
+                                    <select form="monitor-filter-form" name="monitorFilter[{{ column.name }}]">
+                                        <option value="">{{ 'WMDK_FF_MONITOR_ALL'|translate }}</option>
+                                        {% for channel in monitorChannels %}
+                                            <option value="{{ channel }}"{% if column.filterValue == channel %} selected{% endif %}>{{ channel }}</option>
+                                        {% endfor %}
+                                    </select>
+                                {% else %}
+                                    <span title="{{ 'WMDK_FF_MONITOR_NOT_FILTERABLE'|translate }}">—</span>
+                                {% endif %}
+                            </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in monitorRows %}
+                        <tr>
+                            <td class="selection"><input class="monitor-row-checkbox" type="checkbox" name="monitorSelected[]" value="{{ row.OXID }}"></td>
+                            {% for column in monitorColumns %}
+                                {% set value = row[column.name] %}
+                                <td class="{% if column.name == 'Title' %}ff-monitor-title{% elseif column.name == 'OXID' %}ff-monitor-oxid{% endif %}" title="{{ value }}">
+                                    {% if column.name == 'OXID' and row.AdminArticleEditUrl %}
+                                        <a class="ff-monitor-oxid-link" href="{{ row.AdminArticleEditUrl }}" target="_blank" rel="noopener noreferrer" title="{{ 'WMDK_FF_MONITOR_EDIT_ARTICLE'|translate }}" aria-label="{{ 'WMDK_FF_MONITOR_EDIT_ARTICLE'|translate }}: {{ value }}">{{ value }} <span class="ff-monitor-oxid-icon" aria-hidden="true">↗</span></a>
+                                    {% elseif column.name == 'Deeplink' %}
+                                        {% if value %}<a class="ff-monitor-preview" href="{{ value }}" target="_blank" rel="noopener noreferrer" title="{{ 'WMDK_FF_MONITOR_PREVIEW'|translate }}" aria-label="{{ 'WMDK_FF_MONITOR_PREVIEW'|translate }}">↗</a>{% endif %}
+                                    {% elseif column.filterType == 'boolean' %}
+                                        <span class="ff-monitor-bool {{ value ? 'yes' : 'no' }}">{{ value ? '1' : '0' }}</span>
+                                    {% else %}
+                                        {{ value }}
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% else %}
+                        <tr><td colspan="21">{{ 'WMDK_FF_MONITOR_NO_RESULTS'|translate }}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="ff-monitor-reset">
+            <button type="submit" class="ff-monitor-btn reset" onclick="return confirm('{{ 'WMDK_FF_MONITOR_RESET_CONFIRM'|translate|e('js') }}');">
+                {{ 'WMDK_FF_MONITOR_RESET_SELECTED'|translate }}
+            </button>
+        </div>
+    </form>
+
+    <div class="ff-monitor-pagination">
+        {% if monitorPreviousUrl %}<a href="{{ oViewConf.getSelfLink()|raw }}&amp;{{ monitorPreviousUrl }}" data-monitor-navigation>‹</a>{% endif %}
+        {% for page in monitorPages %}
+            {% if page.active %}
+                <span class="active">{{ page.number }}</span>
+            {% else %}
+                <a href="{{ oViewConf.getSelfLink()|raw }}&amp;{{ page.url }}" data-monitor-navigation>{{ page.number }}</a>
+            {% endif %}
+        {% endfor %}
+        {% if monitorNextUrl %}<a href="{{ oViewConf.getSelfLink()|raw }}&amp;{{ monitorNextUrl }}" data-monitor-navigation>›</a>{% endif %}
+    </div>
+</div>
+
+<div class="ff-monitor-loading" id="ff-monitor-loading" role="status" aria-live="polite" hidden>
+    <div class="ff-monitor-loading-box">
+        <span class="ff-monitor-spinner" aria-hidden="true"></span>
+        <span>{{ 'WMDK_FF_MONITOR_LOADING'|translate }}</span>
+    </div>
+</div>
+
+<script>
+    document.getElementById('monitor-select-all').addEventListener('change', function () {
+        document.querySelectorAll('.monitor-row-checkbox').forEach(function (checkbox) {
+            checkbox.checked = document.getElementById('monitor-select-all').checked;
+        });
+    });
+
+    (function () {
+        var overlay = document.getElementById('ff-monitor-loading');
+        var page = document.getElementById('ff-monitor-page');
+        var filterForm = document.getElementById('monitor-filter-form');
+        var filterSubmit = document.getElementById('monitor-filter-submit');
+
+        function showLoading() {
+            if (overlay) {
+                overlay.hidden = false;
+            }
+            if (page) {
+                page.setAttribute('aria-busy', 'true');
+            }
+        }
+
+        function hideLoading() {
+            if (overlay) {
+                overlay.hidden = true;
+            }
+            if (page) {
+                page.removeAttribute('aria-busy');
+            }
+        }
+
+        document.querySelectorAll('.ff-monitor form').forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                var submitter = event.submitter || document.activeElement;
+                showLoading();
+
+                if (submitter && submitter.hasAttribute('data-monitor-download')) {
+                    window.setTimeout(hideLoading, 2500);
+                }
+            });
+        });
+
+        document.querySelectorAll('[form="monitor-filter-form"]').forEach(function (field) {
+            field.addEventListener('keydown', function (event) {
+                if (event.key !== 'Enter' || event.isComposing || !filterForm || !filterSubmit) {
+                    return;
+                }
+
+                event.preventDefault();
+
+                if (typeof filterForm.requestSubmit === 'function') {
+                    filterForm.requestSubmit(filterSubmit);
+                } else {
+                    filterSubmit.click();
+                }
+            });
+        });
+
+        document.querySelectorAll('[data-monitor-navigation]').forEach(function (link) {
+            link.addEventListener('click', function (event) {
+                if (!event.defaultPrevented && event.button === 0 && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey) {
+                    showLoading();
+                }
+            });
+        });
+
+        window.addEventListener('pageshow', hideLoading);
+    }());
+
+    (function () {
+        var counter = document.getElementById('monitor-waiting-count');
+        var eta = document.getElementById('monitor-queue-eta');
+        var waitingArticles = document.getElementById('monitor-waiting-articles');
+
+        if (!counter || !eta) {
+            return;
+        }
+
+        function updateEta(seconds, articles) {
+            var remainingSeconds = Math.max(0, parseInt(seconds, 10) || 0);
+
+            if (remainingSeconds === 0) {
+                eta.textContent = eta.getAttribute('data-done');
+            } else {
+                var completion = new Date(Date.now() + (remainingSeconds * 1000));
+                var totalMinutes = Math.ceil(remainingSeconds / 60);
+                var hours = Math.floor(totalMinutes / 60);
+                var minutes = totalMinutes % 60;
+                var duration = [];
+
+                if (hours > 0) {
+                    duration.push(hours + ' ' + eta.getAttribute('data-hour'));
+                }
+                if (minutes > 0 || hours === 0) {
+                    duration.push(minutes + ' ' + eta.getAttribute('data-minute'));
+                }
+
+                eta.textContent = eta.getAttribute('data-prefix') + ' '
+                    + new Intl.DateTimeFormat(undefined, {
+                        day: '2-digit',
+                        month: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    }).format(completion)
+                    + ' (' + duration.join(' ') + ')';
+            }
+
+            if (waitingArticles && Number.isInteger(articles)) {
+                waitingArticles.textContent = articles;
+            }
+        }
+
+        updateEta(eta.getAttribute('data-seconds'), {{ monitorWaiting }});
+
+        if (!window.fetch) {
+            return;
+        }
+
+        window.setInterval(function () {
+            fetch(counter.getAttribute('data-url'), {
+                credentials: 'same-origin',
+                headers: { 'Accept': 'application/json' },
+                cache: 'no-store'
+            })
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error('Unable to refresh the FACT Finder queue count.');
+                    }
+
+                    return response.json();
+                })
+                .then(function (payload) {
+                    if (payload.success && Number.isInteger(payload.waiting)) {
+                        counter.textContent = payload.waiting;
+                    }
+                    if (payload.success && Number.isInteger(payload.etaSeconds)) {
+                        updateEta(payload.etaSeconds, payload.waiting);
+                    }
+                })
+                .catch(function () {
+                    // Keep the last valid value; the next interval retries automatically.
+                });
+        }, {{ monitorRefreshInterval }} * 1000);
+    }());
+</script>
+
+{% include 'bottomitem.html.twig' %}

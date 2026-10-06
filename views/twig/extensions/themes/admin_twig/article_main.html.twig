@@ -1,0 +1,41 @@
+{% extends 'article_main.html.twig' %}
+
+{% block admin_article_main_editor %}
+    {{ parent() }}
+
+    {% set kussinFactFinderMonitorUrl = oView.getFactFinderMonitorUrl() %}
+    {% if kussinFactFinderMonitorUrl %}
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var actions = document.querySelector('body > div.actions > ul');
+
+                if (!actions || document.getElementById('kussin-ff-export-queue-monitor-link')) {
+                    return;
+                }
+
+                var item = document.createElement('li');
+                var link = document.createElement('a');
+                var separator = document.createTextNode(' |');
+                var preview = document.getElementById('btn.preview');
+                var createArticle = document.getElementById('btn.new');
+
+                link.id = 'kussin-ff-export-queue-monitor-link';
+                link.href = {{ kussinFactFinderMonitorUrl|json_encode|raw }};
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                link.title = {{ translate({ ident: 'KUSSIN_FF_EXPORT_QUEUE_ARTICLE_MONITOR_TITLE' })|json_encode|raw }};
+                link.textContent = {{ translate({ ident: 'KUSSIN_FF_EXPORT_QUEUE_ARTICLE_MONITOR_OPEN' })|json_encode|raw }};
+                item.appendChild(link);
+                item.appendChild(separator);
+
+                if (preview && preview.parentNode) {
+                    preview.parentNode.before(item);
+                } else if (createArticle && createArticle.parentNode) {
+                    createArticle.parentNode.after(item);
+                } else {
+                    actions.appendChild(item);
+                }
+            });
+        </script>
+    {% endif %}
+{% endblock %}
